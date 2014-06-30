@@ -24,7 +24,7 @@ To be clear, my Java is not what it should be, I'm sure there are others out the
 Current Bukkit Build
 -------------
 
-Currently supports Bukkit 1.6.4 R2.0
+Currently supports Bukkit 1.6.4 R2.1
 
 Tasks
 -------------
