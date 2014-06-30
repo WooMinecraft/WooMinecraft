@@ -13,9 +13,12 @@ Leveraging the power of a WordPress plugin, WooCommerce, and Bukkit's API, this 
 Please Contribute
 -------------
 
-I encourage all of you to fork the repo and make pull requests to the development branch.  I would like this to become the best open source project minecraft donation system out there.
+I encourage all of you to fork the repo and make pull requests to the development branch.  I would like this to become the best open source project minecraft donation system out there.  
 
-> All users who make a pull request will receive credit either on this landing page, or in the future wiki.  Which I'm working on almost weekly.
+To be clear, my Java is not what it should be, I'm sure there are others out there who have better ways of doing what is intended.  Not to mention that there are other fellow WordPress geeks who have awesome ideas as well.  Let's make this the best plugin ever, I believe we can do it.
+
+> All users who make a pull request will receive credit either on this README, or in the future wiki.  Which I'm working on almost weekly.
+> Additionally there will be a CONRIBUTORS file which lists each and every contributor along with a url if they wish.  Simply add this in your pull request and it's done.
 
 Current Bukkit Build
 -------------
