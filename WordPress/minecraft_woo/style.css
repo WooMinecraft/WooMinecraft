@@ -1,0 +1,12 @@
+.woo_minecraft span, .woo_minecraft_v span{display: block; float: none !important; clear:left; padding-top: 0.5em;}
+.woo_minecraft span input.delete, .woo_minecraft_v span input.delete{color: #FFF;border-color: #C30;background: #C00;-webkit-box-shadow: inset 0 1px 0 #C30,0 1px 0 rgba(0,0,0,.08);box-shadow: inset 0 1px 0 #C30,0 1px 0 rgba(0,0,0,.08);vertical-align: top; text-shadow: none;}
+.woo_minecraft span input.delete:hover, .woo_minecraft span input.delete:focus, .woo_minecraft_v span input.delete:hover, .woo_minecraft_v span input.delete:focus{background: #C30; border-color: #C33; color: #FFF;}
+.woo_minecraft span{overflow:hidden;}
+.woo_minecraft img.help_tip{margin-top: 3px !important;}
+.woo_minecraft p.title, .woo_minecraft_v p.title{font-weight: bold; }
+.woo_minecraft_v p.title{border-top: 1px solid #ccc; padding-top: .5em;}
+.woo_minecraft_v input.button{width: auto !important;margin-left: 8px !important;display:inline-block !important;padding: 0 10px 1px !important;font-size: 13px !important;}
+.woo_minecraft_v input.button.delete{color: #FFF; margin-top: 0.3em; text-shadow: none !important;}
+.woo_minecraft_v input.button-primary{color: #fff !important;}
+.woo_minecraft_v img.help_tip{margin-top:5px !important;}
+.woo_minecraft_v p label{float:left !important; padding-top: 0.3em !important; width: 80px !important;}
