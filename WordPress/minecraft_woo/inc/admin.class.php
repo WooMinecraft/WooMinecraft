@@ -32,7 +32,7 @@ if(!class_exists('Woo_Minecraft_Admin')){
                 	<label for="woo_minecraft_general">Commands</label>
                     <input type="button" class="button button-primary woo_minecraft_add" name="Add" id="woo_minecraft_add" value="Add" />
                     <input type="button" class="button woo_minecraft_reset" name="Reset" id="woo_minecraft_reset" value="Reset Fields" />
-                    <img class="help_tip" data-tip="Any commands added here, will run on top of variable commands if any. <br /><br />No leading slash is needed." src="<?=plugins_url( "help.png", dirname(__FILE__) );?>" height="16" width="16" />
+                    <img class="help_tip" data-tip="Any commands added here, will run on top of variable commands if any. <br /><br />No leading slash is needed." src="<?php echo plugins_url( "help.png", dirname(__FILE__) );?>" height="16" width="16" />
                     <span class="woo_minecraft_copyme" style="display:none">
                         <input type="text" name="minecraft_woo[general][]" value="" class="short" placeholder="Use %s for player name"/>
                         <input type="button" class="button button-small delete remove_row" value="Delete">
@@ -40,7 +40,7 @@ if(!class_exists('Woo_Minecraft_Admin')){
                     <?php if(!empty($meta)): ?>
 						<?php foreach($meta as $command): ?>                	
                             <span>
-                                <input type="text" name="minecraft_woo[general][]" value="<?= $command; ?>" class="short"/>
+                                <input type="text" name="minecraft_woo[general][]" value="<?php echo $command; ?>" class="short"/>
                                 <input type="button" class="button button-small delete remove_row" value="Delete">
                             </span>
                         <?php endforeach; ?>
@@ -61,15 +61,15 @@ if(!class_exists('Woo_Minecraft_Admin')){
                 	<label>Commands</label>
                     <input type="button" class="button button-primary woo_minecraft_add" name="Add" id="woo_minecraft_add_v" value="Add" />
                     <input type="button" class="button woo_minecraft_reset" name="Reset" id="woo_minecraft_reset_v" value="Reset Fields" />
-                    <img class="help_tip" data-tip="Use %s for the player's name.<br /><br />No leading slash is needed." src="<?= plugins_url( "help.png", dirname(__FILE__) ) ?>" height="16" width="16" />
+                    <img class="help_tip" data-tip="Use %s for the player's name.<br /><br />No leading slash is needed." src="<?php echo plugins_url( "help.png", dirname(__FILE__) ) ?>" height="16" width="16" />
                     <span class="woo_minecraft_copyme" style="display:none">
-                        <input type="text" name="minecraft_woo[variable][<?=$l; ?>][]" value="" class="short" placeholder="Use %s for player name"/>
+                        <input type="text" name="minecraft_woo[variable][<?php echo $l; ?>][]" value="" class="short" placeholder="Use %s for player name"/>
                         <input type="button" class="button button-small delete remove_row" value="Delete">
                     </span>
                     <?php if(!empty($meta)): ?>
 						<?php foreach($meta as $command): ?>
                             <span>
-                                <input type="text" name="minecraft_woo[variable][<?=$l;?>][]" value="<?= $command; ?>" class="short"/>
+                                <input type="text" name="minecraft_woo[variable][<?php echo $l;?>][]" value="<?php echo $command; ?>" class="short"/>
                                 <input type="button" class="button button-small delete remove_row" value="Delete">
                             </span>
                         <?php endforeach; ?>
@@ -90,7 +90,7 @@ if(!class_exists('Woo_Minecraft_Admin')){
                 	<label>Commands</label>\
                     <input type="button" class="button button-primary woo_minecraft_add" name="Add" id="woo_minecraft_add_v" value="Add" />\
                     <input type="button" class="button woo_minecraft_reset" name="Reset" id="woo_minecraft_reset_v" value="Reset Fields" />\
-                    <img class="help_tip" data-tip="Any commands added here, will run on top of variable commands if any. <br /><br />No leading slash is needed." src="<?= plugins_url( "help.png", dirname(__FILE__) ) ?>" height="16" width="16" />\
+                    <img class="help_tip" data-tip="Any commands added here, will run on top of variable commands if any. <br /><br />No leading slash is needed." src="<?php echo plugins_url( "help.png", dirname(__FILE__) ) ?>" height="16" width="16" />\
                     <span class="woo_minecraft_copyme" style="display:none">\
                         <input type="text" name="minecraft_woo[variable]['+loop+'][]" value="" class="short" placeholder="Use %s for player name"/>\
                         <input type="button" class="button button-small delete remove_row" value="Delete">\
@@ -122,10 +122,10 @@ if(!class_exists('Woo_Minecraft_Admin')){
 			wp_nonce_field("woominecraft", "woo_minecraft_nonce");
 			?>
             	
-                <p><strong>Player Name:</strong> <?=$playerID; ?></p>
+                <p><strong>Player Name:</strong> <?php echo $playerID; ?></p>
             <?php if($playerID != "N/A") : ?>
             	<?php global $post; ?>
-                <p><input type="button" class="button button-primary" id="resendDonations" value="Resend Donations" data-id="<?=$playerID;?>" data-orderid="<?=$post->ID;?>"/>
+                <p><input type="button" class="button button-primary" id="resendDonations" value="Resend Donations" data-id="<?php echo $playerID;?>" data-orderid="<?php echo $post->ID;?>"/>
             <?php endif;
 		}
 		
@@ -158,7 +158,7 @@ if(!class_exists('Woo_Minecraft_Admin')){
 			if(!empty($meta_v)){
 				?>
                 	<span class="woominecraft resend_item">
-                    		<button class="button button-primary wooitemresend" data-orderid="<?=$post->ID?>" data-variation="<?=$item['variation_id']?>"><span>Resend Donation</span></button>
+                    		<button class="button button-primary wooitemresend" data-orderid="<?php echo $post->ID?>" data-variation="<?php echo $item['variation_id']?>"><span>Resend Donation</span></button>
                     </span>
                 <?php
 			}
@@ -191,7 +191,7 @@ if(!class_exists('Woo_Minecraft_Admin')){
                     	<tbody>
                             <tr>
                                 <th><label for="wm_key">Game Key</label></th>
-                                <td><input type="text" name="wm_key" id="wm_key" value="<?= get_option('wm_key'); ?>"/>
+                                <td><input type="text" name="wm_key" id="wm_key" value="<?php echo get_option('wm_key'); ?>"/>
                                 	<p class="description">Type /woo register in-game as op to get your key.</td>
                             </tr>
                         </tbody>

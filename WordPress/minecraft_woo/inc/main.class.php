@@ -179,7 +179,7 @@ if(!class_exists('Woo_Minecraft')){
 		function thanks($id){
 			$playername = get_post_meta($id, 'player_id', true);
 			if(!empty($playername)){
-				?><div class="woo_minecraft"><h4>Minecraft Details</h4><p><strong>Username: </strong><?=$playername ?></p></div><?php
+				?><div class="woo_minecraft"><h4>Minecraft Details</h4><p><strong>Username: </strong><?php $playername ?></p></div><?php
 			}
 		}
 	}
