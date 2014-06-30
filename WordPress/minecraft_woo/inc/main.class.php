@@ -1,4 +1,4 @@
-<?
+<?php
 //include 'db.class.php';
 
 if(!class_exists('Woo_Minecraft')){
@@ -18,7 +18,7 @@ if(!class_exists('Woo_Minecraft')){
 			$items = $woocommerce->cart->cart_contents;
 			if(!has_commands($items)) return;
 			
-			?><div id="woo_minecraft"><?
+			?><div id="woo_minecraft"><?php
 			woocommerce_form_field('player_id', array(
 				'type'	=>	'text',
 				'class'	=>	array(),
@@ -26,7 +26,7 @@ if(!class_exists('Woo_Minecraft')){
 				'placeholder'	=> 'Required Field',
 				),
 				$c->get_value('player_id'));
-			?></div><?
+			?></div><?php
 		}
 		
 		function checkJSON(){
@@ -179,7 +179,7 @@ if(!class_exists('Woo_Minecraft')){
 		function thanks($id){
 			$playername = get_post_meta($id, 'player_id', true);
 			if(!empty($playername)){
-				?><div class="woo_minecraft"><h4>Minecraft Details</h4><p><strong>Username: </strong><?=$playername ?></p></div><?
+				?><div class="woo_minecraft"><h4>Minecraft Details</h4><p><strong>Username: </strong><?=$playername ?></p></div><?php
 			}
 		}
 	}

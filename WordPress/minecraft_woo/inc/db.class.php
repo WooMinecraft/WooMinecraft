@@ -1,4 +1,4 @@
-<?
+<?php
 
 if(!class_exists('Woo_Minecraft_Db')){
 	class Woo_Minecraft_Db{

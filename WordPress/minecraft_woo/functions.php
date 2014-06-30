@@ -1,10 +1,10 @@
-<?
+<?php
 /*
 	Plugin Name: Minecraft WooCommerce
 	Plugin URI: http://plugish.com/plugins/minecraft_woo
-	Description: None yet
+	Description: To be used in conjunction with the minecraft_woo plugin.  If you do not have it you can get it on the repository at <a href="https://github.com/JayWood/WooMinecraft">Github</a>.  Please be sure and fork the repository and make pull requests.
 	Author: Jerry Wood
-	Version: 0.01
+	Version: 0.1b
 	Author URI: http://plugish.com
 */
 

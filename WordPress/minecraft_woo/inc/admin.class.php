@@ -1,4 +1,4 @@
-<?
+<?php
 if(!class_exists('Woo_Minecraft_Admin')){
 	class Woo_Minecraft_Admin{
 		function Woo_Minecraft_Admin(){
@@ -37,17 +37,17 @@ if(!class_exists('Woo_Minecraft_Admin')){
                         <input type="text" name="minecraft_woo[general][]" value="" class="short" placeholder="Use %s for player name"/>
                         <input type="button" class="button button-small delete remove_row" value="Delete">
                     </span>
-                    <? if(!empty($meta)): ?>
-						<? foreach($meta as $command): ?>                	
+                    <?php if(!empty($meta)): ?>
+						<?php foreach($meta as $command): ?>                	
                             <span>
                                 <input type="text" name="minecraft_woo[general][]" value="<?= $command; ?>" class="short"/>
                                 <input type="button" class="button button-small delete remove_row" value="Delete">
                             </span>
-                        <? endforeach; ?>
-                    <? endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </p>
             </div>
-        <?
+        <?php
 		}
 		
 		function add_v_field($l, $v){
@@ -66,18 +66,18 @@ if(!class_exists('Woo_Minecraft_Admin')){
                         <input type="text" name="minecraft_woo[variable][<?=$l; ?>][]" value="" class="short" placeholder="Use %s for player name"/>
                         <input type="button" class="button button-small delete remove_row" value="Delete">
                     </span>
-                    <? if(!empty($meta)): ?>
-						<? foreach($meta as $command): ?>
+                    <?php if(!empty($meta)): ?>
+						<?php foreach($meta as $command): ?>
                             <span>
                                 <input type="text" name="minecraft_woo[variable][<?=$l;?>][]" value="<?= $command; ?>" class="short"/>
                                 <input type="button" class="button button-small delete remove_row" value="Delete">
                             </span>
-                        <? endforeach; ?>
-                    <? endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </p>
 			</div>
             </tr></td>
-            <?
+            <?php
 		}
 		
 		function add_v_field_js(){
@@ -98,7 +98,7 @@ if(!class_exists('Woo_Minecraft_Admin')){
                 </p>\
 			</div>\
             </tr></td>\
-            <?
+            <?php
 		}
 		
 		function delete_sql_data($order_id, $curstatus, $newstatus){
@@ -123,10 +123,10 @@ if(!class_exists('Woo_Minecraft_Admin')){
 			?>
             	
                 <p><strong>Player Name:</strong> <?=$playerID; ?></p>
-            <? if($playerID != "N/A") : ?>
-            	<? global $post; ?>
+            <?php if($playerID != "N/A") : ?>
+            	<?php global $post; ?>
                 <p><input type="button" class="button button-primary" id="resendDonations" value="Resend Donations" data-id="<?=$playerID;?>" data-orderid="<?=$post->ID;?>"/>
-            <? endif;
+            <?php endif;
 		}
 		
 		function install(){
@@ -160,7 +160,7 @@ if(!class_exists('Woo_Minecraft_Admin')){
                 	<span class="woominecraft resend_item">
                     		<button class="button button-primary wooitemresend" data-orderid="<?=$post->ID?>" data-variation="<?=$item['variation_id']?>"><span>Resend Donation</span></button>
                     </span>
-                <?
+                <?php
 			}
 			
 			
@@ -186,7 +186,7 @@ if(!class_exists('Woo_Minecraft_Admin')){
             	<div class="wrap">
                 	<h2>Woo Minecraft Options</h2>
                     <form method="post" action="options.php">
-                    <? settings_fields('woo_minecraft'); ?>
+                    <?php settings_fields('woo_minecraft'); ?>
                     <table class="form-table wide-fat">
                     	<tbody>
                             <tr>
@@ -196,10 +196,10 @@ if(!class_exists('Woo_Minecraft_Admin')){
                             </tr>
                         </tbody>
                     </table>
-                    <? submit_button(); ?>
+                    <?php submit_button(); ?>
                     </form>
                 </div>
-            <?
+            <?php
 		}
 		
 		function setupAdminMenu(){
