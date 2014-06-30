@@ -1,5 +1,4 @@
 <?php
-//include 'db.class.php';
 
 if(!class_exists('Woo_Minecraft')){
 	class Woo_Minecraft{
