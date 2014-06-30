@@ -25,3 +25,9 @@ Current Bukkit Build
 -------------
 
 Currently supports Bukkit 1.6.4 R2.0
+
+Tasks
+-------------
+- [ ] Create Wiki , #1
+- [ ] Wiki: Bukkit Installation & Config , #2
+- [ ] Wiki: Wordpress Installation & Config, #3
