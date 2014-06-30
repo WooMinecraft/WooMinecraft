@@ -2,5 +2,5 @@ Contributors to WooMinecraft
 ================
 
 * Jerry Wood
-** Owner
-** http://plugish.com
+	* **Owner**
+	* http://plugish.com
