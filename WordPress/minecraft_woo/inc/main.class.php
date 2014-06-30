@@ -20,10 +20,10 @@ if(!class_exists('Woo_Minecraft')){
 			
 			?><div id="woo_minecraft"><?php
 			woocommerce_form_field('player_id', array(
-				'type'	=>	'text',
-				'class'	=>	array(),
-				'label'	=>	'Player ID:',
-				'placeholder'	=> 'Required Field',
+				'type'        =>	'text',
+				'class'       =>	array(),
+				'label'       =>	'Player ID:',
+				'placeholder' => 'Required Field',
 				),
 				$c->get_value('player_id'));
 			?></div><?php
@@ -39,20 +39,20 @@ if(!class_exists('Woo_Minecraft')){
 			$key=$_REQUEST['key'];
 			if(empty($key)){
 				$json['status'] = "error";
-				$json['msg'] = "Malformed key.";
+				$json['msg']    = "Malformed key.";
 			}
 			
 			$key_db = get_option('wm_key');
 			if(empty($key_db)){
 				$json['status'] = "error";
-				$json['msg'] = "Website key nonexistant.";
+				$json['msg']    = "Website key nonexistant.";
 			}
 			
 			if($key_db != $key){
 				$json['status'] = "error";
-				$json['msg'] = "Keys don't match.";
-				$json['web'] = $key;
-				$json['db']	= $key_db;
+				$json['msg']    = "Keys don't match.";
+				$json['web']    = $key;
+				$json['db']     = $key_db;
 			}
 				
 			if(isset($json['status'])){
@@ -91,8 +91,8 @@ if(!class_exists('Woo_Minecraft')){
 					if(empty($results)){
 						$json['status']	= "empty";
 					}else{
-						$json['status']	= "success";
-						$json['data'] = $results;
+						$json['status'] = "success";
+						$json['data']   = $results;
 					}
 				}
 				echo json_encode($json);
@@ -143,10 +143,10 @@ if(!class_exists('Woo_Minecraft')){
 					for($n=0;$n<$item['qty'];$n++){
 						foreach($metag as $command){
 							$x = array(
-								'postid'	=>	$item['product_id'],
-								'command'	=>	$command,
-								'orderid'	=>	$order_id,
-								'player_name'	=>	$playername
+								'postid'      =>	$item['product_id'],
+								'command'     =>	$command,
+								'orderid'     =>	$order_id,
+								'player_name' =>	$playername
 							);
 							array_push($tmpArray, $x);
 						}
@@ -157,10 +157,10 @@ if(!class_exists('Woo_Minecraft')){
 					for($n=0;$n<$item['qty'];$n++){
 						foreach($metav as $command){
 							$x1 = array(
-								'postid'	=>	$item['variation_id'],
-								'command'	=>	$command,
-								'orderid'	=>	$order_id,
-								'player_name'	=>	$playername
+								'postid'      =>	$item['variation_id'],
+								'command'     =>	$command,
+								'orderid'     =>	$order_id,
+								'player_name' =>	$playername
 							);
 							array_push($tmpArray, $x1);
 						}
