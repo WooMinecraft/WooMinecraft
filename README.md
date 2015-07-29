@@ -28,7 +28,7 @@ Currently supports Bukkit 1.6.4 R2.1
 
 New Tasks
 -------------
-- [ ] Update to Bukkit 1.8.x , #1
+- [ ] Update to Spigot/Bukkit 1.8.x , #1
 - [ ] Add Donation Signs , #2
 - [ ] Add Donation GUI's , #3
 - [ ] Reorganize Plugin , #4
