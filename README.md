@@ -6,6 +6,8 @@ Note From TekkitCommando
 
 I will have releases of new updates on Github Here, and by my rights with the GPU v2 which is what this software is licensed under I am allowed to do that, I have big plans for this project and hope that @JayWood likes the changes and additions I make. I will probably not post a download for the updates anywhere else until I have permission from @JayWood, but that doesn't mean you can upload my updates anywhere else and take credit for it (Please don't do it), I have message JayWood via Skype and hope to have permission to update the software (and upload the jar freely) :) It has been a year or so since the last updates :(
 
+- [ ] @JayWood
+
 A WooCommerce Minecraft Bridge
 ------------
 
