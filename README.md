@@ -8,8 +8,6 @@ This bridge was created out of both a necessity and a side-project of mine.  I, 
 
 Leveraging the power of a WordPress plugin, WooCommerce, and Bukkit's API, this amazing plugin was made.  Unfortunately though I was unable to get the pom.xml setup with Eclipse, maybe someone would be willing enough to make a pull request to the development branch, hint hint...
 
-> I will not be providing mirrors, only official releases will be here for now.  Do not download an imitation anywhere else, you have been warned.
-
 Please Contribute
 -------------
 
