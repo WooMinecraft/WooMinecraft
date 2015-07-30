@@ -6,6 +6,8 @@ Note From TekkitCommando
 
 I want to thank Jay Wood for Creating Such an Awesome Thing in the First Place :) I have added him to the github organization so he too can witness and help out with the growth of WooMinecraft!
 
+[http://i.gyazo.com/ba51b7e45aa809d514c051266d0fbe6f.png]
+
 A WooCommerce Minecraft Bridge
 ------------
 
