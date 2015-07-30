@@ -44,6 +44,7 @@ public class WooCommand implements CommandExecutor {
                     if(WooMinecraft.c.getString(WooMinecraft.urlPath+",key") == "") {
                         key = new BigInteger(130,random).toString(32);
                         WooMinecraft.c.set(WooMinecraft.urlPath+".key", key);
+                        // this is gonna give an error ;)
                         saveConfig();
                     }
                 }
