@@ -13,7 +13,7 @@ A WooCommerce Minecraft Bridge
 
 This bridge was created out of both a necessity and a side-project of mine.  I, like other people, wanted a free and open sourced self-hosted solution for Minecraft donations.
 
-Leveraging the power of a WordPress plugin, WooCommerce, and Bukkit's API, this amazing plugin was made.  Unfortunately though I was unable to get the pom.xml setup with Eclipse, maybe someone would be willing enough to make a pull request to the development branch, hint hint...
+Leveraging the power of a WordPress plugin, WooCommerce, and Bukkit's API, this amazing plugin was made.
 
 Please Contribute
 -------------
@@ -39,10 +39,10 @@ New Tasks
 - [ ] Reorganize Plugin , #4
 - [ ] Create Auto-Updater , #5
 - [ ] Create Metrics , #6
-- [ ] Check if Below Tasks Were Completed , #7
+- [x] Check if Below Tasks Were Completed , #7
 
 Tasks
 -------------
-- [ ] Create Wiki , #1
+- [x] Create Wiki , #1
 - [ ] Wiki: Bukkit Installation & Config , #2
 - [ ] Wiki: Wordpress Installation & Config, #3
