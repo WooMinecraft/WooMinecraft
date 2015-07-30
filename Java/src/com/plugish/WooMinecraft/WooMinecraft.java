@@ -37,12 +37,12 @@ import org.json.JSONObject;
 
 public final class WooMinecraft extends JavaPlugin {
 	
-	private static WooMinecraft plugin;
+	public static WooMinecraft plugin;
 	private static String configPath = "WooMinecraft";
-	private static String urlPath = configPath+".web";
+	public static String urlPath = configPath+".web";
 	
 	private BukkitRunner runnerNew;
-	private FileConfiguration c;
+	public static FileConfiguration c;
 	
 	@Override
 	public boolean onCommand(CommandSender s, Command command, String label, String[] args){
