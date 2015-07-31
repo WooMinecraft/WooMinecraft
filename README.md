@@ -8,6 +8,8 @@ I want to thank Jay Wood for Creating Such an Awesome Thing in the First Place :
 
 ![](http://i.gyazo.com/ba51b7e45aa809d514c051266d0fbe6f.png)
 
+I will setup a minecraft website on my test wordpress and show people how a blogging software can be turned into a fully functional minecraft server site :)
+
 A WooCommerce Minecraft Bridge
 ------------
 
