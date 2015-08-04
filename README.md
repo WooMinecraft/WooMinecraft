@@ -35,13 +35,14 @@ Currently supports Bukkit 1.6.4 R2.1
 
 New Tasks
 -------------
-- [ ] Update to Spigot/Bukkit 1.8.x , #1
+- [x] Update to Spigot/Bukkit 1.8.x , #1
 - [ ] Add Donation Signs , #2
 - [ ] Add Donation GUI's , #3
-- [ ] Reorganize Plugin , #4
+- [x] Reorganize Plugin , #4
 - [ ] Create Auto-Updater , #5
 - [ ] Create Metrics , #6
-- [x] Check if Below Tasks Were Completed , #7
+- [ ] Fully Test and Make Sure it works
+- [x] Check if Below Tasks Were Completed , #8
 
 Tasks
 -------------
