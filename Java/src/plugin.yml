@@ -1,12 +1,18 @@
 name: WooMinecraft
 main: com.plugish.WooMinecraft.WooMinecraft
-version: 1.0.2
-author: JerryWood
-description: This is a description.
+version: 1.0.3
+authors: [JerryWood, TekkitCommando, Phillmac]
+description: WooMinecraft Donation Plugin
 website:  http://plugish.com
 
 commands:
   woo:
-    description: Reload settings
-    usage: Syntax Error! /<command> [reload/register/check] - Reload the plugin, register a key, or check for donations.
-    permission:  <plugin name>.admin
+    description: Reload, Register, Check
+    usage: |
+        /<command> reload - Reload the plugin, register a key, or check for donations.
+        /<command> register - register a key.
+        /<command> check - check for donations.
+permissions:
+  woo.admin:
+    default: op
+    description: Allows the player (or console) to use the woo commands.
