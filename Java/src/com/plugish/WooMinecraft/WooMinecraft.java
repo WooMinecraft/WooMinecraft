@@ -53,12 +53,13 @@ public final class WooMinecraft extends JavaPlugin {
 		initCommands();
 		this.runnerNew = new BukkitRunner(instance);
 		this.runnerNew.runTaskTimerAsynchronously(instance, c.getInt(urlPath+".time_delay") * 20, c.getInt(urlPath+".time_delay") * 20);
+		log.info("[Woo] Donation System Enabled!");
 	}
 	
 	@Override
 	public void onDisable(){
 		saveConfig();
-		getLogger().info("Stopping plugin.");
+		log.info("[Woo] Donation System Disabled!");
 	}
 	
 	public void initalizePlugin(){
@@ -68,7 +69,7 @@ public final class WooMinecraft extends JavaPlugin {
 		
 		c.options().copyDefaults(true);
 		saveConfig();
-		getLogger().info("Settings confirmed.");
+		log.info("[Woo] Plugin Initialized");
 	}
 
 	public boolean check() {
