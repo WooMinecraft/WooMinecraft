@@ -3,8 +3,8 @@ package com.plugish.WooMinecraft;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class BukkitRunner extends BukkitRunnable {
-	
-	private WooMinecraft plugin;
+
+	public static WooMinecraft plugin = WooMinecraft.instance;
 	
 	public BukkitRunner(WooMinecraft plugin){
 		this.plugin = plugin;
