@@ -49,8 +49,9 @@ public final class WooMinecraft extends JavaPlugin {
 		instance = this;
 		c = getConfig();
 		initalizePlugin();
-		log.info("Initializing Commands");
+		log.info("[Woo] Initializing Commands");
 		initCommands();
+		log.info("[Woo] Commands Initialized");
 		this.runnerNew = new BukkitRunner(instance);
 		this.runnerNew.runTaskTimerAsynchronously(instance, c.getInt(urlPath+".time_delay") * 20, c.getInt(urlPath+".time_delay") * 20);
 		log.info("[Woo] Donation System Enabled!");
