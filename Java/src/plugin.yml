@@ -3,13 +3,13 @@ main: com.plugish.WooMinecraft.WooMinecraft
 version: 1.0.3
 authors: [JerryWood, TekkitCommando, Phillmac]
 description: WooMinecraft Donation Plugin
-website:  http://plugish.com
+website:  http://www.tekkitcommando.me
 
 commands:
   woo:
     description: Reload, Register, Check
     usage: |
-        /<command> reload - Reload the plugin, register a key, or check for donations.
+        /<command> reload - Reload the plugins config.
         /<command> register - register a key.
         /<command> check - check for donations.
 permissions:
