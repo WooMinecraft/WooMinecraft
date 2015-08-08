@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.security.SecureRandom;
+import java.util.UUID;
 
 public class WooCommand implements CommandExecutor {
 
@@ -29,20 +30,27 @@ public class WooCommand implements CommandExecutor {
                     s.sendMessage("You Don't Have Permission for that Command!");
                 }
             } else if(args[0].equalsIgnoreCase("register")) {
+                s.sendMessage("[Woo] You have used the register command!");
                 if(s.hasPermission("woo.admin") || s.isOp()) {
-                    SecureRandom random = new SecureRandom();
-                    byte[] randomBytes = new byte[32];
-                    random.nextBytes(randomBytes);
-
+                    /*
+                    * Creating a random UUID (Universally unique identifier).
+                    */
+                    UUID uuid = UUID.randomUUID();
                     String key = "";
+                    s.sendMessage("[Woo] Created key string == nothing");
                     if (plugin.c.getString(plugin.urlPath + ".key") == "") {
-                        key = String.valueOf(randomBytes);
+                        s.sendMessage("[Woo] Getting empty config path");
+                        key = uuid.toString().replaceAll("-", "");
+                        s.sendMessage("[Woo] set key = to randomBytes");
                         plugin.c.set(plugin.urlPath + ".key", key);
+                        s.sendMessage("[Woo] Almost There!");
                         plugin.saveConfig();
+                        s.sendMessage("[Woo] Saved Config!");
                         s.sendMessage(ChatColor.AQUA + "[WOO]" + ChatColor.RED + " KEY: " + key);
                         s.sendMessage(ChatColor.RED + "Copy this key and put it in your WooMinecraft options panel in WordPress");
                     } else {
                         key = plugin.c.getString(plugin.urlPath + ".key");
+                        s.sendMessage("[Woo] key already set");
                     }
                 } else {
                     s.sendMessage("You Don't Have Permission for that Command!");
@@ -51,6 +59,7 @@ public class WooCommand implements CommandExecutor {
                 if(s.hasPermission("woo.admin") || s.isOp()) {
                     // well we need to run the check then don't we?
                     plugin.check();
+                    s.sendMessage("[Woo] Checked Purchases!");
                 } else {
                     s.sendMessage("You Don't Have Permission for that Command!");
                 }
