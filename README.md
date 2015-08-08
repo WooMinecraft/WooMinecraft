@@ -31,7 +31,7 @@ Let's make this the best plugin ever, I believe we can do it.
 Current Bukkit Build
 -------------
 
-Currently supports Bukkit 1.6.4 R2.1
+Currently supports Bukkit/Spigot 1.8.x
 
 New Tasks
 -------------
