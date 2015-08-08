@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.security.SecureRandom;
+import java.util.UUID;
 
 public class WooCommand implements CommandExecutor {
 
@@ -31,18 +32,15 @@ public class WooCommand implements CommandExecutor {
             } else if(args[0].equalsIgnoreCase("register")) {
                 s.sendMessage("[Woo] You have used the register command!");
                 if(s.hasPermission("woo.admin") || s.isOp()) {
-                    s.sendMessage("[Woo] You Have Permission to use this command");
-                    SecureRandom random = new SecureRandom();
-                    s.sendMessage("[Woo] You created (random)");
-                    byte[] randomBytes = new byte[32];
-                    s.sendMessage("[Woo] You created 32 randomBytes!");
-                    random.nextBytes(randomBytes);
-                    s.sendMessage("[Woo] You got this far!");
+                    /*
+                    * Creating a random UUID (Universally unique identifier).
+                    */
+                    UUID uuid = UUID.randomUUID();
                     String key = "";
                     s.sendMessage("[Woo] Created key string == nothing");
                     if (plugin.c.getString(plugin.urlPath + ".key") == "") {
                         s.sendMessage("[Woo] Getting empty config path");
-                        key = String.valueOf(random);
+                        key = uuid.toString().replaceAll("-", "");
                         s.sendMessage("[Woo] set key = to randomBytes");
                         plugin.c.set(plugin.urlPath + ".key", key);
                         s.sendMessage("[Woo] Almost There!");
