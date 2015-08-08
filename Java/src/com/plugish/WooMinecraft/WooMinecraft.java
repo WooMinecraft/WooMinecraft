@@ -67,6 +67,7 @@ public final class WooMinecraft extends JavaPlugin {
 		
 		c.addDefault(urlPath+".time_delay", 1500);
 		c.addDefault(urlPath+".url", "http://agedcraft.net/");
+		c.addDefault(urlPath+".key", "");
 		
 		c.options().copyDefaults(true);
 		saveConfig();
