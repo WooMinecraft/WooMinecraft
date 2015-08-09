@@ -148,7 +148,7 @@ public final class WooMinecraft extends JavaPlugin {
 					rowUpdates.add(id);
 				}
 			} else {
-				log.info("Check: No donations for online users.");
+				log.info("Check: No donations for online users. STATUS: " + json.getString("status"));
 			}
 			remove(rowUpdates);
 		} catch (Exception e) {
