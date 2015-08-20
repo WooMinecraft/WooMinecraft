@@ -1,6 +1,10 @@
 WooMinecraft
 ============
 
+Notice!
+------------
+WordPress code has been moved!
+
 Note From TekkitCommando
 ------------
 
