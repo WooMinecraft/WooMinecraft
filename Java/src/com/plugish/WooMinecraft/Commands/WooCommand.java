@@ -31,20 +31,15 @@ public class WooCommand implements CommandExecutor {
                     s.sendMessage(Theme + " You Don't Have Permission for that Command!");
                 }
             } else if(args[0].equalsIgnoreCase("register")) {
-                s.sendMessage("[Woo] You have used the register command!");
                 if(s.hasPermission("woo.admin") || s.isOp()) {
                     /*
                     * Creating a random UUID (Universally unique identifier).
                     */
                     UUID uuid = UUID.randomUUID();
                     String key = "";
-                    s.sendMessage(Theme + " Created key string == nothing");
                     if (plugin.c.getString(plugin.urlPath + ".key") == "") {
-                        s.sendMessage(Theme + " Getting empty config path");
                         key = uuid.toString().replaceAll("-", "");
-                        s.sendMessage(Theme + " set key = to uuid");
                         plugin.c.set(plugin.urlPath + ".key", key);
-                        s.sendMessage(Theme + " Almost There!");
                         plugin.saveConfig();
                         s.sendMessage(Theme + " Saved Config!");
                         s.sendMessage(Theme + " Key: " + key);
