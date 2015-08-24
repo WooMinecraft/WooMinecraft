@@ -15,6 +15,7 @@ import com.plugish.WooMinecraft.Commands.WooCommand;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -67,16 +68,15 @@ public final class WooMinecraft extends JavaPlugin {
 		saveConfig();
 		log.info("[Woo] Donation System Disabled!");
 	}
-	
-	public void initalizePlugin(){
-		
-		c.addDefault(urlPath+".time_delay", 1500);
-		c.addDefault(urlPath+".url", "http://agedcraft.net/");
-		c.addDefault(urlPath+".key", "");
-		
-		c.options().copyDefaults(true);
-		saveConfig();
-		log.info("[Woo] Plugin Initialized");
+
+	public void initalizePlugin() {
+		configFile = new File(getDataFolder(), "config.yml");
+		messagesFile = new File(getDataFolder(), "messages.yml");
+		config = new YamlConfiguration();
+		messages = new YamlConfiguration();
+		WooDefaults.initDefaults();
+		WooDefaults.loadYamls();
+		log.info("[Woo] Initialized Config and Messages System.");
 	}
 
 	public boolean check() {
