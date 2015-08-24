@@ -48,11 +48,10 @@ public class WooDefaults {
 
     private static void updateconfig()
     {
-        addDefault(plugin.config, "Ranks", 1);
+        addDefault(plugin.config, "Woo", "Temp");
 
         addDefault(plugin.messages, "NoPermissions", "&cYou do not have permissions to do this!");
-        addDefault(plugin.messages, "Reload", "&a[PromotionEssentials] reloaded!");
-        addDefault(plugin.messages, "PromotedAfterTime", "&aYou have been promoted to <group>!");
+        addDefault(plugin.messages, "Reload", "&a[Woo] reloaded!");
     }
 
     private static void addDefault(FileConfiguration f, String path, Object v)
