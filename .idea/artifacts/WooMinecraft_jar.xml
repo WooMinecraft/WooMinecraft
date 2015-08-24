@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="WooMinecraft:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/WooMinecraft_jar</output-path>
+    <root id="archive" name="WooMinecraft.jar">
+      <element id="module-output" name="WooMinecraft" />
+    </root>
+  </artifact>
+</component>

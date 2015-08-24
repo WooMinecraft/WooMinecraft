@@ -42,6 +42,8 @@ public final class WooMinecraft extends JavaPlugin {
 	public static String urlPath = configPath+".web";
 	public File messagesFile;
 	public FileConfiguration messages;
+	public File configFile;
+	public FileConfiguration config;
 	
 	public static BukkitRunner runnerNew;
 	public static FileConfiguration c;
