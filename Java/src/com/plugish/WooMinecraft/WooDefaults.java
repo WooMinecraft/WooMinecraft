@@ -53,8 +53,8 @@ public class WooDefaults {
         addDefault(plugin.config, "WooMinecraft.web.url", "www.example.com");
         addDefault(plugin.config, "WooMinecraft.web.key", "");
 
-        addDefault(plugin.messages, "NoPermissions", "&cYou do not have permissions to do this!");
-        addDefault(plugin.messages, "Reload", "&5[Woo] reloaded!");
+        addDefault(plugin.messages, "NoPerms", "&cYou do not have permissions to do this!");
+        addDefault(plugin.messages, "Reload", "&5[&fWoo&5] reloaded!");
     }
 
     private static void addDefault(FileConfiguration f, String path, Object v)

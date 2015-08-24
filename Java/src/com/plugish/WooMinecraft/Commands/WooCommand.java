@@ -27,8 +27,11 @@ public class WooCommand implements CommandExecutor {
                 if(s.hasPermission("woo.admin") || s.isOp()) {
                     plugin.reloadConfig();
                     s.sendMessage(Theme + " Config Reloaded");
+                    String msg = plugin.messages.getString("Reloaded").replace("&", "\u00A7");
+                    s.sendMessage(msg);
                 } else {
-                    s.sendMessage(Theme + " You Don't Have Permission for that Command!");
+                    String msg = plugin.messages.getString("NoPerms").replace("&", "\u00A7");
+                    s.sendMessage(msg);
                 }
             } else if(args[0].equalsIgnoreCase("register")) {
                 if(s.hasPermission("woo.admin") || s.isOp()) {
@@ -49,7 +52,8 @@ public class WooCommand implements CommandExecutor {
                         s.sendMessage(Theme + " key already set");
                     }
                 } else {
-                    s.sendMessage(Theme + " You Don't Have Permission for that Command!");
+                    String msg = plugin.messages.getString("NoPerms").replace("&", "\u00A7");
+                    s.sendMessage(msg);
                 }
             } else if(args[0].equalsIgnoreCase("check")) {
                 if(s.hasPermission("woo.admin") || s.isOp()) {
@@ -57,7 +61,8 @@ public class WooCommand implements CommandExecutor {
                     plugin.check();
                     s.sendMessage(Theme + " Checked Purchases!");
                 } else {
-                    s.sendMessage(Theme + " You Don't Have Permission for that Command!");
+                    String msg = plugin.messages.getString("NoPerms").replace("&", "\u00A7");
+                    s.sendMessage(msg);
                 }
             }
         }
