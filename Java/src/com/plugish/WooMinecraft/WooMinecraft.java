@@ -54,6 +54,7 @@ public final class WooMinecraft extends JavaPlugin {
 		log = getLogger();
 		instance = this;
 		c = getConfig();
+		log.info("[Woo] Initializing Config and Messages System.");
 		initalizePlugin();
 		log.info("[Woo] Initializing Commands");
 		initCommands();
