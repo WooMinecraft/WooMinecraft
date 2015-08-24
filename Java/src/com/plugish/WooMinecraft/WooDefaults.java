@@ -1,5 +1,6 @@
 package com.plugish.WooMinecraft;
 
+import com.plugish.WooMinecraft.Commands.WooCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.IOException;
@@ -48,7 +49,9 @@ public class WooDefaults {
 
     private static void updateconfig()
     {
-        addDefault(plugin.config, "Woo", "Temp");
+        addDefault(plugin.config, "WooMinecraft.web.time_delay", 1500);
+        addDefault(plugin.config, "WooMinecraft.web.url", "www.example.com");
+        addDefault(plugin.config, "WooMinecraft.web.key", "");
 
         addDefault(plugin.messages, "NoPermissions", "&cYou do not have permissions to do this!");
         addDefault(plugin.messages, "Reload", "&a[Woo] reloaded!");
