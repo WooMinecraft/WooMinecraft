@@ -41,8 +41,8 @@ public final class WooMinecraft extends JavaPlugin {
 	public static WooMinecraft instance;
 	public static String configPath = "WooMinecraft";
 	public static String urlPath = configPath+".web";
-	public File messagesFile;
-	public FileConfiguration messages;
+	public File englishFile;
+	public FileConfiguration english;
 	public File configFile;
 	public FileConfiguration config;
 	
@@ -72,9 +72,9 @@ public final class WooMinecraft extends JavaPlugin {
 
 	public void initalizePlugin() {
 		configFile = new File(getDataFolder(), "config.yml");
-		messagesFile = new File(getDataFolder(), "messages.yml");
+		englishFile = new File(getDataFolder(), "messages.yml");
 		config = new YamlConfiguration();
-		messages = new YamlConfiguration();
+		english = new YamlConfiguration();
 		WooDefaults.initDefaults();
 		WooDefaults.loadYamls();
 		log.info("[Woo] Initialized Config and Messages System.");
@@ -155,9 +155,9 @@ public final class WooMinecraft extends JavaPlugin {
 				}
 			} else {
 				log.info("Check: No donations for online users. STATUS: " + json.getString("status"));
-                              if (json.has("debug_info")) {
-                                log.info(json.getString("debug_info"));
-                                }
+				if (json.has("debug_info")) {
+					log.info(json.getString("debug_info"));
+				}
 			}
 			remove(rowUpdates);
 		} catch (Exception e) {

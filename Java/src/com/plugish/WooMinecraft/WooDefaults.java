@@ -19,7 +19,7 @@ public class WooDefaults {
                 plugin.configFile.getParentFile().mkdirs();
                 plugin.configFile.createNewFile();
             }
-            if (!plugin.messagesFile.exists()) {
+            if (!plugin.englishFile.exists()) {
                 plugin.configFile.getParentFile();
                 plugin.configFile.createNewFile();
             }
@@ -31,7 +31,7 @@ public class WooDefaults {
     public static void loadYamls() {
         try {
             plugin.config.load(plugin.configFile);
-            plugin.messages.load(plugin.messagesFile);
+            plugin.english.load(plugin.englishFile);
             updateconfig();
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,7 +41,7 @@ public class WooDefaults {
     public static void saveYamls() {
         try {
             plugin.config.save(plugin.configFile);
-            plugin.messages.save(plugin.messagesFile);
+            plugin.english.save(plugin.englishFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,10 +51,10 @@ public class WooDefaults {
     {
         addDefault(plugin.config, "WooMinecraft.web.time_delay", 1500);
         addDefault(plugin.config, "WooMinecraft.web.url", "www.example.com");
-        addDefault(plugin.config, "WooMinecraft.web.key", "");
+        addDefault(plugin.config, "WooMinecraft.web.key", "changeme");
 
-        addDefault(plugin.messages, "NoPerms", "&cYou do not have permissions to do this!");
-        addDefault(plugin.messages, "Reload", "&5[&fWoo&5] reloaded!");
+        addDefault(plugin.english, "NoPerms", "&cYou do not have permissions to do this!");
+        addDefault(plugin.english, "Reload", "&5[&fWoo&5] reloaded!");
     }
 
     private static void addDefault(FileConfiguration f, String path, Object v)

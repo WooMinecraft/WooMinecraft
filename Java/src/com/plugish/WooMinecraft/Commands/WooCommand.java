@@ -27,10 +27,10 @@ public class WooCommand implements CommandExecutor {
                 if(s.hasPermission("woo.admin") || s.isOp()) {
                     plugin.reloadConfig();
                     s.sendMessage(Theme + " Config Reloaded");
-                    String msg = plugin.messages.getString("Reloaded").replace("&", "\u00A7");
+                    String msg = plugin.english.getString("Reloaded").replace("&", "\u00A7");
                     s.sendMessage(msg);
                 } else {
-                    String msg = plugin.messages.getString("NoPerms").replace("&", "\u00A7");
+                    String msg = plugin.english.getString("NoPerms").replace("&", "\u00A7");
                     s.sendMessage(msg);
                 }
             } else if(args[0].equalsIgnoreCase("register")) {
@@ -40,7 +40,7 @@ public class WooCommand implements CommandExecutor {
                     */
                     UUID uuid = UUID.randomUUID();
                     String key = "";
-                    if (plugin.c.getString(plugin.urlPath + ".key") == "") {
+                    if (plugin.c.getString(plugin.urlPath + ".key") == "changeme") {
                         key = uuid.toString().replaceAll("-", "");
                         plugin.c.set(plugin.urlPath + ".key", key);
                         plugin.saveConfig();
@@ -49,10 +49,10 @@ public class WooCommand implements CommandExecutor {
                         s.sendMessage(Theme + " Copy this key and put it in your WooMinecraft options panel in WordPress");
                     } else {
                         key = plugin.c.getString(plugin.urlPath + ".key");
-                        s.sendMessage(Theme + " key already set");
+                        s.sendMessage(Theme + " key already set!");
                     }
                 } else {
-                    String msg = plugin.messages.getString("NoPerms").replace("&", "\u00A7");
+                    String msg = plugin.english.getString("NoPerms").replace("&", "\u00A7");
                     s.sendMessage(msg);
                 }
             } else if(args[0].equalsIgnoreCase("check")) {
@@ -61,7 +61,7 @@ public class WooCommand implements CommandExecutor {
                     plugin.check();
                     s.sendMessage(Theme + " Checked Purchases!");
                 } else {
-                    String msg = plugin.messages.getString("NoPerms").replace("&", "\u00A7");
+                    String msg = plugin.english.getString("NoPerms").replace("&", "\u00A7");
                     s.sendMessage(msg);
                 }
             }
