@@ -49,6 +49,7 @@ public class WooDefaults {
 
     private static void updateconfig()
     {
+        addDefault(plugin.config, "WooMinecraft.messages.file", "english");
         addDefault(plugin.config, "WooMinecraft.web.time_delay", 1500);
         addDefault(plugin.config, "WooMinecraft.web.url", "www.example.com");
         addDefault(plugin.config, "WooMinecraft.web.key", "changeme");
