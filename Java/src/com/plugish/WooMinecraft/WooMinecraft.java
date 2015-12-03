@@ -15,6 +15,7 @@ import com.plugish.WooMinecraft.Commands.WooCommand;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -39,6 +41,10 @@ public final class WooMinecraft extends JavaPlugin {
 	public static WooMinecraft instance;
 	public static String configPath = "WooMinecraft";
 	public static String urlPath = configPath+".web";
+	public File englishFile;
+	public FileConfiguration english;
+	public File configFile;
+	public FileConfiguration config;
 	
 	public static BukkitRunner runnerNew;
 	public static FileConfiguration c;
@@ -48,6 +54,7 @@ public final class WooMinecraft extends JavaPlugin {
 		log = getLogger();
 		instance = this;
 		c = getConfig();
+		log.info("[Woo] Initializing Config and Messages System.");
 		initalizePlugin();
 		log.info("[Woo] Initializing Commands");
 		initCommands();
@@ -62,16 +69,15 @@ public final class WooMinecraft extends JavaPlugin {
 		saveConfig();
 		log.info("[Woo] Donation System Disabled!");
 	}
-	
-	public void initalizePlugin(){
-		
-		c.addDefault(urlPath+".time_delay", 1500);
-		c.addDefault(urlPath+".url", "http://agedcraft.net/");
-		c.addDefault(urlPath+".key", "");
-		
-		c.options().copyDefaults(true);
-		saveConfig();
-		log.info("[Woo] Plugin Initialized");
+
+	public void initalizePlugin() {
+		configFile = new File(getDataFolder(), "config.yml");
+		englishFile = new File(getDataFolder(), "messages.yml");
+		config = new YamlConfiguration();
+		english = new YamlConfiguration();
+		WooDefaults.initDefaults();
+		WooDefaults.loadYamls();
+		log.info("[Woo] Initialized Config and Messages System.");
 	}
 
 	public boolean check() {
@@ -148,7 +154,10 @@ public final class WooMinecraft extends JavaPlugin {
 					rowUpdates.add(id);
 				}
 			} else {
-				log.info("Check: No donations for online users.");
+				log.info("Check: No donations for online users. STATUS: " + json.getString("status"));
+				if (json.has("debug_info")) {
+					log.info(json.getString("debug_info"));
+				}
 			}
 			remove(rowUpdates);
 		} catch (Exception e) {

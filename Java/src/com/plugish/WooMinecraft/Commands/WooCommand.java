@@ -27,34 +27,33 @@ public class WooCommand implements CommandExecutor {
                 if(s.hasPermission("woo.admin") || s.isOp()) {
                     plugin.reloadConfig();
                     s.sendMessage(Theme + " Config Reloaded");
+                    String msg = plugin.english.getString("Reloaded").replace("&", "\u00A7");
+                    s.sendMessage(msg);
                 } else {
-                    s.sendMessage(Theme + " You Don't Have Permission for that Command!");
+                    String msg = plugin.english.getString("NoPerms").replace("&", "\u00A7");
+                    s.sendMessage(msg);
                 }
             } else if(args[0].equalsIgnoreCase("register")) {
-                s.sendMessage("[Woo] You have used the register command!");
                 if(s.hasPermission("woo.admin") || s.isOp()) {
                     /*
                     * Creating a random UUID (Universally unique identifier).
                     */
                     UUID uuid = UUID.randomUUID();
                     String key = "";
-                    s.sendMessage(Theme + " Created key string == nothing");
-                    if (plugin.c.getString(plugin.urlPath + ".key") == "") {
-                        s.sendMessage(Theme + " Getting empty config path");
+                    if (plugin.c.getString(plugin.urlPath + ".key") == "changeme") {
                         key = uuid.toString().replaceAll("-", "");
-                        s.sendMessage(Theme + " set key = to uuid");
                         plugin.c.set(plugin.urlPath + ".key", key);
-                        s.sendMessage(Theme + " Almost There!");
                         plugin.saveConfig();
                         s.sendMessage(Theme + " Saved Config!");
                         s.sendMessage(Theme + " Key: " + key);
                         s.sendMessage(Theme + " Copy this key and put it in your WooMinecraft options panel in WordPress");
                     } else {
                         key = plugin.c.getString(plugin.urlPath + ".key");
-                        s.sendMessage(Theme + " key already set");
+                        s.sendMessage(Theme + " key already set!");
                     }
                 } else {
-                    s.sendMessage(Theme + " You Don't Have Permission for that Command!");
+                    String msg = plugin.english.getString("NoPerms").replace("&", "\u00A7");
+                    s.sendMessage(msg);
                 }
             } else if(args[0].equalsIgnoreCase("check")) {
                 if(s.hasPermission("woo.admin") || s.isOp()) {
@@ -62,7 +61,8 @@ public class WooCommand implements CommandExecutor {
                     plugin.check();
                     s.sendMessage(Theme + " Checked Purchases!");
                 } else {
-                    s.sendMessage(Theme + " You Don't Have Permission for that Command!");
+                    String msg = plugin.english.getString("NoPerms").replace("&", "\u00A7");
+                    s.sendMessage(msg);
                 }
             }
         }
