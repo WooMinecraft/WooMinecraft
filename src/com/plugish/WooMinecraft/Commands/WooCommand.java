@@ -6,7 +6,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import java.security.SecureRandom;
 import java.util.UUID;
 
 public class WooCommand implements CommandExecutor {
@@ -40,15 +39,15 @@ public class WooCommand implements CommandExecutor {
                     */
                     UUID uuid = UUID.randomUUID();
                     String key = "";
-                    if (plugin.c.getString(plugin.urlPath + ".key") == "changeme") {
+                    if (WooMinecraft.c.getString(WooMinecraft.urlPath + ".key") == "") {
                         key = uuid.toString().replaceAll("-", "");
-                        plugin.c.set(plugin.urlPath + ".key", key);
+                        WooMinecraft.c.set(WooMinecraft.urlPath + ".key", key);
                         plugin.saveConfig();
                         s.sendMessage(Theme + " Saved Config!");
                         s.sendMessage(Theme + " Key: " + key);
                         s.sendMessage(Theme + " Copy this key and put it in your WooMinecraft options panel in WordPress");
                     } else {
-                        key = plugin.c.getString(plugin.urlPath + ".key");
+                        key = WooMinecraft.c.getString(WooMinecraft.urlPath + ".key");
                         s.sendMessage(Theme + " key already set!");
                     }
                 } else {

@@ -7,11 +7,11 @@ public class BukkitRunner extends BukkitRunnable {
 	public static WooMinecraft plugin = WooMinecraft.instance;
 	
 	public BukkitRunner(WooMinecraft plugin){
-		this.plugin = plugin;
+		BukkitRunner.plugin = plugin;
 	}
 	
 	public void run(){
-		this.plugin.check();
+		BukkitRunner.plugin.check();
 	}
 
 }
