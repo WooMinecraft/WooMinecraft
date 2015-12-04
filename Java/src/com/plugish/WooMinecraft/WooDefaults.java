@@ -32,10 +32,13 @@ public class WooDefaults {
         try {
             plugin.config.load(plugin.configFile);
             plugin.english.load(plugin.englishFile);
-            updateconfig();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static loadDefaults() {
+        updateconfig();
     }
 
     public static void saveYamls() {
@@ -52,7 +55,8 @@ public class WooDefaults {
         addDefault(plugin.config, "WooMinecraft.messages.file", "english");
         addDefault(plugin.config, "WooMinecraft.web.time_delay", 1500);
         addDefault(plugin.config, "WooMinecraft.web.url", "www.example.com");
-        addDefault(plugin.config, "WooMinecraft.web.key", "changeme");
+        addDefault(plugin.config, "WooMinecraft.web.key", "");
+        addDefault(plugin.config, "WooMinecraft.isFirstLoad", true);
 
         addDefault(plugin.english, "NoPerms", "&cYou do not have permissions to do this!");
         addDefault(plugin.english, "Reload", "&5[&fWoo&5] reloaded!");

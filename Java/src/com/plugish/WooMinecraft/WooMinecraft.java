@@ -48,12 +48,26 @@ public final class WooMinecraft extends JavaPlugin {
 	
 	public static BukkitRunner runnerNew;
 	public static FileConfiguration c;
+
+	public void initalizePlugin() {
+		configFile = new File(getDataFolder(), "config.yml");
+		englishFile = new File(getDataFolder(), "english.yml");
+		config = new YamlConfiguration();
+		english = new YamlConfiguration();
+		WooDefaults.initDefaults();
+		WooDefaults.loadYamls();
+		log.info("[Woo] Initialized Config and Messages System.");
+		if(plugin.config, "WooMinecraft.isFirstLoad" == true) {
+			WooDefaults.loadDefaults();
+		} else {
+			log.info("Loading custom settings...");
+		}
+	}
 	
 	@Override
 	public void onEnable(){
 		log = getLogger();
 		instance = this;
-		c = getConfig();
 		log.info("[Woo] Initializing Config and Messages System.");
 		initalizePlugin();
 		log.info("[Woo] Initializing Commands");
@@ -68,16 +82,6 @@ public final class WooMinecraft extends JavaPlugin {
 	public void onDisable(){
 		saveConfig();
 		log.info("[Woo] Donation System Disabled!");
-	}
-
-	public void initalizePlugin() {
-		configFile = new File(getDataFolder(), "config.yml");
-		englishFile = new File(getDataFolder(), "messages.yml");
-		config = new YamlConfiguration();
-		english = new YamlConfiguration();
-		WooDefaults.initDefaults();
-		WooDefaults.loadYamls();
-		log.info("[Woo] Initialized Config and Messages System.");
 	}
 
 	public boolean check() {
