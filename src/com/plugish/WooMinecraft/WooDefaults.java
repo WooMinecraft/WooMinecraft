@@ -1,11 +1,8 @@
 package com.plugish.WooMinecraft;
 
-import com.plugish.WooMinecraft.Commands.WooCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by ethan on 8/23/2015.
@@ -20,8 +17,8 @@ public class WooDefaults {
                 plugin.configFile.createNewFile();
             }
             if (!plugin.englishFile.exists()) {
-                plugin.configFile.getParentFile();
-                plugin.configFile.createNewFile();
+                plugin.englishFile.getParentFile();
+                plugin.englishFile.createNewFile();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,13 +29,10 @@ public class WooDefaults {
         try {
             plugin.config.load(plugin.configFile);
             plugin.english.load(plugin.englishFile);
+            updateconfig();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static loadDefaults() {
-        updateconfig();
     }
 
     public static void saveYamls() {
@@ -56,7 +50,6 @@ public class WooDefaults {
         addDefault(plugin.config, "WooMinecraft.web.time_delay", 1500);
         addDefault(plugin.config, "WooMinecraft.web.url", "www.example.com");
         addDefault(plugin.config, "WooMinecraft.web.key", "");
-        addDefault(plugin.config, "WooMinecraft.isFirstLoad", true);
 
         addDefault(plugin.english, "NoPerms", "&cYou do not have permissions to do this!");
         addDefault(plugin.english, "Reload", "&5[&fWoo&5] reloaded!");

@@ -57,11 +57,6 @@ public final class WooMinecraft extends JavaPlugin {
 		WooDefaults.initDefaults();
 		WooDefaults.loadYamls();
 		log.info("[Woo] Initialized Config and Messages System.");
-		if(plugin.config, "WooMinecraft.isFirstLoad" == true) {
-			WooDefaults.loadDefaults();
-		} else {
-			log.info("Loading custom settings...");
-		}
 	}
 	
 	@Override
