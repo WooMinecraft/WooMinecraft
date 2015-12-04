@@ -27,7 +27,7 @@ public class DonateCommand implements CommandExecutor {
 			    player.openInventory(inv);
 			}
 		}
-		return false;
+		return true;
 	}
 
 }
