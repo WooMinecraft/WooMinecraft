@@ -1,13 +1,11 @@
 /*
  * Woo Minecraft Donation plugin
- * Author:	Jerry Wood
+ * Author:	   Jerry Wood
  * Author URI: http://plugish.com
- * License:		Commercial
+ * License:	   GPLv2
  * 
  * Copyright 2014 All rights Reserved
  * 
- * This is a commercially licensed product, if you downloaded this for free, please contact me via my
- * web site contact form, you will be rewarded.
  */
 package com.plugish.WooMinecraft;
 
