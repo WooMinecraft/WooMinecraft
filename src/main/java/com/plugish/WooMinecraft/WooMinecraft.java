@@ -110,7 +110,12 @@ public final class WooMinecraft extends JavaPlugin {
 		
 	}
 	
-	public String getCleanPlayerList() {
+	/**
+	 * Generates a comma delimited list of player names
+	 * 
+	 * @return String
+	 */
+	public String getPlayerList() {
 		// Build post data based on player list
 		StringBuilder sb = new StringBuilder();
 		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -139,7 +144,14 @@ public final class WooMinecraft extends JavaPlugin {
 			Collection<? extends Player> list = Bukkit.getOnlinePlayers();
 			if (list.size() < 1) return false;
 			
-			String playerlist = getCleanPlayerList();
+			String playerlist = getPlayerList();
+			
+			String urlParams = playerList;
+			
+			DataOutputStream wr = ;
+			wr.writeBytes("names=" + urlParams);
+			wr.flush();
+			wr.close();
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			// ENDNEW
