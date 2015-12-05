@@ -9,9 +9,23 @@
  */
 package com.plugish.WooMinecraft;
 
-import com.plugish.WooMinecraft.Commands.WooCommand;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -21,17 +35,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.plugish.WooMinecraft.Commands.WooCommand;
 
 public final class WooMinecraft extends JavaPlugin {
 
@@ -66,8 +70,8 @@ public final class WooMinecraft extends JavaPlugin {
 		log.info("[Woo] Initializing Commands");
 		initCommands();
 		log.info("[Woo] Commands Initialized");
-//		this.runnerNew = new BukkitRunner(instance);
-//		this.runnerNew.runTaskTimerAsynchronously(instance, c.getInt(urlPath+".time_delay") * 20, c.getInt(urlPath+".time_delay") * 20);
+		this.runnerNew = new BukkitRunner(instance);
+		this.runnerNew.runTaskTimerAsynchronously(instance, c.getInt(urlPath+".time_delay") * 20, c.getInt(urlPath+".time_delay") * 20);
 		log.info("[Woo] Donation System Enabled!");
 	}
 	
@@ -76,35 +80,66 @@ public final class WooMinecraft extends JavaPlugin {
 		saveConfig();
 		log.info("[Woo] Donation System Disabled!");
 	}
+	
+	/**
+	 * Grabs stream data from the Website
+	 * 
+	 * @return DataOutputStream
+	 */
+	public DataOutputStream getSiteStream() {
+		String sPath = c.getString(urlPath + ".url");
+		String key = c.getString(urlPath + ".key");
+		URL url;
+		HttpURLConnection con;
+		
+		try {
+			url = new URL( sPath + "?woo_minecraft=check&key=" + key );
+			
+			// Type-cast to HTTPURLConnection since it extends URLConnection which is what's returned from openConnection()
+			con = (HttpURLConnection) url.openConnection();
+			
+			con.setRequestMethod("POST");
+			con.setRequestProperty("User-Agent", "Mozilla/5.0");
+			con.setDoInput(true);
+			con.setDoOutput(true);			
+		} catch( IOException e ) {
+			log.severe( e.getMessage() );
+		}
+		
+		return new DataOutputStream( con.getOutputStream() );
+		
+	}
+	
+	public String getCleanPlayerList() {
+		// Build post data based on player list
+		StringBuilder sb = new StringBuilder();
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			sb.append(player.getName() + ", ");
+		}
+		String playerList = sb.toString();
+		
+		// Remove the last and final comma
+		Pattern pattern = Pattern.compile(", $");
+		Matcher matcher = pattern.matcher(playerList);
+		
+		return matcher.replaceAll("");
+	}
 
+	/**
+	 * Checks all online players against the
+	 * webiste's database looking for pending donation deliveries
+	 * 
+	 * @return boolean
+	 */
 	public boolean check() {
 
 		ArrayList<Integer> rowUpdates = new ArrayList<Integer>();
 		try {
-			String sPath = c.getString(urlPath + ".url");
-			String key = c.getString(urlPath + ".key");
-			URL url = new URL(sPath + "?woo_minecraft=check&key=" + key);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("POST");
-			con.setRequestProperty("User-Agent", "Mozilla/5.0");
+			// Check for player counts first
 			Collection<? extends Player> list = Bukkit.getOnlinePlayers();
 			if (list.size() < 1) return false;
-
-			StringBuilder sb = new StringBuilder();
-			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-				sb.append(player.getName() + ", ");
-			}
-			String playerList = sb.toString();
-			Pattern pattern = Pattern.compile(", $");
-			Matcher matcher = pattern.matcher(playerList);
-			playerList = matcher.replaceAll("");
-			String urlParams = playerList;
-			con.setDoInput(true);
-			con.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes("names=" + urlParams);
-			wr.flush();
-			wr.close();
+			
+			String playerlist = getCleanPlayerList();
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			// ENDNEW
@@ -125,8 +160,9 @@ public final class WooMinecraft extends JavaPlugin {
 
 					String playerName = obj.getString("player_name");
 					String x = obj.getString("command");
-//					final String command = x.replace("%s", playerName);
-
+					final String command = x.replace("%s", playerName);
+					
+					// @TODO: Update to getUUID()
 					Player pN = Bukkit.getServer().getPlayer(playerName);
 
 					if (x.substring(0, 3) == "give") {
@@ -200,5 +236,11 @@ public final class WooMinecraft extends JavaPlugin {
 
 	public void initCommands() {
 		getCommand("woo").setExecutor(new WooCommand());
+	}
+	
+	public void stopServer() {
+		ConsoleCommandSender console = Bukkit.getConsoleSender();
+		Bukkit.dispatchCommand( console, "save-all" );
+		Bukkit.dispatchCommand(console, "stop" );
 	}
 }
