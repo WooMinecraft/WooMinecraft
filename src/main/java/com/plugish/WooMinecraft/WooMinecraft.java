@@ -83,7 +83,7 @@ public final class WooMinecraft extends JavaPlugin {
 		// TODO -i18n- localize this string - excluding any [Woo] prefix
 		log.info("[Woo] Commands Initialized");
 		
-		runnerNew = new BukkitRunner(instance);
+		runnerNew = new BukkitRunner();
 		runnerNew.runTaskTimerAsynchronously(instance, c.getInt(urlPath+".time_delay") * 20, c.getInt(urlPath+".time_delay") * 20);
 
 		// TODO -i18n- localize this string - excluding any [Woo] prefix

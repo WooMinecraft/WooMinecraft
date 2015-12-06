@@ -1,17 +1,18 @@
 package com.plugish.WooMinecraft;
 
 import org.bukkit.scheduler.BukkitRunnable;
+import org.json.JSONException;
 
 public class BukkitRunner extends BukkitRunnable {
 
 	public static WooMinecraft plugin = WooMinecraft.instance;
 	
-	public BukkitRunner(WooMinecraft plugin){
-		plugin = plugin;
-	}
-	
 	public void run(){
-		plugin.check();
+		try {
+			plugin.check();
+		} catch( JSONException e ) {
+			WooMinecraft.log.severe( e.getMessage() );
+		}
 	}
 
 }
