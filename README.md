@@ -10,7 +10,7 @@ Note From TekkitCommando
 
 I want to thank Jay Wood for Creating Such an Awesome Thing in the First Place :) I have added him to the github organization so he too can witness and help out with the growth of WooMinecraft!
 
-![](http://i.gyazo.com/ba51b7e45aa809d514c051266d0fbe6f.png)
+![](http://s8.postimg.org/tvu6mgw69/Woo_Minecraft.png)
 
 I will setup a minecraft website on my test wordpress and show people how a blogging software can be turned into a fully functional minecraft server site :)
 
