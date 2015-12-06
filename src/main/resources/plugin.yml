@@ -1,4 +1,4 @@
-name: ${project.name}
+name: org.plugish.woominecraft.WooMinecraft.WooMinecraft
 main: ${mainClass}
 version: ${project.version}
 authors: [JerryWood, TekkitCommando, Phillmac]
