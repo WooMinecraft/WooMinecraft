@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.plugish.WooMinecraft.Commands.WooCommand;
@@ -106,16 +106,21 @@ public final class WooMinecraft extends JavaPlugin {
 	 * webiste's database looking for pending donation deliveries
 	 * 
 	 * @return boolean
+	 * @throws JSONException 
 	 */
-	public boolean check() {
+	public boolean check() throws JSONException {
 		
 		String namesResults = "";
+		JSONObject json = null;
+	
+		String key = config.getString( "WooMinecraft.web.key" );
+		String url = config.getString( "WooMinecraft.web.url" );
 
 		// Check for player counts first
 		Collection<? extends Player> list = Bukkit.getOnlinePlayers();
 		
 		// Must match main object method.
-		Connection connection = new Connection();
+		Connection connection = new Connection( url, key );
 		
 		if (list.size() < 1) return false;
 		
@@ -135,51 +140,57 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 		
 		try {
-			JSONObject json = new JSONObject( namesResults );
+			json = new JSONObject( namesResults );
+		} catch( JSONException e ) {
+			log.severe( e.getMessage() );
+		}
+		
+		// Must have json data to continue.
+		if ( null == json ) {
+			return false;
+		}
 
-			if ( json.getString("status").equalsIgnoreCase("success") ) {
-				JSONArray jsonArr = json.getJSONArray("data");
-				for (int i = 0; i < jsonArr.length(); i++) {
-					JSONObject obj = jsonArr.getJSONObject(i);
+		if ( json.getString("status").equalsIgnoreCase("success") ) {
+			JSONArray jsonArr = json.getJSONArray("data");
+			for (int i = 0; i < jsonArr.length(); i++) {
+				JSONObject obj = jsonArr.getJSONObject(i);
 
-					String playerName = obj.getString("player_name");
-					String x = obj.getString("command");
-					final String command = x.replace("%s", playerName);
-					
-					// @TODO: Update to getUUID()
-					Player pN = Bukkit.getServer().getPlayer(playerName);
+				String playerName = obj.getString("player_name");
+				String x = obj.getString("command");
+				final String command = x.replace("%s", playerName);
+				
+				// @TODO: Update to getUUID()
+				Player pN = Bukkit.getServer().getPlayer(playerName);
 
-					if (x.substring(0, 3) == "give") {
-						int count = 0;
-						for (ItemStack iN : pN.getInventory()) {
-							if (iN == null)
-								count++;
-						}
-
-						if (count == 0) return false;
+				if (x.substring(0, 3) == "give") {
+					int count = 0;
+					for (ItemStack iN : pN.getInventory()) {
+						if (iN == null)
+							count++;
 					}
 
-					int id = obj.getInt("id");
+					if (count == 0) return false;
+				}
 
-					BukkitScheduler sch = Bukkit.getServer().getScheduler();
-					sch.scheduleSyncDelayedTask(instance, new Runnable() {
-						@Override
-						public void run() {
-							Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
-						}
-					}, 20L);
-					rowUpdates.add(id);
-				}
-			} else {
-				log.info("Check: No donations for online users. STATUS: " + json.getString("status"));
-				if (json.has("debug_info")) {
-					log.info(json.getString("debug_info"));
-				}
+				int id = obj.getInt("id");
+
+				BukkitScheduler sch = Bukkit.getServer().getScheduler();
+				sch.scheduleSyncDelayedTask(instance, new Runnable() {
+					@Override
+					public void run() {
+						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
+					}
+				}, 20L);
+				rowUpdates.add(id);
 			}
-			remove(rowUpdates);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			log.info("Check: No donations for online users. STATUS: " + json.getString("status"));
+			if (json.has("debug_info")) {
+				log.info(json.getString("debug_info"));
+			}
 		}
+		remove(rowUpdates);
+		
 		return false;
 	}
 
