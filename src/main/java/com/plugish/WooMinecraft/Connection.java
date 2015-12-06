@@ -68,7 +68,7 @@ public class Connection {
 	 * @param names
 	 * @return False on failure, true otherwise.
 	 */
-	public static boolean processNames( String names ) {
+	private static boolean processNames( String names ) {
 		
 		DataOutputStream stream = GetOutputStream();
 		if ( null == stream ) {
@@ -87,7 +87,7 @@ public class Connection {
 		return true;
 	}
 	
-	public static String getPlayerResults( String names ) throws IOException {
+	public String getPlayerResults( String names ) throws IOException {
 		
 		InputStream stream = null;
 		BufferedReader reader = null;
