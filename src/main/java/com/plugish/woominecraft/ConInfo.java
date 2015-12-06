@@ -1,4 +1,4 @@
-package com.plugish.WooMinecraft;
+package com.plugish.woominecraft;
 
 public class ConInfo {
 

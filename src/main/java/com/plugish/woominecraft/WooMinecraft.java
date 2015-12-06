@@ -7,7 +7,7 @@
  * Copyright 2014 All rights Reserved
  * 
  */
-package com.plugish.WooMinecraft;
+package com.plugish.woominecraft;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

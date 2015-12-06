@@ -1,4 +1,4 @@
-package com.plugish.WooMinecraft;
+package com.plugish.woominecraft;
 
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
