@@ -175,6 +175,7 @@ public final class WooMinecraft extends JavaPlugin {
 				final String command = x.replace("%s", playerName);
 				
 				// @TODO: Update to getUUID()
+				@SuppressWarnings("deprecation")
 				Player pN = Bukkit.getServer().getPlayer(playerName);
 
 				if (x.substring(0, 3) == "give") {
