@@ -82,35 +82,6 @@ public final class WooMinecraft extends JavaPlugin {
 	}
 	
 	/**
-	 * Grabs stream data from the Website
-	 * 
-	 * @return DataOutputStream
-	 */
-	public DataOutputStream getSiteStream() {
-		String sPath = c.getString(urlPath + ".url");
-		String key = c.getString(urlPath + ".key");
-		URL url;
-		HttpURLConnection con;
-		
-		try {
-			url = new URL( sPath + "?woo_minecraft=check&key=" + key );
-			
-			// Type-cast to HTTPURLConnection since it extends URLConnection which is what's returned from openConnection()
-			con = (HttpURLConnection) url.openConnection();
-			
-			con.setRequestMethod("POST");
-			con.setRequestProperty("User-Agent", "Mozilla/5.0");
-			con.setDoInput(true);
-			con.setDoOutput(true);
-		} catch( IOException e ) {
-			log.severe( e.getMessage() );
-		}
-		
-		return new DataOutputStream( con.getOutputStream() );
-		
-	}
-	
-	/**
 	 * Generates a comma delimited list of player names
 	 * 
 	 * @return String
@@ -142,13 +113,17 @@ public final class WooMinecraft extends JavaPlugin {
 
 		// Check for player counts first
 		Collection<? extends Player> list = Bukkit.getOnlinePlayers();
+		
+		// Must match main object method.
+		Connection connection = new Connection();
+		
 		if (list.size() < 1) return false;
 		
 		ArrayList<Integer> rowUpdates = new ArrayList<Integer>();
 		String playerlist = getPlayerList();
 		
 		try {
-			namesResults = Connection.getPlayerResults( playerlist );
+			namesResults = connection.getPlayerResults( playerlist );
 		} catch( IOException e ) {
 			log.severe( e.getMessage() );
 		}
@@ -162,7 +137,7 @@ public final class WooMinecraft extends JavaPlugin {
 		try {
 			JSONObject json = new JSONObject( namesResults );
 
-			if (json.getString("status").equalsIgnoreCase("success")) {
+			if ( json.getString("status").equalsIgnoreCase("success") ) {
 				JSONArray jsonArr = json.getJSONArray("data");
 				for (int i = 0; i < jsonArr.length(); i++) {
 					JSONObject obj = jsonArr.getJSONObject(i);

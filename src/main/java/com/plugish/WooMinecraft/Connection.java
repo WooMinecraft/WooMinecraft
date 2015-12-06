@@ -11,7 +11,6 @@ import java.net.URL;
 
 public class Connection {
 	
-	private static URL url;
 	private static HttpURLConnection connection;
 	private static DataOutputStream outputStream = null;
 	
@@ -20,10 +19,10 @@ public class Connection {
 	 * @param url The URL to the web site.
 	 * @param path The Path to the web site.
 	 */
-	public Connection( String[] url_path, String[] key ) {
+	public Connection( String url_path, String key ) {
 		
 		try {
-			url = new URL( url_path + "?woo_minecraft=check&key=" + key );
+			URL url = new URL( url_path + "?woo_minecraft=check&key=" + key );
 			
 			// Type-cast to HTTPURLConnection since it extends URLConnection which is what's returned from openConnection()
 			connection = (HttpURLConnection) url.openConnection();
