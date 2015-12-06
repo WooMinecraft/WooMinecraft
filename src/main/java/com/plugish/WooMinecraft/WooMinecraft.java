@@ -101,7 +101,7 @@ public final class WooMinecraft extends JavaPlugin {
 			con.setRequestMethod("POST");
 			con.setRequestProperty("User-Agent", "Mozilla/5.0");
 			con.setDoInput(true);
-			con.setDoOutput(true);			
+			con.setDoOutput(true);
 		} catch( IOException e ) {
 			log.severe( e.getMessage() );
 		}
@@ -137,33 +137,30 @@ public final class WooMinecraft extends JavaPlugin {
 	 * @return boolean
 	 */
 	public boolean check() {
+		
+		String namesResults = "";
 
+		// Check for player counts first
+		Collection<? extends Player> list = Bukkit.getOnlinePlayers();
+		if (list.size() < 1) return false;
+		
 		ArrayList<Integer> rowUpdates = new ArrayList<Integer>();
+		String playerlist = getPlayerList();
+		
 		try {
-			// Check for player counts first
-			Collection<? extends Player> list = Bukkit.getOnlinePlayers();
-			if (list.size() < 1) return false;
-			
-			String playerlist = getPlayerList();
-			
-			String urlParams = playerList;
-			
-			DataOutputStream wr = ;
-			wr.writeBytes("names=" + urlParams);
-			wr.flush();
-			wr.close();
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			// ENDNEW
-
-			StringBuilder sb2 = new StringBuilder();
-			String line;
-			while ((line = in.readLine()) != null) {
-				sb2.append(line);
-			}
-			in.close();
-
-			JSONObject json = new JSONObject(sb2.toString());
+			namesResults = Connection.getPlayerResults( playerlist );
+		} catch( IOException e ) {
+			log.severe( e.getMessage() );
+		}
+		
+		// If the server says there are no results for the sent names
+		// just return, no need to continue.
+		if ( "" == namesResults ) {
+			return false;
+		}
+		
+		try {
+			JSONObject json = new JSONObject( namesResults );
 
 			if (json.getString("status").equalsIgnoreCase("success")) {
 				JSONArray jsonArr = json.getJSONArray("data");
@@ -250,7 +247,7 @@ public final class WooMinecraft extends JavaPlugin {
 		getCommand("woo").setExecutor(new WooCommand());
 	}
 	
-	public void stopServer() {
+	public static void stopServer() {
 		ConsoleCommandSender console = Bukkit.getConsoleSender();
 		Bukkit.dispatchCommand( console, "save-all" );
 		Bukkit.dispatchCommand(console, "stop" );

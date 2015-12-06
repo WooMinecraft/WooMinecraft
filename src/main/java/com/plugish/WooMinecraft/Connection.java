@@ -1,7 +1,10 @@
 package com.plugish.WooMinecraft;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -10,7 +13,7 @@ public class Connection {
 	
 	private static URL url;
 	private static HttpURLConnection connection;
-	private static DataOutputStream outputStream;
+	private static DataOutputStream outputStream = null;
 	
 	/**
 	 * 
@@ -83,6 +86,41 @@ public class Connection {
 		}
 		
 		return true;
+	}
+	
+	public static String getPlayerResults( String names ) throws IOException {
+		
+		InputStream stream = null;
+		BufferedReader reader = null;
+		String output = null;
+		
+		boolean namesResult = processNames( names );
+		
+		if ( !namesResult ) {
+			return "";
+		}
+		
+		try {
+			stream = connection.getInputStream();
+		} catch( IOException e ) {
+			WooMinecraft.log.severe( e.getMessage() );
+		}
+		
+		if( null != stream ) {
+			InputStreamReader inReader = new InputStreamReader( stream );
+			reader = new BufferedReader( inReader );
+	
+			StringBuilder stringResponse = new StringBuilder();
+			String line;
+			while ( ( line = reader.readLine() ) != null ) {
+				stringResponse.append(line);
+			}
+			reader.close();
+			
+			output = stringResponse.toString();
+		}
+		
+		return output;
 	}
 
 }
