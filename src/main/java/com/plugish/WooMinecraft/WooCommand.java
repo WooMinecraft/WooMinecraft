@@ -1,4 +1,4 @@
-package com.plugish.WooMinecraft.Commands;
+package com.plugish.WooMinecraft;
 
 import java.util.UUID;
 
@@ -7,8 +7,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.json.JSONException;
-
-import com.plugish.WooMinecraft.WooMinecraft;
 
 public class WooCommand implements CommandExecutor {
 

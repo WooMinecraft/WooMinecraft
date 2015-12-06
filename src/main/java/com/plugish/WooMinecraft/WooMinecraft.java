@@ -35,8 +35,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.plugish.WooMinecraft.Commands.WooCommand;
-
 public final class WooMinecraft extends JavaPlugin {
 
 	public static Logger log;
