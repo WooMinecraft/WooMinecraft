@@ -43,21 +43,28 @@ public final class WooMinecraft extends JavaPlugin {
 	public static WooMinecraft instance;
 	public static String configPath = "WooMinecraft";
 	public static String urlPath = configPath+".web";
+	
 	public File englishFile;
 	public FileConfiguration english;
+	
 	public File configFile;
 	public FileConfiguration config;
-	
 	public static BukkitRunner runnerNew;
+	
+	// TODO -logic- Is this even needed?
 	public static FileConfiguration c;
 
 	public void initalizePlugin() {
 		configFile = new File(getDataFolder(), "config.yml");
+		
+		// TODO -filechanges- Load lang file from a /lang/ folder based on language preference in main config
 		englishFile = new File(getDataFolder(), "english.yml");
 		config = new YamlConfiguration();
 		english = new YamlConfiguration();
 		WooDefaults.initDefaults();
 		WooDefaults.loadYamls();
+		
+		// TODO -i18n- localize this string - excluding any [Woo] prefix
 		log.info("[Woo] Initialized Config and Messages System.");
 	}
 	
@@ -65,23 +72,29 @@ public final class WooMinecraft extends JavaPlugin {
 	public void onEnable(){
 		log = getLogger();
 		instance = this;
+		// TODO -i18n- localize this string - excluding any [Woo] prefix
 		log.info("[Woo] Initializing Config and Messages System.");
 		
 		initalizePlugin();
+		// TODO -i18n- localize this string - excluding any [Woo] prefix
 		log.info("[Woo] Initializing Commands");
 		
 		initCommands();
+		// TODO -i18n- localize this string - excluding any [Woo] prefix
 		log.info("[Woo] Commands Initialized");
 		
 		runnerNew = new BukkitRunner(instance);
 		runnerNew.runTaskTimerAsynchronously(instance, c.getInt(urlPath+".time_delay") * 20, c.getInt(urlPath+".time_delay") * 20);
-		
+
+		// TODO -i18n- localize this string - excluding any [Woo] prefix
 		log.info("[Woo] Donation System Enabled!");
 	}
 	
 	@Override
 	public void onDisable(){
 		saveConfig();
+
+		// TODO -i18n- localize this string - excluding any [Woo] prefix
 		log.info("[Woo] Donation System Disabled!");
 	}
 	
@@ -198,6 +211,10 @@ public final class WooMinecraft extends JavaPlugin {
 		return false;
 	}
 
+	/**
+	 * Removes IDs from 
+	 * @param ids
+	 */
 	private void remove(ArrayList<Integer> ids) {
 		if (ids.isEmpty()) return;
 
@@ -221,9 +238,11 @@ public final class WooMinecraft extends JavaPlugin {
 			BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String response = input.readLine();
 			if (!response.equalsIgnoreCase("true")) {
+				// TODO -i18n- localize this string
 				log.severe("Could not update donations.");
 				log.info(response);
 			} else {
+				// TODO -i18n- localize this string
 				log.info("Donations updated");
 			}
 			input.close();
@@ -233,10 +252,17 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 	}
 
+	/**
+	 * Initialize Commands
+	 */
 	public void initCommands() {
 		getCommand("woo").setExecutor(new WooCommand());
 	}
 	
+	/**
+	 * A helper function to safely stop the server in the event
+	 * something went wrong in the initial setup.
+	 */
 	public static void stopServer() {
 		ConsoleCommandSender console = Bukkit.getConsoleSender();
 		Bukkit.dispatchCommand( console, "save-all" );
