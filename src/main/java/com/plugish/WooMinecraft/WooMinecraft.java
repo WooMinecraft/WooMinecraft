@@ -35,7 +35,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public final class WooMinecraft extends JavaPlugin {
+public class WooMinecraft extends JavaPlugin {
 
 	public static Logger log;
 	public static WooMinecraft instance;
