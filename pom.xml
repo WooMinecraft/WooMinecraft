@@ -1,11 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.plugish</groupId>
+  <groupId>org.plugish.WooMinecraft</groupId>
   <artifactId>WooMinecraft</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.4-SNAPSHOT</version>
   <name>WooMinecraft</name>
   <description>A WooCommerce Minecraft Bridge</description>
+  <properties>
+    <bukkitVersion>1.8.8-R0.1-SNAPSHOT</bukkitVersion>
+    <mainClass>${project.groupId}.${project.artifactId}</mainClass>
+  </properties>
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+        	<include>plugin.yml</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -27,7 +40,7 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.8.8-R0.1-SNAPSHOT</version>
+      <version>${bukkitVersion}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

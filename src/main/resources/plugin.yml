@@ -1,8 +1,8 @@
-name: WooMinecraft
-main: com.plugish.WooMinecraft.WooMinecraft
-version: 1.0.3
+name: ${project.name}
+main: ${mainClass}
+version: ${project.version}
 authors: [JerryWood, TekkitCommando, Phillmac]
-description: WooMinecraft Donation Plugin
+description: ${project.description}
 website:  http://www.tekkitcommando.me
 
 commands:
