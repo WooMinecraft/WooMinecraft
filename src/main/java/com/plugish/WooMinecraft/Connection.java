@@ -15,6 +15,7 @@ public class Connection {
 	private static DataOutputStream outputStream = null;
 	
 	/**
+	 * Connect to a URL
 	 * 
 	 * @param url The URL to the web site.
 	 * @param path The Path to the web site.
