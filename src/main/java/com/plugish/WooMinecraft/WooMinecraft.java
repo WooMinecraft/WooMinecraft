@@ -37,7 +37,7 @@ import org.json.JSONObject;
 
 public class WooMinecraft extends JavaPlugin {
 
-	public static Logger log;
+	public static Logger log = Bukkit.getLogger();
 	public static WooMinecraft instance;
 	public static String configPath = "WooMinecraft";
 	public static String urlPath = configPath+".web";
