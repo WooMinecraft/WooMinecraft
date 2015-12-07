@@ -3,6 +3,8 @@ package com.plugish.woominecraft;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ethan on 8/23/2015.
@@ -14,10 +16,10 @@ public class WooDefaults {
 
 	public static void initDefaults() {
 		try {
-			if ( !plugin.configFile.exists() ) {
-				plugin.configFile.getParentFile().mkdirs();
-				plugin.configFile.createNewFile();
-			}
+//			if ( !plugin.configFile.exists() ) {
+//				plugin.configFile.getParentFile().mkdirs();
+//				plugin.configFile.createNewFile();
+//			}
 			if ( !plugin.englishFile.exists() ) {
 				plugin.englishFile.getParentFile();
 				plugin.englishFile.createNewFile();
@@ -34,7 +36,7 @@ public class WooDefaults {
 		try {
 			plugin.config.load( plugin.configFile );
 			plugin.english.load( plugin.englishFile );
-			updateconfig();
+			setDefaults();
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
@@ -59,11 +61,11 @@ public class WooDefaults {
 
 	/**
 	 * Updates the config to defaults
-	 * <p/>
+	 * 
 	 * TODO -logic- Rename this to a more logical name like setDefaults
 	 * TODO -logic- Should use org.bukkit.ChatColor instead of hard-coding colors?
 	 */
-	private static void updateconfig() {
+	private static void setDefaults() {
 		addDefault( plugin.config, "WooMinecraft.messages.file", "english" );
 		addDefault( plugin.config, "WooMinecraft.web.time_delay", 1500 );
 		addDefault( plugin.config, "WooMinecraft.web.url", "www.example.com" );
@@ -79,9 +81,9 @@ public class WooDefaults {
 	/**
 	 * Helper Method used for setting values if they do not already exist.
 	 *
-	 * @param fileConfiguration
-	 * @param configItemPath
-	 * @param value
+	 * @param fileConfiguration The config file
+	 * @param configItemPath Config Item path ie. "WooMinecraft.web.xxx"
+	 * @param value The value to set
 	 */
 	private static void addDefault( FileConfiguration fileConfiguration, String configItemPath, Object value ) {
 		// ONLY add a default if the config item doesn't exit.

@@ -61,7 +61,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 		initalizePlugin();
 		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info( "[Woo] Initializing Commands" );
+//		log.info( "[Woo] Initializing Commands" );
 
 		initCommands();
 		// TODO -i18n- localize this string - excluding any [Woo] prefix
@@ -73,21 +73,26 @@ public final class WooMinecraft extends JavaPlugin {
 
 		// TODO -i18n- localize this string - excluding any [Woo] prefix
 		log.info( "[Woo] Donation System Enabled!" );
+
+		// Save the default config.yml
+		saveDefaultConfig();
 	}
 
 	public void initalizePlugin() {
-		configFile = new File( getDataFolder(), "config.yml" );
+		// Load the config
+		config = getConfig();
+//		configFile = new File( getDataFolder(), "config.yml" );
 
 		// TODO -filechanges- Load lang file from a /lang/ folder based on language preference in main config
-		englishFile = new File( getDataFolder(), "english.yml" );
-		config = new YamlConfiguration();
-		english = new YamlConfiguration();
-		WooDefaults.initDefaults();
-		WooDefaults.loadYamls();
-		WooDefaults.saveYamls();
+//		englishFile = new File( getDataFolder(), "english.yml" );
+//		config = new YamlConfiguration();
+//		english = new YamlConfiguration();
+//		WooDefaults.initDefaults();
+//		WooDefaults.loadYamls();
+//		WooDefaults.saveYamls();
 
 		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info( "[Woo] Initialized Config and Messages System." );
+//		log.info( "[Woo] Initialized Config and Messages System." );
 	}
 
 	@Override
