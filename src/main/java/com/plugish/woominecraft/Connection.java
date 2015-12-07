@@ -34,7 +34,6 @@ public class Connection {
 
 		} catch( IOException e ) {
 			WooMinecraft.log.config( e.getMessage() );
-//			WooMinecraft.stopServer();
 		}
 		
 	}

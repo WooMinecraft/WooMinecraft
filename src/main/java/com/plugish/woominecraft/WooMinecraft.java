@@ -262,14 +262,4 @@ public final class WooMinecraft extends JavaPlugin {
 	public void initCommands() {
 		getCommand( "woo" ).setExecutor( new WooCommand() );
 	}
-
-	/**
-	 * A helper function to safely stop the server in the event
-	 * something went wrong in the initial setup.
-	 */
-	public static void stopServer() {
-		ConsoleCommandSender console = Bukkit.getConsoleSender();
-		Bukkit.dispatchCommand( console, "save-all" );
-		Bukkit.dispatchCommand( console, "stop" );
-	}
 }
