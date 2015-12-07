@@ -144,10 +144,10 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 
 		ArrayList< Integer > rowUpdates = new ArrayList< Integer >();
-		String playerlist = getPlayerList();
+		String playerList = getPlayerList();
 
 		try {
-			namesResults = urlConnection.getPlayerResults( playerlist );
+			namesResults = urlConnection.getPlayerResults( playerList );
 		} catch ( IOException e ) {
 			log.severe( e.getMessage() );
 		}

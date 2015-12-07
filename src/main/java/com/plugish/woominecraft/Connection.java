@@ -31,9 +31,9 @@ public class Connection {
 			connection.setRequestProperty("User-Agent", "Mozilla/5.0");
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
-			
+
 		} catch( IOException e ) {
-			WooMinecraft.log.severe( e.getMessage() );
+			WooMinecraft.log.config( e.getMessage() );
 //			WooMinecraft.stopServer();
 		}
 		
