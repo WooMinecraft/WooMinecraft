@@ -1,0 +1,7 @@
+/bin/
+/target/
+.settings
+.project
+.classpath
+.idea/
+WooMinecraft.iml

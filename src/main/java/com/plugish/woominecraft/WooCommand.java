@@ -1,12 +1,12 @@
-package com.plugish.WooMinecraft.Commands;
+package com.plugish.woominecraft;
 
-import com.plugish.WooMinecraft.WooMinecraft;
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
-import java.util.UUID;
+import org.json.JSONException;
 
 public class WooCommand implements CommandExecutor {
 
@@ -39,15 +39,15 @@ public class WooCommand implements CommandExecutor {
                     */
                     UUID uuid = UUID.randomUUID();
                     String key = "";
-                    if (WooMinecraft.c.getString(WooMinecraft.urlPath + ".key") == "") {
+                    if ( plugin.config.getString( WooMinecraft.urlPath + ".key") == "changeme" ) {
                         key = uuid.toString().replaceAll("-", "");
-                        WooMinecraft.c.set(WooMinecraft.urlPath + ".key", key);
+                        plugin.config.set( WooMinecraft.urlPath + ".key", key);
                         plugin.saveConfig();
                         s.sendMessage(Theme + " Saved Config!");
                         s.sendMessage(Theme + " Key: " + key);
                         s.sendMessage(Theme + " Copy this key and put it in your WooMinecraft options panel in WordPress");
                     } else {
-                        key = WooMinecraft.c.getString(WooMinecraft.urlPath + ".key");
+                        key = plugin.config.getString( WooMinecraft.urlPath + ".key");
                         s.sendMessage(Theme + " key already set!");
                     }
                 } else {
@@ -56,9 +56,23 @@ public class WooCommand implements CommandExecutor {
                 }
             } else if(args[0].equalsIgnoreCase("check")) {
                 if(s.hasPermission("woo.admin") || s.isOp()) {
-                    // well we need to run the check then don't we?
-                    plugin.check();
-                    s.sendMessage(Theme + " Checked Purchases!");
+                	
+                	boolean checkResults = false;
+                	String msg = "";
+                	
+                	try {
+                		checkResults = plugin.check();
+                	} catch( JSONException e ) {
+                		WooMinecraft.log.severe( e.getMessage() );
+                	}
+                	
+                	if ( false == checkResults ) {
+                		msg = Theme + " No purchases available.";
+                	} else {
+                		msg = Theme + " No purchases available.";
+                	}
+                	
+                    s.sendMessage( msg );
                 } else {
                     String msg = plugin.english.getString("NoPerms").replace("&", "\u00A7");
                     s.sendMessage(msg);
