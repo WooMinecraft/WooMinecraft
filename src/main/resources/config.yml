@@ -1,0 +1,7 @@
+WooMinecraft:
+  messages:
+    file: english
+  web:
+    time_delay: 1500
+    url: www.example.com
+    key: ''
