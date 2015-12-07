@@ -6,7 +6,7 @@ import java.io.IOException;
 
 /**
  * Created by ethan on 8/23/2015.
- * <p/>
+ *
  * TODO -filechanges- Config file doesn't really need to be nested like WooMinecraft.web.xxx  The config is just too small to warrant that.
  */
 public class WooDefaults {
