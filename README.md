@@ -6,7 +6,7 @@ Note From TekkitCommando
 
 I want to thank Jay Wood for Creating Such an Awesome Thing in the First Place :) I have added him to the github organization so he too can witness and help out with the growth of WooMinecraft!
 
-![WooMinecraft Logo](https://raw.githubusercontent.com/WooMinecraft/WooMinecraft/tree/dev-nightly/src/main/resources/wmc-logo.jpg)
+![WooMinecraft Logo](https://raw.githubusercontent.com/WooMinecraft/WooMinecraft/dev-nightly/src/main/resources/wmc-logo.jpg)
 
 I will setup a minecraft website on my test wordpress and show people how a blogging software can be turned into a fully functional minecraft server site :)
 
