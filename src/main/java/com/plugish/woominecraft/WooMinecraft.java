@@ -84,6 +84,7 @@ public final class WooMinecraft extends JavaPlugin {
 		english = new YamlConfiguration();
 		WooDefaults.initDefaults();
 		WooDefaults.loadYamls();
+		WooDefaults.saveYamls();
 
 		// TODO -i18n- localize this string - excluding any [Woo] prefix
 		log.info( "[Woo] Initialized Config and Messages System." );
