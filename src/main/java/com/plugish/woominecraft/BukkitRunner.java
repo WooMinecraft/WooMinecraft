@@ -1,18 +1,26 @@
 package com.plugish.woominecraft;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 
 public class BukkitRunner extends BukkitRunnable {
 
-	public static WooMinecraft plugin = WooMinecraft.instance;
-	
-	public void run(){
-		try {
-			plugin.check();
-		} catch( JSONException e ) {
-			WooMinecraft.log.severe( e.getMessage() );
-		}
+	public final WooMinecraft plugin;
+
+	public BukkitRunner( WooMinecraft plugin ) {
+		this.plugin = plugin;
+	}
+
+	public void run() {
+		plugin.getServer().broadcastMessage( ChatColor.RED + "Task Ran" )
+//		try {
+//			plugin.check();
+//		} catch ( JSONException e ) {
+//			WooMinecraft.log.severe( e.getMessage() );
+//		}
 	}
 
 }

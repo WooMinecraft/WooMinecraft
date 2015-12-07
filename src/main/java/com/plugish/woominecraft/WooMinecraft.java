@@ -37,216 +37,221 @@ import org.json.JSONObject;
 
 public final class WooMinecraft extends JavaPlugin {
 
-	public static Logger log = Bukkit.getLogger();
+	public static Logger log;
 	public static WooMinecraft instance;
 	public static String configPath = "WooMinecraft";
-	public static String urlPath = configPath+".web";
-	
+	public static String urlPath = configPath + ".web";
+
 	public File englishFile;
 	public FileConfiguration english;
-	
+
 	public File configFile;
 	public FileConfiguration config;
-	public static BukkitRunner runnerNew;
-	
+	public static BukkitRunner scheduler;
+
 	// TODO -logic- Is this even needed?
 	public static FileConfiguration c;
 
+	@Override
+	public void onEnable() {
+		log = getLogger();
+		instance = this;
+		// TODO -i18n- localize this string - excluding any [Woo] prefix
+		log.info( "[Woo] Initializing Config and Messages System." );
+
+		initalizePlugin();
+		// TODO -i18n- localize this string - excluding any [Woo] prefix
+		log.info( "[Woo] Initializing Commands" );
+
+		initCommands();
+		// TODO -i18n- localize this string - excluding any [Woo] prefix
+		log.info( "[Woo] Commands Initialized" );
+
+		// Setup the scheduler
+		scheduler = new BukkitRunner( instance );
+		scheduler.runTaskTimerAsynchronously( instance, config.getInt( urlPath + ".time_delay" ) * 20, config.getInt( urlPath + ".time_delay" ) * 20 );
+
+		// TODO -i18n- localize this string - excluding any [Woo] prefix
+		log.info( "[Woo] Donation System Enabled!" );
+	}
+
 	public void initalizePlugin() {
-		configFile = new File(getDataFolder(), "config.yml");
-		
+		configFile = new File( getDataFolder(), "config.yml" );
+
 		// TODO -filechanges- Load lang file from a /lang/ folder based on language preference in main config
-		englishFile = new File(getDataFolder(), "english.yml");
+		englishFile = new File( getDataFolder(), "english.yml" );
 		config = new YamlConfiguration();
 		english = new YamlConfiguration();
 		WooDefaults.initDefaults();
 		WooDefaults.loadYamls();
-		
-		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info("[Woo] Initialized Config and Messages System.");
-	}
-	
-	@Override
-	public void onEnable(){
-		log = getLogger();
-		instance = this;
-		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info("[Woo] Initializing Config and Messages System.");
-		
-		initalizePlugin();
-		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info("[Woo] Initializing Commands");
-		
-		initCommands();
-		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info("[Woo] Commands Initialized");
-		
-		runnerNew = new BukkitRunner();
-		runnerNew.runTaskTimerAsynchronously(instance, c.getInt(urlPath+".time_delay") * 20, c.getInt(urlPath+".time_delay") * 20);
 
 		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info("[Woo] Donation System Enabled!");
+		log.info( "[Woo] Initialized Config and Messages System." );
 	}
-	
+
 	@Override
-	public void onDisable(){
+	public void onDisable() {
 		saveConfig();
 
 		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info("[Woo] Donation System Disabled!");
+		log.info( "[Woo] Donation System Disabled!" );
 	}
-	
+
 	/**
 	 * Generates a comma delimited list of player names
-	 * 
+	 *
 	 * @return String
 	 */
 	public String getPlayerList() {
 		// Build post data based on player list
 		StringBuilder sb = new StringBuilder();
-		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-			sb.append(player.getName() + ", ");
+		for ( Player player : Bukkit.getServer().getOnlinePlayers() ) {
+			sb.append( player.getName() + ", " );
 		}
 		String playerList = sb.toString();
-		
+
 		// Remove the last and final comma
-		Pattern pattern = Pattern.compile(", $");
-		Matcher matcher = pattern.matcher(playerList);
-		
-		return matcher.replaceAll("");
+		Pattern pattern = Pattern.compile( ", $" );
+		Matcher matcher = pattern.matcher( playerList );
+
+		return matcher.replaceAll( "" );
 	}
 
 	/**
 	 * Checks all online players against the
 	 * webiste's database looking for pending donation deliveries
-	 * 
+	 *
 	 * @return boolean
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
 	public boolean check() throws JSONException {
-		
+
 		String namesResults = "";
 		JSONObject json = null;
-	
+
 		String key = config.getString( "WooMinecraft.web.key" );
 		String url = config.getString( "WooMinecraft.web.url" );
 
 		// Check for player counts first
-		Collection<? extends Player> list = Bukkit.getOnlinePlayers();
-		
+		Collection< ? extends Player > list = Bukkit.getOnlinePlayers();
+		if ( list.size() < 1 ) return false;
+
 		// Must match main object method.
-		Connection connection = new Connection( url, key );
-		
-		if (list.size() < 1) return false;
-		
-		ArrayList<Integer> rowUpdates = new ArrayList<Integer>();
-		String playerlist = getPlayerList();
-		
-		try {
-			namesResults = connection.getPlayerResults( playerlist );
-		} catch( IOException e ) {
-			log.severe( e.getMessage() );
-		}
-		
-		// If the server says there are no results for the sent names
-		// just return, no need to continue.
-		if ( "" == namesResults ) {
+		Connection urlConnection = new Connection( url, key );
+
+		if ( urlConnection.connection == null ) {
 			return false;
 		}
-		
+
+		ArrayList< Integer > rowUpdates = new ArrayList< Integer >();
+		String playerlist = getPlayerList();
+
 		try {
-			json = new JSONObject( namesResults );
-		} catch( JSONException e ) {
+			namesResults = urlConnection.getPlayerResults( playerlist );
+		} catch ( IOException e ) {
 			log.severe( e.getMessage() );
 		}
-		
+
+		// If the server says there are no results for the sent names
+		// just return, no need to continue.
+		if ( namesResults.equals( "" ) ) {
+			return false;
+		}
+
+		try {
+			json = new JSONObject( namesResults );
+		} catch ( JSONException e ) {
+			log.severe( e.getMessage() );
+		}
+
 		// Must have json data to continue.
 		if ( null == json ) {
 			return false;
 		}
 
-		if ( json.getString("status").equalsIgnoreCase("success") ) {
-			JSONArray jsonArr = json.getJSONArray("data");
-			for (int i = 0; i < jsonArr.length(); i++) {
-				JSONObject obj = jsonArr.getJSONObject(i);
+		if ( json.getString( "status" ).equalsIgnoreCase( "success" ) ) {
+			JSONArray jsonArr = json.getJSONArray( "data" );
+			for ( int i = 0; i < jsonArr.length(); i++ ) {
+				JSONObject obj = jsonArr.getJSONObject( i );
 
-				String playerName = obj.getString("player_name");
-				String x = obj.getString("command");
-				final String command = x.replace("%s", playerName);
-				
+				String playerName = obj.getString( "player_name" );
+				String x = obj.getString( "command" );
+				final String command = x.replace( "%s", playerName );
+
 				// @TODO: Update to getUUID()
-				@SuppressWarnings("deprecation")
-				Player pN = Bukkit.getServer().getPlayer(playerName);
+				@SuppressWarnings( "deprecation" )
+				Player pN = Bukkit.getServer().getPlayer( playerName );
 
-				if (x.substring(0, 3) == "give") {
+				if ( x.substring( 0, 3 ) == "give" ) {
 					int count = 0;
-					for (ItemStack iN : pN.getInventory()) {
-						if (iN == null)
+					for ( ItemStack iN : pN.getInventory() ) {
+						if ( iN == null )
 							count++;
 					}
 
-					if (count == 0) return false;
+					if ( count == 0 ) return false;
 				}
 
-				int id = obj.getInt("id");
+				int id = obj.getInt( "id" );
 
 				BukkitScheduler sch = Bukkit.getServer().getScheduler();
-				sch.scheduleSyncDelayedTask(instance, new Runnable() {
+				sch.scheduleSyncDelayedTask( instance, new Runnable() {
 					@Override
 					public void run() {
-						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
+						Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command );
 					}
-				}, 20L);
-				rowUpdates.add(id);
+				}, 20L );
+				rowUpdates.add( id );
 			}
 		} else {
-			log.info("Check: No donations for online users. STATUS: " + json.getString("status"));
-			if (json.has("debug_info")) {
-				log.info(json.getString("debug_info"));
+			log.info( "Check: No donations for online users. STATUS: " + json.getString( "status" ) );
+			if ( json.has( "debug_info" ) ) {
+				log.info( json.getString( "debug_info" ) );
 			}
 		}
-		remove(rowUpdates);
-		
+		remove( rowUpdates );
+
 		return false;
 	}
 
 	/**
-	 * Removes IDs from 
+	 * Removes IDs from
+	 *
 	 * @param ids
 	 */
-	private void remove(ArrayList<Integer> ids) {
-		if (ids.isEmpty()) return;
+	private void remove( ArrayList< Integer > ids ) {
+		if ( ids.isEmpty() ) return;
 
 		try {
-			String sPath = c.getString(urlPath + ".url");
-			String key = c.getString(urlPath + ".key");
+			String sPath = c.getString( urlPath + ".url" );
+			String key = c.getString( urlPath + ".key" );
 
-			URL url = new URL(sPath + "?woo_minecraft=update&key=" + key);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("POST");
-			con.setRequestProperty("User-Agent", "Mozilla/5.0");
-			String urlParams = StringUtils.join(ids, ',');
-			con.setDoInput(true);
-			con.setDoOutput(true);
+			URL url = new URL( sPath + "?woo_minecraft=update&key=" + key );
+			HttpURLConnection con = ( HttpURLConnection ) url.openConnection();
+			con.setRequestMethod( "POST" );
+			con.setRequestProperty( "User-Agent", "Mozilla/5.0" );
+			String urlParams = StringUtils.join( ids, ',' );
+			con.setDoInput( true );
+			con.setDoOutput( true );
 
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes("players=" + urlParams);
+			DataOutputStream wr = new DataOutputStream( con.getOutputStream() );
+			wr.writeBytes( "players=" + urlParams );
 			wr.flush();
 			wr.close();
 
-			BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			BufferedReader input = new BufferedReader( new InputStreamReader( con.getInputStream() ) );
 			String response = input.readLine();
-			if (!response.equalsIgnoreCase("true")) {
+			if ( !response.equalsIgnoreCase( "true" ) ) {
 				// TODO -i18n- localize this string
-				log.severe("Could not update donations.");
-				log.info(response);
+				log.severe( "Could not update donations." );
+				log.info( response );
 			} else {
 				// TODO -i18n- localize this string
-				log.info("Donations updated");
+				log.info( "Donations updated" );
 			}
 			input.close();
 
-		} catch (Exception e) {
+		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
 	}
@@ -255,9 +260,9 @@ public final class WooMinecraft extends JavaPlugin {
 	 * Initialize Commands
 	 */
 	public void initCommands() {
-		getCommand("woo").setExecutor(new WooCommand());
+		getCommand( "woo" ).setExecutor( new WooCommand() );
 	}
-	
+
 	/**
 	 * A helper function to safely stop the server in the event
 	 * something went wrong in the initial setup.
@@ -265,6 +270,6 @@ public final class WooMinecraft extends JavaPlugin {
 	public static void stopServer() {
 		ConsoleCommandSender console = Bukkit.getConsoleSender();
 		Bukkit.dispatchCommand( console, "save-all" );
-		Bukkit.dispatchCommand(console, "stop" );
+		Bukkit.dispatchCommand( console, "stop" );
 	}
 }

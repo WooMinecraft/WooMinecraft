@@ -11,14 +11,14 @@ import java.net.URL;
 
 public class Connection {
 	
-	private static HttpURLConnection connection;
+	public HttpURLConnection connection = null;
 	private static DataOutputStream outputStream = null;
 	
 	/**
 	 * Connect to a URL
 	 * 
-	 * @param url The URL to the web site.
-	 * @param path The Path to the web site.
+	 * @param url_path The URL to the web site.
+	 * @param key The Key needed to access the website.
 	 */
 	public Connection( String url_path, String key ) {
 		
@@ -34,7 +34,7 @@ public class Connection {
 			
 		} catch( IOException e ) {
 			WooMinecraft.log.severe( e.getMessage() );
-			WooMinecraft.stopServer();
+//			WooMinecraft.stopServer();
 		}
 		
 	}
@@ -42,9 +42,9 @@ public class Connection {
 	/**
 	 * Sets the DataOutputStream for accessability
 	 */
-	private static void setOutputStream() {
+	private void setOutputStream() {
 		try {
-			OutputStream con = connection.getOutputStream();
+			OutputStream con = this.connection.getOutputStream();
 			outputStream = new DataOutputStream( con );
 		} catch ( IOException e ) {
 			WooMinecraft.log.severe( e.getMessage() );
@@ -56,7 +56,7 @@ public class Connection {
 	 * 
 	 * @return DataOutputStream
 	 */
-	private static DataOutputStream GetOutputStream() {
+	private DataOutputStream GetOutputStream() {
 		if ( null == outputStream ) {
 			setOutputStream();
 		}
@@ -69,7 +69,7 @@ public class Connection {
 	 * @param names
 	 * @return False on failure, true otherwise.
 	 */
-	private static boolean processNames( String names ) {
+	private boolean processNames( String names ) {
 		
 		DataOutputStream stream = GetOutputStream();
 		if ( null == stream ) {
