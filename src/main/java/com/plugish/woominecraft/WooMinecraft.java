@@ -191,6 +191,8 @@ public final class WooMinecraft extends JavaPlugin {
 				int id = obj.getInt( "id" );
 
 				BukkitScheduler sch = Bukkit.getServer().getScheduler();
+
+				// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
 				sch.scheduleSyncDelayedTask( instance, new Runnable() {
 					@Override
 					public void run() {
@@ -213,7 +215,7 @@ public final class WooMinecraft extends JavaPlugin {
 	/**
 	 * Removes IDs from
 	 *
-	 * @param ids
+	 * @param ids Ids to remove
 	 */
 	private void remove( ArrayList< Integer > ids ) {
 		if ( ids.isEmpty() ) return;
