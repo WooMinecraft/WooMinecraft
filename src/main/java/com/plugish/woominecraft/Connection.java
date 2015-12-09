@@ -1,7 +1,5 @@
 package com.plugish.woominecraft;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
