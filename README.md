@@ -52,4 +52,6 @@ Tasks
 -------------
 - [x] Create Wiki , #1
 - [x] Wiki: Bukkit Installation & Config , #2
-- [ ] Wiki: Wordpress Installation & Config, #3
+- [x] Wiki: Wordpress Installation & Config, #3
+- [ ] Wiki: Check or all the download links are correct
+- [ ] Wiki: Add tutorial for adding at woocommerce packages
