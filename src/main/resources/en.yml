@@ -1,0 +1,4 @@
+general:
+  not_authorized: "You are not authorized to do that!"
+errors:
+  url_error: "There was an error processing the request to the server."

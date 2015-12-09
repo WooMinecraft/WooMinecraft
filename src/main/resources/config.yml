@@ -1,7 +1,4 @@
-WooMinecraft:
-  messages:
-    file: english
-  web:
-    time_delay: 1500
-    url: www.example.com
-    key: ''
+lang: en
+update_interval: 1500
+url: http://playground.dev
+key: ''
