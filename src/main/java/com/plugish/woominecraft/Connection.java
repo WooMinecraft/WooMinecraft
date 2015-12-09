@@ -1,5 +1,7 @@
 package com.plugish.woominecraft;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,15 +14,19 @@ import java.net.URL;
 public class Connection {
 	
 	public HttpURLConnection connection = null;
+	public WooMinecraft plugin;
 	private static DataOutputStream outputStream = null;
 	
 	/**
 	 * Connect to a URL
-	 * 
+	 *
+	 * @param plugin Instance of WooMinecraft
 	 * @param url_path The URL to the web site.
 	 * @param key The Key needed to access the website.
 	 */
-	public Connection( String url_path, String key ) {
+	public Connection( WooMinecraft plugin, String url_path, String key ) {
+
+		this.plugin = plugin;
 		
 		try {
 			URL url = new URL( url_path + "?woo_minecraft=check&key=" + key );
@@ -33,7 +39,7 @@ public class Connection {
 			connection.setDoOutput(true);
 
 		} catch( IOException e ) {
-			WooMinecraft.log.config( e.getMessage() );
+			plugin.getLogger().warning( e.getMessage() );
 		}
 		
 	}
@@ -46,7 +52,7 @@ public class Connection {
 			OutputStream con = this.connection.getOutputStream();
 			outputStream = new DataOutputStream( con );
 		} catch ( IOException e ) {
-			WooMinecraft.log.severe( e.getMessage() );
+			plugin.getLogger().severe( e.getMessage() );
 		}
 	}
 	
@@ -65,14 +71,15 @@ public class Connection {
 	
 	/**
 	 * Writes all Names to a DataOutputStream
-	 * @param names
+	 * @param names A list of player names.
 	 * @return False on failure, true otherwise.
 	 */
 	private boolean processNames( String names ) {
 		
 		DataOutputStream stream = GetOutputStream();
 		if ( null == stream ) {
-			WooMinecraft.log.severe( "Cannot open Data output stream!" );
+			plugin.getLogger().warning( plugin.getLang( "log.fail_dos" ) );
+			return false;
 		}
 		
 		try {
@@ -80,7 +87,7 @@ public class Connection {
 			stream.flush();
 			stream.close();
 		} catch( IOException e ) {
-			WooMinecraft.log.severe( e.getMessage() );
+			plugin.getLogger().warning( e.getMessage() );
 			return false;
 		}
 		
@@ -102,7 +109,7 @@ public class Connection {
 		try {
 			stream = connection.getInputStream();
 		} catch( IOException e ) {
-			WooMinecraft.log.severe( e.getMessage() );
+			plugin.getLogger().severe( e.getMessage() );
 		}
 		
 		if( null != stream ) {

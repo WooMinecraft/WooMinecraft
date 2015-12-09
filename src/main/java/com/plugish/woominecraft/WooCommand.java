@@ -10,75 +10,73 @@ import org.json.JSONException;
 
 public class WooCommand implements CommandExecutor {
 
-    public static WooMinecraft plugin = WooMinecraft.instance;
-    public static String Theme = ChatColor.DARK_PURPLE + "[" + ChatColor.WHITE + "Woo" + ChatColor.DARK_PURPLE + "] " + ChatColor.DARK_PURPLE + "";
+	public static WooMinecraft plugin = WooMinecraft.instance;
+	public static String Theme = ChatColor.DARK_PURPLE + "[" + ChatColor.WHITE + "Woo" + ChatColor.DARK_PURPLE + "] " + ChatColor.DARK_PURPLE + "";
 
-    @Override
-    public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("woo") && args.length == 0) {
-            if (s.hasPermission("woo.admin") || s.isOp()) {
-                s.sendMessage( Theme + " Available Commands: /woo [register , reload , check]");
-            } else {
-                s.sendMessage(Theme + " You Don't Have Permission for that Command!");
-            }
-        } else if(command.getName().equalsIgnoreCase("woo") && args.length == 1) {
-            if(args[0].equalsIgnoreCase("reload")) {
-                if(s.hasPermission("woo.admin") || s.isOp()) {
-                    plugin.reloadConfig();
-                    s.sendMessage(Theme + " Config Reloaded");
-                    String msg = plugin.english.getString("Reloaded").replace("&", "\u00A7");
-                    s.sendMessage(msg);
-                } else {
-                    String msg = plugin.english.getString("NoPerms").replace("&", "\u00A7");
-                    s.sendMessage(msg);
-                }
-            } else if(args[0].equalsIgnoreCase("register")) {
-                if(s.hasPermission("woo.admin") || s.isOp()) {
-                    /*
+	@Override
+	public boolean onCommand( CommandSender sender, Command command, String label, String[] args ) {
+		if ( command.getName().equalsIgnoreCase( "woo" ) && args.length == 0 ) {
+			if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
+				sender.sendMessage( Theme + " " + plugin.getLang( "general.avail_commands" ) + ": /woo [register , reload , check]" );
+			} else {
+				sender.sendMessage( Theme + " " + plugin.getLang( "general.not_authorized" ) );
+			}
+		} else if ( command.getName().equalsIgnoreCase( "woo" ) && args.length == 1 ) {
+			if ( args[ 0 ].equalsIgnoreCase( "reload" ) ) {
+				String msg = plugin.getLang( "general.reloaded" ).replace( "&", "\u00A7" );
+				if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
+					plugin.reloadConfig();
+					sender.sendMessage( msg );
+				} else {
+					msg = plugin.getLang( "general.not_authorized" ).replace( "&", "\u00A7" );
+					sender.sendMessage( msg );
+				}
+			} else if ( args[ 0 ].equalsIgnoreCase( "register" ) ) {
+				if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
+					/*
                     * Creating a random UUID (Universally unique identifier).
                     */
-                    UUID uuid = UUID.randomUUID();
-                    String key = "";
-                    if ( plugin.config.getString( WooMinecraft.urlPath + ".key") == "changeme" ) {
-                        key = uuid.toString().replaceAll("-", "");
-                        plugin.config.set( WooMinecraft.urlPath + ".key", key);
-                        plugin.saveConfig();
-                        s.sendMessage(Theme + " Saved Config!");
-                        s.sendMessage(Theme + " Key: " + key);
-                        s.sendMessage(Theme + " Copy this key and put it in your WooMinecraft options panel in WordPress");
-                    } else {
-                        key = plugin.config.getString( WooMinecraft.urlPath + ".key");
-                        s.sendMessage(Theme + " key already set!");
-                    }
-                } else {
-                    String msg = plugin.english.getString("NoPerms").replace("&", "\u00A7");
-                    s.sendMessage(msg);
-                }
-            } else if(args[0].equalsIgnoreCase("check")) {
-                if(s.hasPermission("woo.admin") || s.isOp()) {
-                	
-                	boolean checkResults = false;
-                	String msg = "";
-                	
-                	try {
-                		checkResults = plugin.check();
-                	} catch( JSONException e ) {
-                		WooMinecraft.log.severe( e.getMessage() );
-                	}
-                	
-                	if ( false == checkResults ) {
-                		msg = Theme + " No purchases available.";
-                	} else {
-                		msg = Theme + " No purchases available.";
-                	}
-                	
-                    s.sendMessage( msg );
-                } else {
-                    String msg = plugin.english.getString("NoPerms").replace("&", "\u00A7");
-                    s.sendMessage(msg);
-                }
-            }
-        }
-        return true;
-    }
+					UUID uuid = UUID.randomUUID();
+					String key;
+					if ( plugin.config.getString( "key" ).equals( "changeme" ) ) {
+						key = uuid.toString().replaceAll( "-", "" );
+						plugin.config.set( "key", key );
+						plugin.saveConfig();
+						sender.sendMessage( Theme + " " + plugin.getLang( "general.saved_conf" ) );
+						sender.sendMessage( Theme + " " + plugin.getLang( "general.key" ) + ": " + key );
+						sender.sendMessage( Theme + " " + plugin.getLang( "general.cpy_key" ) );
+					} else {
+						sender.sendMessage( Theme + " " + plugin.getLang( "general.key_set" ) );
+					}
+				} else {
+					String msg = plugin.getLang( "general.not_authorized" ).replace( "&", "\u00A7" );
+					sender.sendMessage( msg );
+				}
+			} else if ( args[ 0 ].equalsIgnoreCase( "check" ) ) {
+				if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
+
+					boolean checkResults = false;
+					String msg = "";
+
+					try {
+						checkResults = plugin.check();
+					} catch ( JSONException e ) {
+						WooMinecraft.log.warning( e.getMessage() );
+					}
+
+					if ( !checkResults ) {
+						msg = Theme + " " + plugin.getLang( "general.none_avail" );
+					} else {
+						msg = Theme + " " + plugin.getLang( "general.processed" );
+					}
+
+					sender.sendMessage( msg );
+				} else {
+					String msg = plugin.getLang( "general.not_authorized" ).replace( "&", "\u00A7" );
+					sender.sendMessage( msg );
+				}
+			}
+		}
+		return true;
+	}
 }

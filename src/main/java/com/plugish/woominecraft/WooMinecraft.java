@@ -133,7 +133,7 @@ public final class WooMinecraft extends JavaPlugin {
 		if ( list.size() < 1 ) return false;
 
 		// Must match main object method.
-		Connection urlConnection = new Connection( url, key );
+		Connection urlConnection = new Connection( this, url, key );
 
 		if ( urlConnection.connection == null ) {
 			return false;
