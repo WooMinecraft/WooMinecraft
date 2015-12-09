@@ -2,3 +2,10 @@ general:
   not_authorized: "You are not authorized to do that!"
 errors:
   url_error: "There was an error processing the request to the server."
+log:
+  com_init: "Commands Initialized"
+  enabled: "Donation system enabled!"
+  disabled: "Donation system disabled!"
+  no_donations: "No donations for online users."
+  cannot_update: "Cannot update donations."
+  don_updated: "Donations updated."

@@ -37,8 +37,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 	public static Logger log;
 	public static WooMinecraft instance;
-	public static String configPath = "WooMinecraft";
-	public static String urlPath = configPath + ".web";
+	public String lang = "en";
 
 	public YamlConfiguration l10n;
 	public YamlConfiguration config;
@@ -51,62 +50,47 @@ public final class WooMinecraft extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		log = getLogger();
-		this.config = ( YamlConfiguration ) getConfig();
 		instance = this;
-		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info( "[Woo] Initializing Config and Messages System." );
-
-		initalizePlugin();
-		// TODO -i18n- localize this string - excluding any [Woo] prefix
-//		log.info( "[Woo] Initializing Commands" );
-
-		initCommands();
-		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info( "[Woo] Commands Initialized" );
-
-		// Setup the scheduler
-		scheduler = new BukkitRunner( instance );
-		scheduler.runTaskTimerAsynchronously( instance, config.getInt( urlPath + ".time_delay" ) * 20, config.getInt( urlPath + ".time_delay" ) * 20 );
-
-		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info( "[Woo] Donation System Enabled!" );
+		this.config = ( YamlConfiguration ) getConfig();
 
 		// Save the default config.yml
 		saveDefaultConfig();
 
-		String lang = getConfig().getString( "lang" );
+		this.lang = getConfig().getString( "lang" );
 		if ( lang == null ) {
 			log.warning( "No default l10n set, setting to english." );
-			lang = "en";
+			this.lang = "en";
 		}
 
-		this.l10n = new ConfigMaker( this, lang, "lang" );
+		initCommands();
+		log.info( this.getLang( "log.com_init" ));
 
-	}
+		// Setup the scheduler
+		scheduler = new BukkitRunner( instance );
+		scheduler.runTaskTimerAsynchronously( instance, config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
 
-	public void initalizePlugin() {
-		// Load the config
-		config = getConfig();
-//		configFile = new File( getDataFolder(), "config.yml" );
-
-		// TODO -filechanges- Load lang file from a /lang/ folder based on l10n preference in main config
-//		englishFile = new File( getDataFolder(), "english.yml" );
-//		config = new YamlConfiguration();
-//		english = new YamlConfiguration();
-//		WooDefaults.initDefaults();
-//		WooDefaults.loadYamls();
-//		WooDefaults.saveYamls();
-
-		// TODO -i18n- localize this string - excluding any [Woo] prefix
-//		log.info( "[Woo] Initialized Config and Messages System." );
+		log.info( this.getLang( "log.enabled" ) );
 	}
 
 	@Override
 	public void onDisable() {
 		saveConfig();
+		log.info( this.getLang( "log.com_init" ) );
+	}
 
-		// TODO -i18n- localize this string - excluding any [Woo] prefix
-		log.info( "[Woo] Donation System Disabled!" );
+	/**
+	 * Helper method to get localized strings
+	 *
+	 * Much better than typing this.l10n.getString...
+	 * @param path Path to the config var
+	 * @return String
+	 */
+	public String getLang( String path ) {
+		if ( null == this.l10n ) {
+			this.l10n = new ConfigMaker( this, this.lang, "lang" );
+		}
+
+		return this.l10n.getString( path );
 	}
 
 	/**
@@ -141,8 +125,8 @@ public final class WooMinecraft extends JavaPlugin {
 		String namesResults = "";
 		JSONObject json = null;
 
-		String key = config.getString( "WooMinecraft.web.key" );
-		String url = config.getString( "WooMinecraft.web.url" );
+		String key = config.getString( "key" );
+		String url = config.getString( "url" );
 
 		// Check for player counts first
 		Collection< ? extends Player > list = Bukkit.getOnlinePlayers();
@@ -216,7 +200,7 @@ public final class WooMinecraft extends JavaPlugin {
 				rowUpdates.add( id );
 			}
 		} else {
-			log.info( "Check: No donations for online users. STATUS: " + json.getString( "status" ) );
+			log.info( this.getLang( "log.no_donations" ) );
 			if ( json.has( "debug_info" ) ) {
 				log.info( json.getString( "debug_info" ) );
 			}
@@ -235,9 +219,10 @@ public final class WooMinecraft extends JavaPlugin {
 		if ( ids.isEmpty() ) return;
 
 		try {
-			String sPath = c.getString( urlPath + ".url" );
-			String key = c.getString( urlPath + ".key" );
+			String sPath = this.config.getString( "url" );
+			String key = this.config.getString( "key" );
 
+//			TODO update this and the Connection class
 			URL url = new URL( sPath + "?woo_minecraft=update&key=" + key );
 			HttpURLConnection con = ( HttpURLConnection ) url.openConnection();
 			con.setRequestMethod( "POST" );
@@ -254,12 +239,10 @@ public final class WooMinecraft extends JavaPlugin {
 			BufferedReader input = new BufferedReader( new InputStreamReader( con.getInputStream() ) );
 			String response = input.readLine();
 			if ( !response.equalsIgnoreCase( "true" ) ) {
-				// TODO -i18n- localize this string
-				log.severe( "Could not update donations." );
+				log.warning( this.getLang( "log.cannot_update" ) );
 				log.info( response );
 			} else {
-				// TODO -i18n- localize this string
-				log.info( "Donations updated" );
+				log.info( this.getLang( "log.don_updated" ) );
 			}
 			input.close();
 
