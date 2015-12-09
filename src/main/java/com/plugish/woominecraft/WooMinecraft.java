@@ -11,7 +11,6 @@ package com.plugish.woominecraft;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -24,7 +23,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -42,11 +40,9 @@ public final class WooMinecraft extends JavaPlugin {
 	public static String configPath = "WooMinecraft";
 	public static String urlPath = configPath + ".web";
 
-	public File englishFile;
-	public FileConfiguration english;
+	public YamlConfiguration l10n;
+	public YamlConfiguration config;
 
-	public File configFile;
-	public FileConfiguration config;
 	public static BukkitRunner scheduler;
 
 	// TODO -logic- Is this even needed?
@@ -55,6 +51,7 @@ public final class WooMinecraft extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		log = getLogger();
+		this.config = ( YamlConfiguration ) getConfig();
 		instance = this;
 		// TODO -i18n- localize this string - excluding any [Woo] prefix
 		log.info( "[Woo] Initializing Config and Messages System." );
@@ -76,6 +73,15 @@ public final class WooMinecraft extends JavaPlugin {
 
 		// Save the default config.yml
 		saveDefaultConfig();
+
+		String lang = getConfig().getString( "lang" );
+		if ( lang == null ) {
+			log.warning( "No default l10n set, setting to english." );
+			lang = "en";
+		}
+
+		this.l10n = new ConfigMaker( this, lang, "lang" );
+
 	}
 
 	public void initalizePlugin() {
@@ -83,7 +89,7 @@ public final class WooMinecraft extends JavaPlugin {
 		config = getConfig();
 //		configFile = new File( getDataFolder(), "config.yml" );
 
-		// TODO -filechanges- Load lang file from a /lang/ folder based on language preference in main config
+		// TODO -filechanges- Load lang file from a /lang/ folder based on l10n preference in main config
 //		englishFile = new File( getDataFolder(), "english.yml" );
 //		config = new YamlConfiguration();
 //		english = new YamlConfiguration();

@@ -1,3 +1,5 @@
+package com.plugish.woominecraft;
+
 import java.io.File;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -29,8 +31,8 @@ public class ConfigMaker extends YamlConfiguration {
 		if ( isLangFile( fileName ) ) {
 			File langFile = new File( plugin.getDataFolder() + dir, fileName );
 			if ( ! langFile.exists() ) {
-				// Set the default language.
-				plugin.getLogger().info( "Requested language file does not exist, loading default en.yml" );
+				// Set the default l10n.
+				plugin.getLogger().info( "Requested l10n file does not exist, loading default en.yml" );
 				this.fileName = "en.yml";
 			}
 		}
@@ -39,7 +41,7 @@ public class ConfigMaker extends YamlConfiguration {
 	}
 
 	/**
-	 * Determines if a filename in path is a language file
+	 * Determines if a filename in path is a l10n file
 	 * @param fileName The filename we're looking at.
 	 * @return true|false
 	 */
