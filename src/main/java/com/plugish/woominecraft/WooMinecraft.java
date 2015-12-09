@@ -44,9 +44,6 @@ public final class WooMinecraft extends JavaPlugin {
 
 	public static BukkitRunner scheduler;
 
-	// TODO -logic- Is this even needed?
-	public static FileConfiguration c;
-
 	@Override
 	public void onEnable() {
 		log = getLogger();
@@ -87,7 +84,7 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	public String getLang( String path ) {
 		if ( null == this.l10n ) {
-			this.l10n = new ConfigMaker( this, this.lang, "lang" );
+			this.l10n = new ConfigMaker( this, this.lang, "/lang/" );
 		}
 
 		return this.l10n.getString( path );

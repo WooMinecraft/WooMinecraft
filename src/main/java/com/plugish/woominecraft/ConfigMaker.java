@@ -22,7 +22,7 @@ public class ConfigMaker extends YamlConfiguration {
 		if ( !this.dir.equals( "" ) ){
 			int index = this.dir.indexOf( File.separator );
 			if ( 0 > index ) {
-				this.dir = File.separator + this.dir;
+				this.dir = File.separator + this.dir + File.separator;
 			}
 		}
 
@@ -57,6 +57,7 @@ public class ConfigMaker extends YamlConfiguration {
 	private void createFile() {
 		try {
 			File file = new File( plugin.getDataFolder() + dir, fileName );
+			plugin.getLogger().info( plugin.getDataFolder() + dir );
 			if ( !file.exists() ) {
 				if ( plugin.getResource( fileName ) != null ) {
 					plugin.saveResource( fileName, false );
