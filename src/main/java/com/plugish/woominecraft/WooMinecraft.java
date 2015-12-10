@@ -9,15 +9,13 @@
  */
 package com.plugish.woominecraft;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,7 +83,9 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	public String getLang( String path ) {
 		if ( null == this.l10n ) {
-			this.l10n = new ConfigMaker( this, this.lang, "/lang/" );
+			String sep = File.separator;
+
+			this.l10n = new ConfigMaker( this, this.lang, sep + "lang" + sep );
 		}
 
 		return this.l10n.getString( path );
@@ -248,6 +248,55 @@ public final class WooMinecraft extends JavaPlugin {
 
 		} catch ( Exception e ) {
 			e.printStackTrace();
+		}
+	}
+
+	public void saveResource(String resourcePath, boolean replace) {
+getLogger().info( "Path: " + resourcePath );
+		if(resourcePath != null && !resourcePath.equals("")) {
+			resourcePath = resourcePath.replace('\\', '/');
+			InputStream in = this.getResource(resourcePath);
+			if(in == null) {
+				throw new IllegalArgumentException("The embedded resource \'" + resourcePath + "\' cannot be found in " + this.getFile() );
+			} else {
+				File outFile = new File( getDataFolder(), resourcePath);
+
+getLogger().info( "outFile: " + outFile.getName() );
+
+				int lastIndex = resourcePath.lastIndexOf(47);
+				String x = resourcePath.substring(0, lastIndex >= 0?lastIndex:0);
+getLogger().info( "X: " + x );
+				File outDir = new File( getDataFolder(), x );
+
+getLogger().info( "outDir: " + outDir.getPath() );
+//				return;
+
+				if(!outDir.exists()) {
+					outDir.mkdirs();
+				}
+
+				try {
+					if(outFile.exists() && !replace) {
+						getLogger().warning( "Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists.");
+					} else {
+						FileOutputStream ex = new FileOutputStream(outFile);
+						byte[] buf = new byte[1024];
+
+						int len;
+						while((len = in.read(buf)) > 0) {
+							ex.write(buf, 0, len);
+						}
+
+						ex.close();
+						in.close();
+					}
+				} catch ( IOException var10 ) {
+					getLogger().warning( "Could not save " + outFile.getName() + " to " + outFile );
+				}
+
+			}
+		} else {
+			throw new IllegalArgumentException("ResourcePath cannot be null or empty");
 		}
 	}
 

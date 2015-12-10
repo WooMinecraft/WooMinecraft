@@ -18,7 +18,7 @@ public class ConfigMaker extends YamlConfiguration {
 		this.plugin = plugin;
 		this.dir = dir;
 
-		// Normalizes the directory, adds a slash at the beginning IF it's not empty.
+		// Normalizes the directory, adds a slash at the beginning IF it doesn't exist.
 		if ( !this.dir.equals( "" ) ){
 			int index = this.dir.indexOf( File.separator );
 			if ( 0 > index ) {
@@ -28,8 +28,12 @@ public class ConfigMaker extends YamlConfiguration {
 
 		this.fileName = fileName + ( fileName.endsWith( ".yml" ) ? "" : ".yml" );
 
-		if ( isLangFile( fileName ) ) {
-			File langFile = new File( plugin.getDataFolder() + dir, fileName );
+		if ( isLangFile( dir ) ) {
+
+			String file = plugin.getDataFolder().getPath() + dir;
+			plugin.getLogger().info( "File: " + file );
+
+			File langFile = new File( file, fileName );
 			if ( ! langFile.exists() ) {
 				// Set the default l10n.
 				plugin.getLogger().info( "Requested l10n file does not exist, loading default en.yml" );
@@ -42,11 +46,13 @@ public class ConfigMaker extends YamlConfiguration {
 
 	/**
 	 * Determines if a filename in path is a l10n file
-	 * @param fileName The filename we're looking at.
+	 * @param dir The filename we're looking at.
 	 * @return true|false
 	 */
-	private boolean isLangFile( String fileName) {
-		int index = fileName.indexOf( "/lang/" );
+	private boolean isLangFile( String dir) {
+		String sep = File.separator;
+		int index = dir.indexOf( sep + "lang" + sep );
+plugin.getLogger().info( "Index: " + String.valueOf( index ) );
 		return index >= 0;
 	}
 
@@ -56,9 +62,11 @@ public class ConfigMaker extends YamlConfiguration {
 	 */
 	private void createFile() {
 		try {
-			File file = new File( plugin.getDataFolder() + dir, fileName );
-			plugin.getLogger().info( plugin.getDataFolder() + dir );
+			File file = new File( plugin.getDataFolder().getPath() + dir, fileName );
 			if ( !file.exists() ) {
+
+				plugin.getLogger().info( "Attempting to create:" + plugin.getDataFolder().getPath()+dir+fileName );
+				fileName = dir + fileName;
 				if ( plugin.getResource( fileName ) != null ) {
 					plugin.saveResource( fileName, false );
 				} else {
