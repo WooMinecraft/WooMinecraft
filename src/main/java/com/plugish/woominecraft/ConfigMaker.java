@@ -52,7 +52,6 @@ public class ConfigMaker extends YamlConfiguration {
 	private boolean isLangFile( String dir) {
 		String sep = File.separator;
 		int index = dir.indexOf( sep + "lang" + sep );
-plugin.getLogger().info( "Index: " + String.valueOf( index ) );
 		return index >= 0;
 	}
 
@@ -64,8 +63,6 @@ plugin.getLogger().info( "Index: " + String.valueOf( index ) );
 		try {
 			File file = new File( plugin.getDataFolder().getPath() + dir, fileName );
 			if ( !file.exists() ) {
-
-				plugin.getLogger().info( "Attempting to create:" + plugin.getDataFolder().getPath()+dir+fileName );
 				fileName = dir + fileName;
 				if ( plugin.getResource( fileName ) != null ) {
 					plugin.saveResource( fileName, false );
