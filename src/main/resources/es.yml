@@ -22,3 +22,6 @@ log:
   cannot_update: "No se puede actualizar las donaciones."
   don_updated: "Donaciones actualizadas."
   fail_dos: "No se puede abrir el flujo de salida de datos."
+  update_failed: "Error de actualización de: "
+  update_successful: "Descargado correctamente: "
+  update_bad_link: "La página de actualización proporcionado está dañada o no existe el link"
