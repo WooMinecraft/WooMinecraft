@@ -3,20 +3,16 @@ package com.plugish.woominecraft;
 import java.io.File;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class ConfigMaker extends YamlConfiguration {
-	private JavaPlugin plugin;
+	private WooMinecraft plugin;
 	private String fileName;
 	private String dir;
 
-	public ConfigMaker( JavaPlugin plugin, String fileName ) {
-		this( plugin, fileName, "" );
-	}
-
-	public ConfigMaker( JavaPlugin plugin, String fileName, String dir ) {
+	public ConfigMaker( WooMinecraft plugin, String fileName, String dir ) {
 		this.plugin = plugin;
 		this.dir = dir;
+		String file;
 
 		// Normalizes the directory, adds a slash at the beginning IF it doesn't exist.
 		if ( !this.dir.equals( "" ) ){
@@ -30,7 +26,7 @@ public class ConfigMaker extends YamlConfiguration {
 
 		if ( isLangFile( dir ) ) {
 
-			String file = plugin.getDataFolder().getPath() + dir;
+			file = plugin.getDataFolder().getPath() + dir;
 			plugin.getLogger().info( "File: " + file );
 
 			File langFile = new File( file, fileName );

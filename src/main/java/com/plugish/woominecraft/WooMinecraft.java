@@ -14,15 +14,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.UUID;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.IllegalClassException;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -50,7 +48,11 @@ public final class WooMinecraft extends JavaPlugin {
 		this.config = ( YamlConfiguration ) getConfig();
 
 		// Save the default config.yml
-		saveDefaultConfig();
+		try{
+			saveDefaultConfig();
+		} catch ( IllegalArgumentException e ) {
+			log.warning( e.getMessage() );
+		}
 
 		this.lang = getConfig().getString( "lang" );
 		if ( lang == null ) {
@@ -70,7 +72,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		saveConfig();
+		saveDefaultConfig();
 		log.info( this.getLang( "log.com_init" ) );
 	}
 
@@ -85,7 +87,7 @@ public final class WooMinecraft extends JavaPlugin {
 		if ( null == this.l10n ) {
 			String sep = File.separator;
 
-			this.l10n = new ConfigMaker( this, this.lang, sep + "lang" + sep );
+			this.l10n = new ConfigMaker( instance, this.lang, sep + "lang" + sep );
 		}
 
 		return this.l10n.getString( path );
