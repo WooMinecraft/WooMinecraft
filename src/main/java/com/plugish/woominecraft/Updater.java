@@ -25,6 +25,7 @@ public class Updater {
     private byte data[];
     private int downloadBytes = 0;
     private boolean startedDownload = false;
+    private URL downloadURL;
 
     private long startTime;
 
@@ -32,7 +33,7 @@ public class Updater {
     public Updater(String name, String URL) {
         this.name = name;
         try {
-            URL downloadURL = new URL("http://github.com/WooMinecraft/WooMinecraft/releases/tag");
+            downloadURL = new URL("http://github.com/WooMinecraft/WooMinecraft/releases/tag");
         } catch (MalformedURLException e) {
             plugin.getLang("log.update_bad_link");
         }

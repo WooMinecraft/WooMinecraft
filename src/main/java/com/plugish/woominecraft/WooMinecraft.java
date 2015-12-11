@@ -72,7 +72,6 @@ public final class WooMinecraft extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		saveDefaultConfig();
 		log.info( this.getLang( "log.com_init" ) );
 	}
 
