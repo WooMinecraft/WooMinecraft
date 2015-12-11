@@ -86,7 +86,7 @@ public final class WooMinecraft extends JavaPlugin {
 		if ( null == this.l10n ) {
 			String sep = File.separator;
 
-			this.l10n = new ConfigMaker( instance, this.lang, sep + "lang" + sep );
+			this.l10n = new ConfigMaker( this, this.lang, sep + "lang" + sep );
 		}
 
 		return this.l10n.getString( path );

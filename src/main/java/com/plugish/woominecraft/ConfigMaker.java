@@ -12,7 +12,6 @@ public class ConfigMaker extends YamlConfiguration {
 	public ConfigMaker( WooMinecraft plugin, String fileName, String dir ) {
 		this.plugin = plugin;
 		this.dir = dir;
-		String file;
 
 		// Normalizes the directory, adds a slash at the beginning IF it doesn't exist.
 		if ( !this.dir.equals( "" ) ){
@@ -25,15 +24,12 @@ public class ConfigMaker extends YamlConfiguration {
 		this.fileName = fileName + ( fileName.endsWith( ".yml" ) ? "" : ".yml" );
 
 		if ( isLangFile( dir ) ) {
-
-			file = plugin.getDataFolder().getPath() + dir;
-			plugin.getLogger().info( "File: " + file );
-
-			File langFile = new File( file, fileName );
+			String fPath = plugin.getDataFolder().getPath() + dir;
+			File langFile = new File( fPath, fileName );
 			if ( ! langFile.exists() ) {
 				// Set the default l10n.
 				plugin.getLogger().info( "Requested l10n file does not exist, loading default en.yml" );
-				this.fileName = "en.yml";
+				this.fileName = "lang/en.yml";
 			}
 		}
 
@@ -59,7 +55,7 @@ public class ConfigMaker extends YamlConfiguration {
 		try {
 			File file = new File( plugin.getDataFolder().getPath() + dir, fileName );
 			if ( !file.exists() ) {
-				fileName = dir + fileName;
+//				fileName = dir + fileName;
 				if ( plugin.getResource( fileName ) != null ) {
 					plugin.saveResource( fileName, false );
 				} else {
