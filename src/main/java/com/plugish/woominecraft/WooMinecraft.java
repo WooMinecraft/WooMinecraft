@@ -84,9 +84,9 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	public String getLang( String path ) {
 		if ( null == this.l10n ) {
-			String sep = File.separator;
 
-			this.l10n = new ConfigMaker( this, this.lang, sep + "lang" + sep );
+			LangSetup lang = new LangSetup( this );
+			l10n = lang.loadConfig();
 		}
 
 		return this.l10n.getString( path );
