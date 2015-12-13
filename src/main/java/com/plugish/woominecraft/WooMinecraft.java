@@ -12,6 +12,7 @@ package com.plugish.woominecraft;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -85,7 +86,7 @@ public final class WooMinecraft extends JavaPlugin {
 	public String getLang( String path ) {
 		if ( null == this.l10n ) {
 
-			LangSetup lang = new LangSetup( this );
+			LangSetup lang = new LangSetup( instance );
 			l10n = lang.loadConfig();
 		}
 

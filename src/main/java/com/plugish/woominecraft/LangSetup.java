@@ -5,10 +5,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.InputStream;
 
-/**
- * Created by Jay on 12/12/2015.
- */
 public class LangSetup {
 
 	private JavaPlugin plugin;
@@ -23,13 +21,19 @@ public class LangSetup {
 		requestedLang += requestedLang.endsWith( ".yml" ) ? "" : ".yml";
 		resourcePath = "lang" + File.separator + requestedLang;
 
+		if ( resourcePath.contains( "\\" ) ) {
+			resourcePath = resourcePath.replace( "\\", "/" );
+		}
+
+
 		File langConfig = new File( plugin.getDataFolder(), resourcePath );
 
 		if ( !langConfig.exists() ) {
+			InputStream in = plugin.getResource( resourcePath );
 			plugin.getLogger().warning( "Cannot find " + resourcePath + " in config directory." );
 
 			// Now try the resources folder
-			if ( null == plugin.getResource( resourcePath ) ) {
+			if ( null == in ) {
 				plugin.getLogger().info( "We could not find " + resourcePath + " in jar file, using default english." );
 				resourcePath = "lang" + File.separator + "en.yml";
 			} else {
