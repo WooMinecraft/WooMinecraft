@@ -14,6 +14,7 @@ import java.util.zip.ZipFile;
  *
  * @author TekkitCommando
  * @version 1.0
+ * Inspired by Atynine
  */
 
 public class Updater {
@@ -40,6 +41,56 @@ public class Updater {
 			plugin.getLang( "log.update_bad_link" );
 		}
 		this.byteSize = ( int ) this.getSizeFromSite();
+		data = new byte[(int) byteSize+1];
+	}
+
+	public void run() {
+		updater();
+		try {
+			saveFile(System.getProperty("user.dir"));
+		} catch(IOException e) {
+			System.out.println("Failed to find current path.");
+			e.printStackTrace();
+		}
+	}
+
+	public void updater() {
+		BufferedInputStream update = null;
+		if(downloadURL == null) return;
+		try {
+			update = new BufferedInputStream(downloadURL.openStream());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return;
+		}
+		if(update != null) {
+			try {
+				System.out.println("Starting " + name + " download.");
+				startTime = System.currentTimeMillis();
+				while((update.read(data, downloadBytes, 1)) != -1) {
+					startedDownload = true;
+					downloadBytes++;
+				}
+				update.close();
+				plugin.getLang("log.update_successful" + name);
+			} catch (IOException e){
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void saveFile(String path) throws IOException {
+		if(downloadURL == null) return;
+		try {
+			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(System.getProperty("user.dir")));
+			bos.write(data);
+			bos.flush();
+			bos.close();
+			System.out.println("Successfully saved to Plugins folder");
+		} catch (IOException e){
+			System.out.println("Failed to download file: " + name);
+			System.out.println(e);
+		}
 	}
 
 	public long getSizeFromSite() {
