@@ -38,7 +38,7 @@ public class WooCommand implements CommandExecutor {
                     */
 					UUID uuid = UUID.randomUUID();
 					String key;
-					if ( plugin.config.getString( "key" ).equals( "changeme" ) ) {
+					if ( plugin.config.getString( "key" ).equals( "" ) ) {
 						key = uuid.toString().replaceAll( "-", "" );
 						plugin.config.set( "key", key );
 						plugin.saveConfig();
