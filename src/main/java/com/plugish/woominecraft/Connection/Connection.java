@@ -1,4 +1,6 @@
-package com.plugish.woominecraft;
+package com.plugish.woominecraft.Connection;
+
+import com.plugish.woominecraft.WooMinecraft;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

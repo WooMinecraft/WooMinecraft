@@ -1,7 +1,8 @@
-package com.plugish.woominecraft;
+package com.plugish.woominecraft.Commands;
 
 import java.util.UUID;
 
+import com.plugish.woominecraft.WooMinecraft;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

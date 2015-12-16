@@ -12,14 +12,16 @@ package com.plugish.woominecraft;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.IllegalClassException;
+import com.plugish.woominecraft.Commands.WooCommand;
+import com.plugish.woominecraft.Connection.Connection;
+import com.plugish.woominecraft.Lang.LangSetup;
+import com.plugish.woominecraft.Util.BukkitRunner;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
