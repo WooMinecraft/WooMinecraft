@@ -1,5 +1,6 @@
-package com.plugish.woominecraft;
+package com.plugish.woominecraft.Util;
 
+import com.plugish.woominecraft.WooMinecraft;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;

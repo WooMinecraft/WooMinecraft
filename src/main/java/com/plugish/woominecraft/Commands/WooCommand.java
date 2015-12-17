@@ -1,7 +1,8 @@
-package com.plugish.woominecraft;
+package com.plugish.woominecraft.Commands;
 
 import java.util.UUID;
 
+import com.plugish.woominecraft.WooMinecraft;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -38,7 +39,7 @@ public class WooCommand implements CommandExecutor {
                     */
 					UUID uuid = UUID.randomUUID();
 					String key;
-					if ( plugin.config.getString( "key" ).equals( "changeme" ) ) {
+					if ( plugin.config.getString( "key" ).equals( "" ) ) {
 						key = uuid.toString().replaceAll( "-", "" );
 						plugin.config.set( "key", key );
 						plugin.saveConfig();
