@@ -1,6 +1,10 @@
 WooMinecraft
 ============
 
+WordPress Plugin
+------------
+You'll need the WordPress plugin for this MC Plugin to work - you can [get it here](https://github.com/WooMinecraft/woominecraft-wp).
+
 Note From TekkitCommando
 ------------
 
