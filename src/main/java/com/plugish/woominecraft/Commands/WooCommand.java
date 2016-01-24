@@ -12,7 +12,7 @@ import org.json.JSONException;
 public class WooCommand implements CommandExecutor {
 
 	public static WooMinecraft plugin = WooMinecraft.instance;
-	public static String Theme = ChatColor.DARK_PURPLE + "[" + ChatColor.WHITE + "Woo" + ChatColor.DARK_PURPLE + "] " + ChatColor.DARK_PURPLE + "";
+	public static String Theme = ChatColor.DARK_PURPLE + "[" + ChatColor.WHITE + "WooMinecraft" + ChatColor.DARK_PURPLE + "] " + ChatColor.DARK_PURPLE + "";
 
 	@Override
 	public boolean onCommand( CommandSender sender, Command command, String label, String[] args ) {

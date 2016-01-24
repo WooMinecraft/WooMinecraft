@@ -94,10 +94,10 @@ public class Connection {
 		return true;
 	}
 	
-	public String getPlayerResults( String names ) throws IOException {
+	public String getPlayerResults( String names ) {
 		
 		InputStream stream = null;
-		BufferedReader reader = null;
+		BufferedReader reader;
 		String output = null;
 		
 		boolean namesResult = processNames( names );
@@ -118,12 +118,18 @@ public class Connection {
 	
 			StringBuilder stringResponse = new StringBuilder();
 			String line;
-			while ( ( line = reader.readLine() ) != null ) {
-				stringResponse.append(line);
+			try {
+
+				while ( ( line = reader.readLine() ) != null ) {
+					stringResponse.append(line);
+				}
+
+				reader.close();
+				output = stringResponse.toString();
+
+			} catch ( IOException e ) {
+				plugin.getLogger().severe( e.getMessage() );
 			}
-			reader.close();
-			
-			output = stringResponse.toString();
 		}
 		
 		return output;

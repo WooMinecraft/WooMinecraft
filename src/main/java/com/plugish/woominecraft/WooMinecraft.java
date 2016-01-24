@@ -144,11 +144,7 @@ public final class WooMinecraft extends JavaPlugin {
 		ArrayList< Integer > rowUpdates = new ArrayList< Integer >();
 		String playerList = getPlayerList();
 
-		try {
-			namesResults = urlConnection.getPlayerResults( playerList );
-		} catch ( IOException e ) {
-			log.severe( e.getMessage() );
-		}
+		namesResults = urlConnection.getPlayerResults( playerList );
 
 		// If the server says there are no results for the sent names
 		// just return, no need to continue.
