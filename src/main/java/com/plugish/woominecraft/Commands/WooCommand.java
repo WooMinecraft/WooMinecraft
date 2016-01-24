@@ -41,7 +41,7 @@ public class WooCommand implements CommandExecutor {
 					String key;
 					if ( plugin.config.getString( "key" ).equals( "" ) ) {
 						key = uuid.toString().replaceAll( "-", "" );
-						plugin.config.set( "WooMinecraft.web.key", key );
+						plugin.config.set( "key", key );
 						plugin.saveConfig();
 						sender.sendMessage( Theme + " " + plugin.getLang( "general.saved_conf" ) );
 						sender.sendMessage( Theme + " " + plugin.getLang( "general.key" ) + ": " + key );
