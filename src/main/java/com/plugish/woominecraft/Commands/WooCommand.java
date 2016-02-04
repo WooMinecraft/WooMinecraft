@@ -56,22 +56,20 @@ public class WooCommand implements CommandExecutor {
 			} else if ( args[ 0 ].equalsIgnoreCase( "check" ) ) {
 				if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
 
-					boolean checkResults = false;
-					String msg = "";
-
 					try {
-						checkResults = plugin.check();
+						String msg;
+						boolean checkResults = plugin.check();
+
+						if ( !checkResults ) {
+							msg = Theme + " " + plugin.getLang( "general.none_avail" );
+						} else {
+							msg = Theme + " " + plugin.getLang( "general.processed" );
+						}
+
+						sender.sendMessage( msg );
 					} catch ( JSONException e ) {
 						WooMinecraft.log.warning( e.getMessage() );
 					}
-
-					if ( !checkResults ) {
-						msg = Theme + " " + plugin.getLang( "general.none_avail" );
-					} else {
-						msg = Theme + " " + plugin.getLang( "general.processed" );
-					}
-
-					sender.sendMessage( msg );
 				} else {
 					String msg = plugin.getLang( "general.not_authorized" ).replace( "&", "\u00A7" );
 					sender.sendMessage( msg );

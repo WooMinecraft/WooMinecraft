@@ -124,7 +124,7 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	public boolean check() throws JSONException {
 
-		String namesResults = "";
+		String namesResults;
 		JSONObject json = null;
 
 		String key = config.getString( "key" );

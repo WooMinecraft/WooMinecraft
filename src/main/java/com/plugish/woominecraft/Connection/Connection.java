@@ -100,7 +100,7 @@ public class Connection {
 		BufferedReader reader;
 		String output = null;
 		
-		boolean namesResult = processNames( names );
+		boolean namesResult = this.processNames( names );
 		
 		if ( !namesResult ) {
 			return "";
