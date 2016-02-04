@@ -163,7 +163,7 @@ public final class WooMinecraft extends JavaPlugin {
 			return false;
 		}
 
-		if ( json.getString( "status" ).equalsIgnoreCase( "success" ) ) {
+		if ( json.getBoolean( "success" ) ) {
 			JSONArray jsonArr = json.getJSONArray( "data" );
 			for ( int i = 0; i < jsonArr.length(); i++ ) {
 				JSONObject obj = jsonArr.getJSONObject( i );
