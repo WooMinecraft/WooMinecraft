@@ -88,6 +88,8 @@ public class Connection {
 
 		try {
 			stream.writeBytes( "names=" + names );
+			plugin.getLogger().info( "Wrote names" );
+			plugin.getLogger().info( Integer.toString( stream.size() ) );
 			stream.flush();
 			stream.close();
 		} catch ( IOException e ) {
