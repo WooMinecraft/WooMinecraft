@@ -88,10 +88,9 @@ public class Connection {
 
 		try {
 			stream.writeBytes( "names=" + names );
-			plugin.getLogger().info( "Wrote names" );
-			plugin.getLogger().info( Integer.toString( stream.size() ) );
 			stream.flush();
 			stream.close();
+			outputStream = null;
 		} catch ( IOException e ) {
 			plugin.getLogger().warning( e.getMessage() );
 			return false;
@@ -109,6 +108,7 @@ public class Connection {
 		boolean namesResult = this.processNames( names );
 
 		if ( !namesResult ) {
+			connection.disconnect();
 			return "";
 		}
 
@@ -137,6 +137,8 @@ public class Connection {
 				plugin.getLogger().severe( e.getMessage() );
 			}
 		}
+
+		connection.disconnect();
 
 		return output;
 	}
