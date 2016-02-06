@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -164,48 +165,55 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 
 		if ( json.getBoolean( "success" ) ) {
-			JSONArray jsonArr = json.getJSONArray( "data" );
-			for ( int i = 0; i < jsonArr.length(); i++ ) {
-				JSONObject obj = jsonArr.getJSONObject( i );
+			JSONObject jsonObject = json.getJSONObject( "data" );
+			Iterator<?> keys = jsonObject.keys();
+			while( keys.hasNext() ) {
+//			for ( int i = 0; i < jsonObject.length(); i++ ) {
+				String cur_key = ( String ) keys.next();
+				JSONArray obj = ( JSONArray ) jsonObject.get( cur_key );
 
-				String playerName = obj.getString( "player_name" );
-				String x = obj.getString( "command" );
-				final String command = x.replace( "%s", playerName );
+				for( int i = 0; i < obj.length(); i++ ) {
+					JSONObject cur_object = obj.getJSONObject( i );
+					String playerName = cur_object.getString( "player_name" );
+					String x = cur_object.getString( "command" );
+					final String command = x.replace( "%s", playerName );
 
-				// @TODO: Update to getUUID()
-				@SuppressWarnings( "deprecation" )
-				Player pN = Bukkit.getServer().getPlayer( playerName );
+					// @TODO: Update to getUUID()
+					@SuppressWarnings( "deprecation" )
+					Player pN = Bukkit.getServer().getPlayer( playerName );
 
-				if ( x.substring( 0, 3 ) == "give" ) {
-					int count = 0;
-					for ( ItemStack iN : pN.getInventory() ) {
-						if ( iN == null )
-							count++;
+					if ( x.substring( 0, 3 ).equalsIgnoreCase( "give" ) ) {
+						int count = 0;
+						for ( ItemStack iN : pN.getInventory() ) {
+							if ( iN == null )
+								count++;
+						}
+
+						if ( count == 0 ) return false;
 					}
 
-					if ( count == 0 ) return false;
+					int id = cur_object.getInt( "id" );
+
+					BukkitScheduler sch = Bukkit.getServer().getScheduler();
+
+					// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
+					sch.scheduleSyncDelayedTask( instance, new Runnable() {
+						@Override
+						public void run() {
+							Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command );
+						}
+					}, 20L );
+					rowUpdates.add( id );
 				}
-
-				int id = obj.getInt( "id" );
-
-				BukkitScheduler sch = Bukkit.getServer().getScheduler();
-
-				// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
-				sch.scheduleSyncDelayedTask( instance, new Runnable() {
-					@Override
-					public void run() {
-						Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command );
-					}
-				}, 20L );
-				rowUpdates.add( id );
 			}
+			remove( rowUpdates );
+			return true;
 		} else {
 			log.info( this.getLang( "log.no_donations" ) );
 			if ( json.has( "debug_info" ) ) {
 				log.info( json.getString( "debug_info" ) );
 			}
 		}
-		remove( rowUpdates );
 
 		return false;
 	}
@@ -237,14 +245,20 @@ public final class WooMinecraft extends JavaPlugin {
 			wr.close();
 
 			BufferedReader input = new BufferedReader( new InputStreamReader( con.getInputStream() ) );
+
 			String response = input.readLine();
-			if ( !response.equalsIgnoreCase( "true" ) ) {
-				log.warning( this.getLang( "log.cannot_update" ) );
-				log.info( response );
-			} else {
-				log.info( this.getLang( "log.don_updated" ) );
+			try{
+				JSONObject json = new JSONObject( response );
+				if ( ! json.getBoolean( "success" ) ) {
+					log.warning( this.getLang( "log.cannot_update" ) );
+					log.info( response );
+					input.close();
+				} else {
+					log.info( this.getLang( "log.don_updated" ) );
+				}
+			} catch ( JSONException e ) {
+				log.warning( e.getMessage() );
 			}
-			input.close();
 
 		} catch ( Exception e ) {
 			e.printStackTrace();
