@@ -1,0 +1,27 @@
+# These messages are relayed to players in-game.  And therefore should
+# definitely be translated.
+general:
+  not_authorized: "You are not authorized to do that!"
+  reloaded: "Plugin reloaded!"
+  saved_conf: "Saved Config"
+  key: "Key"
+  cpy_key: "Copy this key and put it in your WooMinecraft options panel in WordPress"
+  key_set: "Your key is already set - check your config"
+  none_avail: "No purchases available - please try again soon."
+  processed: "All purchases processed."
+  avail_commands: "Available Commands"
+
+# These messages are processed in the log file, and in-turn aren't really
+# seen by players.  So it's not absolutely necessary to translate them, but
+# if you're already thinking about it, why not?
+log:
+  com_init: "Commands Initialized"
+  enabled: "Donation system enabled!"
+  disabled: "Donation system disabled!"
+  no_donations: "No donations for online users."
+  cannot_update: "Cannot update donations."
+  don_updated: "Donations updated."
+  fail_dos: "Cannot open Data Output Stream!"
+  update_failed: "Update failed for: "
+  update_successful: "Successfully downloaded: "
+  update_bad_link: "The provided update page is corrupted or link doesn't exist"

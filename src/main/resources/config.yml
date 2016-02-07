@@ -1,0 +1,17 @@
+# Set this to the desired language file you wish to load.
+#
+# If your l10n is not available but one is that you know how to speak,consider
+# contributing to this plugin at https://github.com/WooMinecraft/WooMinecraft/
+lang: en
+
+# This is how often, in seconds, the server will contact your WordPress installation
+# to see if there are donations that need made.
+update_interval: 1500
+
+# You must set this to your WordPress site URL.  If you installed WordPress in a
+# subdirectory, it should point there.
+url: http://playground.dev
+
+# This must match the WordPress key in your admin panel for WooMinecraft
+# For security purposes, you MUST NOT leave this empty.
+key: ''
