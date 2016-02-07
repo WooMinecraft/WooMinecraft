@@ -36,6 +36,7 @@ public class Connection {
 			connection.setRequestMethod( "POST" );
 			connection.setRequestProperty( "User-Agent", "Mozilla/5.0" );
 			connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded" );
+			connection.setRequestProperty( "Accept-Charset", "UTF-8" );
 			connection.setRequestProperty( "charset", "utf-8" );
 			connection.setDoInput( true );
 			connection.setDoOutput( true );
