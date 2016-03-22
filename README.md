@@ -28,6 +28,12 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 
 ## Changelog
 
+### 1.0.5
+* Added debug option for more straight forward debug options.
+
+### 1.0.4
+* Too much to detail
+
 ### 1.0.0
 * First official release
 
