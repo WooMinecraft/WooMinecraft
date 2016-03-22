@@ -210,6 +210,12 @@ public final class WooMinecraft extends JavaPlugin {
 			return true;
 		} else {
 			log.info( this.getLang( "log.no_donations" ) );
+			if ( json.has( "data" ) ) {
+				JSONObject data = json.getJSONObject( "data" );
+				if ( data.has( "msg" ) ) {
+					log.severe( data.getString( "msg" ) );
+				}
+			}
 			if ( json.has( "debug_info" ) ) {
 				log.info( json.getString( "debug_info" ) );
 			}
