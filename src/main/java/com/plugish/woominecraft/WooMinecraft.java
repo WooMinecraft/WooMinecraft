@@ -145,7 +145,9 @@ public final class WooMinecraft extends JavaPlugin {
 		ArrayList< Integer > rowUpdates = new ArrayList< Integer >();
 		String playerList = getPlayerList();
 
-		namesResults = urlConnection.getPlayerResults( playerList );
+		namesResults = urlConnection.getPlayerResults( wmcDebug( "playerList", playerList ) );
+
+		wmcDebug( "Result from names check", namesResults );
 
 		// If the server says there are no results for the sent names
 		// just return, no need to continue.
@@ -168,7 +170,6 @@ public final class WooMinecraft extends JavaPlugin {
 			JSONObject jsonObject = json.getJSONObject( "data" );
 			Iterator<?> keys = jsonObject.keys();
 			while( keys.hasNext() ) {
-//			for ( int i = 0; i < jsonObject.length(); i++ ) {
 				String cur_key = ( String ) keys.next();
 				JSONArray obj = ( JSONArray ) jsonObject.get( cur_key );
 
@@ -237,7 +238,8 @@ public final class WooMinecraft extends JavaPlugin {
 			String key = this.config.getString( "key" );
 
 //			TODO update this and the Connection class
-			URL url = new URL( sPath + "?woo_minecraft=update&key=" + key );
+			String theURL = wmcDebug( "RemoveURL", sPath + "?woo_minecraft=update&key=" + key );
+			URL url = new URL( theURL );
 			HttpURLConnection con = ( HttpURLConnection ) url.openConnection();
 			con.setRequestMethod( "POST" );
 			con.setRequestProperty( "User-Agent", "Mozilla/5.0" );
@@ -276,5 +278,20 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	public void initCommands() {
 		getCommand( "woo" ).setExecutor( new WooCommand() );
+	}
+
+	/**
+	 * Helper for debugging data if the config is set
+	 *
+	 * @param msg The message string
+	 * @return String
+	 */
+	public String wmcDebug( String prefix, String msg ) {
+
+		if ( config.getBoolean( "debug" ) ) {
+			log.info( prefix + ": " + msg );
+		}
+
+		return msg;
 	}
 }

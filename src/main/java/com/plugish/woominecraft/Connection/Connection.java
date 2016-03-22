@@ -29,7 +29,8 @@ public class Connection {
 		this.plugin = plugin;
 
 		try {
-			URL url = new URL( url_path + "?woo_minecraft=check&key=" + key );
+			String theURL = plugin.wmcDebug( "URLCheck", url_path + "?woo_minecraft=check&key=" + key );
+			URL url = new URL( theURL );
 
 			// Type-cast to HTTPURLConnection since it extends URLConnection which is what's returned from openConnection()
 			connection = ( HttpURLConnection ) url.openConnection();

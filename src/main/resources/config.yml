@@ -15,3 +15,6 @@ url: http://playground.dev
 # This must match the WordPress key in your admin panel for WooMinecraft
 # For security purposes, you MUST NOT leave this empty.
 key: ''
+
+# Set to true in order to toggle debug information
+debug: false
