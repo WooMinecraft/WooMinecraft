@@ -42,6 +42,8 @@ public class WooCommand implements CommandExecutor {
 					if ( plugin.config.getString( "key" ).equals( "" ) ) {
 						key = uuid.toString().replaceAll( "-", "" );
 						plugin.config.set( "key", key );
+
+						// TODO: This may be causing the settings wipe
 						plugin.saveConfig();
 						sender.sendMessage( Theme + " " + plugin.getLang( "general.saved_conf" ) );
 						sender.sendMessage( Theme + " " + plugin.getLang( "general.key" ) + ": " + key );
