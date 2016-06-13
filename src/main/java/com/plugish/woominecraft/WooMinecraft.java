@@ -47,7 +47,6 @@ public final class WooMinecraft extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		log = getLogger();
 		instance = this;
 		this.config = ( YamlConfiguration ) getConfig();
 
