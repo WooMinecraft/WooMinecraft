@@ -70,7 +70,7 @@ public class WooCommand implements CommandExecutor {
 
 						sender.sendMessage( msg );
 					} catch ( JSONException e ) {
-						WooMinecraft.log.warning( e.getMessage() );
+						plugin.getLogger().warning( e.getMessage() );
 					}
 				} else {
 					String msg = plugin.getLang( "general.not_authorized" ).replace( "&", "\u00A7" );

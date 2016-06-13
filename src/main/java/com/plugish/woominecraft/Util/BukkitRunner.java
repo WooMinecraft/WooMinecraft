@@ -18,7 +18,7 @@ public class BukkitRunner extends BukkitRunnable {
 		try {
 			plugin.check();
 		} catch ( JSONException e ) {
-			WooMinecraft.log.warning( e.getMessage() );
+			plugin.getLogger().warning( e.getMessage() );
 		}
 	}
 
