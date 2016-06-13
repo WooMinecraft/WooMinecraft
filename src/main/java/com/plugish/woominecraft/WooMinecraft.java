@@ -15,7 +15,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,7 +35,6 @@ import org.json.JSONObject;
 
 public final class WooMinecraft extends JavaPlugin {
 
-	public static Logger log;
 	public static WooMinecraft instance;
 	public String lang = "en";
 
@@ -54,28 +52,28 @@ public final class WooMinecraft extends JavaPlugin {
 		try{
 			saveDefaultConfig();
 		} catch ( IllegalArgumentException e ) {
-			log.warning( e.getMessage() );
+			getLogger().warning( e.getMessage() );
 		}
 
 		this.lang = getConfig().getString( "lang" );
 		if ( lang == null ) {
-			log.warning( "No default l10n set, setting to english." );
+			getLogger().warning( "No default l10n set, setting to english." );
 			this.lang = "en";
 		}
 
 		initCommands();
-		log.info( this.getLang( "log.com_init" ));
+		getLogger().info( this.getLang( "getLogger().com_init" ));
 
 		// Setup the scheduler
 		scheduler = new BukkitRunner( instance );
 		scheduler.runTaskTimerAsynchronously( instance, config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
 
-		log.info( this.getLang( "log.enabled" ) );
+		getLogger().info( this.getLang( "getLogger().enabled" ) );
 	}
 
 	@Override
 	public void onDisable() {
-		log.info( this.getLang( "log.com_init" ) );
+		getLogger().info( this.getLang( "getLogger().com_init" ) );
 	}
 
 	/**
@@ -157,7 +155,7 @@ public final class WooMinecraft extends JavaPlugin {
 		try {
 			json = new JSONObject( namesResults );
 		} catch ( JSONException e ) {
-			log.severe( e.getMessage() );
+			getLogger().severe( e.getMessage() );
 		}
 
 		// Must have json data to continue.
@@ -209,15 +207,15 @@ public final class WooMinecraft extends JavaPlugin {
 			remove( rowUpdates );
 			return true;
 		} else {
-			log.info( this.getLang( "log.no_donations" ) );
+			getLogger().info( this.getLang( "getLogger().no_donations" ) );
 			if ( json.has( "data" ) ) {
 				JSONObject data = json.getJSONObject( "data" );
 				if ( data.has( "msg" ) ) {
-					log.severe( data.getString( "msg" ) );
+					getLogger().severe( data.getString( "msg" ) );
 				}
 			}
 			if ( json.has( "debug_info" ) ) {
-				log.info( json.getString( "debug_info" ) );
+				getLogger().info( json.getString( "debug_info" ) );
 			}
 		}
 
@@ -257,14 +255,14 @@ public final class WooMinecraft extends JavaPlugin {
 			try{
 				JSONObject json = new JSONObject( response );
 				if ( ! json.getBoolean( "success" ) ) {
-					log.warning( this.getLang( "log.cannot_update" ) );
-					log.info( response );
+					getLogger().warning( this.getLang( "getLogger().cannot_update" ) );
+					getLogger().info( response );
 					input.close();
 				} else {
-					log.info( this.getLang( "log.don_updated" ) );
+					getLogger().info( this.getLang( "getLogger().don_updated" ) );
 				}
 			} catch ( JSONException e ) {
-				log.warning( e.getMessage() );
+				getLogger().warning( e.getMessage() );
 			}
 
 		} catch ( Exception e ) {
@@ -288,7 +286,7 @@ public final class WooMinecraft extends JavaPlugin {
 	public String wmcDebug( String prefix, String msg ) {
 
 		if ( config.getBoolean( "debug" ) ) {
-			log.info( prefix + ": " + msg );
+			getLogger().info( prefix + ": " + msg );
 		}
 
 		return msg;
