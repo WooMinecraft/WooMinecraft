@@ -23,6 +23,7 @@ import com.plugish.woominecraft.Connection.Connection;
 import com.plugish.woominecraft.Lang.LangSetup;
 import com.plugish.woominecraft.Util.BukkitRunner;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -118,10 +119,11 @@ public final class WooMinecraft extends JavaPlugin {
 	 * webiste's database looking for pending donation deliveries
 	 *
 	 * @return boolean
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public boolean check() throws JSONException {
+	public boolean check() throws Exception {
 
+		URIBuilder uriBuilder = new URIBuilder( getConfig().getString( "url" ) );
 
 
 //		String key = config.getString( "key" );
