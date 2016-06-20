@@ -164,7 +164,7 @@ public final class WooMinecraft extends JavaPlugin {
 				// Walk over commands, executing them one by one.
 				for ( Integer x = 0; x < commands.length(); x++ ) {
 					String command = commands.getString( x );
-					// Now to just run the command
+					// TODO: Now to just run the command
 				}
 			}
 			// TODO: Store completed order ID's keyed by usernames then send back to server.
