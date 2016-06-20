@@ -22,6 +22,7 @@ import com.plugish.woominecraft.Commands.WooCommand;
 import com.plugish.woominecraft.Connection.Connection;
 import com.plugish.woominecraft.Lang.LangSetup;
 import com.plugish.woominecraft.Util.BukkitRunner;
+import com.plugish.woominecraft.Util.RcHttp;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.bukkit.Bukkit;
@@ -129,6 +130,44 @@ public final class WooMinecraft extends JavaPlugin {
 		String url = uriBuilder.toString();
 		if ( url.equals( "" ) ) {
 			throw new Exception( "WMC URL is empty for some reason" );
+		}
+
+		RcHttp rcHttp = new RcHttp( this );
+		String httpResponse = rcHttp.request( url );
+
+		// No response, kill out here.
+		if ( httpResponse.equals( "" ) ) {
+			return false;
+		}
+
+		JSONObject pendingCommands = new JSONObject( httpResponse );
+		if ( ! pendingCommands.getBoolean( "success" ) ) {
+			// Failure on WP side, kill over here.
+			return false;
+		}
+
+		JSONObject data = pendingCommands.getJSONObject( "data" );
+		Iterator<String> playerNames = data.keys();
+		while ( playerNames.hasNext() ) {
+			// Walk over players.
+			String playerName = playerNames.next();
+
+			// Get all orders for the current player.
+			JSONObject playerOrders = data.getJSONObject( playerName );
+			Iterator<String> orderIDs = playerOrders.keys();
+			while ( orderIDs.hasNext() ) {
+				String orderID = orderIDs.next();
+
+				// Get all commands per order
+				JSONArray commands = playerOrders.getJSONArray( orderID );
+
+				// Walk over commands, executing them one by one.
+				for ( Integer x = 0; x < commands.length(); x++ ) {
+					String command = commands.getString( x );
+					// Now to just run the command
+				}
+			}
+			// TODO: Store completed order ID's keyed by usernames then send back to server.
 		}
 
 
