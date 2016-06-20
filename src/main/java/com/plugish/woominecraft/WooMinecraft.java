@@ -124,6 +124,12 @@ public final class WooMinecraft extends JavaPlugin {
 	public boolean check() throws Exception {
 
 		URIBuilder uriBuilder = new URIBuilder( getConfig().getString( "url" ) );
+		uriBuilder.addParameter( "key", getConfig().getString( "key" ) );
+
+		String url = uriBuilder.toString();
+		if ( url.equals( "" ) ) {
+			throw new Exception( "WMC URL is empty for some reason" );
+		}
 
 
 //		String key = config.getString( "key" );
