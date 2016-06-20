@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -148,13 +149,23 @@ public final class WooMinecraft extends JavaPlugin {
 
 		JSONObject data = pendingCommands.getJSONObject( "data" );
 		Iterator<String> playerNames = data.keys();
+		JSONObject processedData = new JSONObject();
+		Integer offset = 0;
+
 		while ( playerNames.hasNext() ) {
 			// Walk over players.
 			String playerName = playerNames.next();
 
+			@SuppressWarnings( "deprecation" )
+			Player player = Bukkit.getServer().getPlayer( playerName );
+			if ( ! player.isOnline() ) {
+				continue;
+			}
+
 			// Get all orders for the current player.
 			JSONObject playerOrders = data.getJSONObject( playerName );
 			Iterator<String> orderIDs = playerOrders.keys();
+			JSONArray processedOrders = new JSONArray();
 			while ( orderIDs.hasNext() ) {
 				String orderID = orderIDs.next();
 
@@ -163,12 +174,26 @@ public final class WooMinecraft extends JavaPlugin {
 
 				// Walk over commands, executing them one by one.
 				for ( Integer x = 0; x < commands.length(); x++ ) {
-					String command = commands.getString( x );
-					// TODO: Now to just run the command
+					String command = commands.getString( x ).replace( "%s", playerName );
+					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+
+					// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
+					scheduler.scheduleSyncDelayedTask( instance, new Runnable() {
+						@Override
+						public void run() {
+							Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command );
+						}
+					}, 20L );
 				}
+				processedOrders.put( orderID );
 			}
-			// TODO: Store completed order ID's keyed by usernames then send back to server.
+			processedData.put( playerName, processedOrders );
 		}
+
+		HashMap<String, String> postData = new HashMap<>();
+		postData.put( "processedOrders", postData.toString() );
+
+		String updatedCommandSet = rcHttp.send( url, postData );
 
 
 //		String key = config.getString( "key" );
