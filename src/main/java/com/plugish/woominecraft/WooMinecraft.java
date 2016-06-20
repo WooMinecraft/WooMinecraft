@@ -122,102 +122,101 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	public boolean check() throws JSONException {
 
-		String namesResults;
-		JSONObject json = null;
 
-		String key = config.getString( "key" );
-		String url = config.getString( "url" );
 
-		// Check for player counts first
-		Collection< ? extends Player > list = Bukkit.getOnlinePlayers();
-		if ( list.size() < 1 ) return false;
-
-		// Must match main object method.
-		Connection urlConnection = new Connection( this, url, key );
-
-		if ( urlConnection.connection == null ) {
-			return false;
-		}
-
-		ArrayList< Integer > rowUpdates = new ArrayList< Integer >();
-		String playerList = getPlayerList();
-
-		namesResults = urlConnection.getPlayerResults( wmcDebug( "playerList", playerList ) );
-
-		wmcDebug( "Result from names check", namesResults );
-
-		// If the server says there are no results for the sent names
-		// just return, no need to continue.
-		if ( namesResults.equals( "" ) ) {
-			return false;
-		}
-
-		try {
-			json = new JSONObject( namesResults );
-		} catch ( JSONException e ) {
-			getLogger().severe( e.getMessage() );
-		}
-
-		// Must have json data to continue.
-		if ( null == json ) {
-			return false;
-		}
-
-		if ( json.getBoolean( "success" ) ) {
-			JSONObject jsonObject = json.getJSONObject( "data" );
-			Iterator<?> keys = jsonObject.keys();
-			while( keys.hasNext() ) {
-				String cur_key = ( String ) keys.next();
-				JSONArray obj = ( JSONArray ) jsonObject.get( cur_key );
-
-				for( int i = 0; i < obj.length(); i++ ) {
-					JSONObject cur_object = obj.getJSONObject( i );
-					String playerName = cur_object.getString( "player_name" );
-					String x = cur_object.getString( "command" );
-					final String command = x.replace( "%s", playerName );
-
-					// @TODO: Update to getUUID()
-					@SuppressWarnings( "deprecation" )
-					Player pN = Bukkit.getServer().getPlayer( playerName );
-
-					if ( x.substring( 0, 3 ).equalsIgnoreCase( "give" ) ) {
-						int count = 0;
-						for ( ItemStack iN : pN.getInventory() ) {
-							if ( iN == null )
-								count++;
-						}
-
-						if ( count == 0 ) return false;
-					}
-
-					int id = cur_object.getInt( "id" );
-
-					BukkitScheduler sch = Bukkit.getServer().getScheduler();
-
-					// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
-					sch.scheduleSyncDelayedTask( instance, new Runnable() {
-						@Override
-						public void run() {
-							Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command );
-						}
-					}, 20L );
-					rowUpdates.add( id );
-				}
-			}
-			remove( rowUpdates );
-			return true;
-		} else {
-			getLogger().info( this.getLang( "getLogger().no_donations" ) );
-			if ( json.has( "data" ) ) {
-				JSONObject data = json.getJSONObject( "data" );
-				if ( data.has( "msg" ) ) {
-					getLogger().severe( data.getString( "msg" ) );
-				}
-			}
-			if ( json.has( "debug_info" ) ) {
-				getLogger().info( json.getString( "debug_info" ) );
-			}
-		}
+//		String key = config.getString( "key" );
+//		String url = config.getString( "url" );
+//
+//		// Check for player counts first
+//		Collection< ? extends Player > list = Bukkit.getOnlinePlayers();
+//		if ( list.size() < 1 ) return false;
+//
+//		// Must match main object method.
+//		Connection urlConnection = new Connection( this, url, key );
+//
+//		if ( urlConnection.connection == null ) {
+//			return false;
+//		}
+//
+//		ArrayList< Integer > rowUpdates = new ArrayList< Integer >();
+//		String playerList = getPlayerList();
+//
+//		namesResults = urlConnection.getPlayerResults( wmcDebug( "playerList", playerList ) );
+//
+//		wmcDebug( "Result from names check", namesResults );
+//
+//		// If the server says there are no results for the sent names
+//		// just return, no need to continue.
+//		if ( namesResults.equals( "" ) ) {
+//			return false;
+//		}
+//
+//		try {
+//			json = new JSONObject( namesResults );
+//		} catch ( JSONException e ) {
+//			getLogger().severe( e.getMessage() );
+//		}
+//
+//		// Must have json data to continue.
+//		if ( null == json ) {
+//			return false;
+//		}
+//
+//		if ( json.getBoolean( "success" ) ) {
+//			JSONObject jsonObject = json.getJSONObject( "data" );
+//			Iterator<?> keys = jsonObject.keys();
+//			while( keys.hasNext() ) {
+//				String cur_key = ( String ) keys.next();
+//				JSONArray obj = ( JSONArray ) jsonObject.get( cur_key );
+//
+//				for( int i = 0; i < obj.length(); i++ ) {
+//					JSONObject cur_object = obj.getJSONObject( i );
+//					String playerName = cur_object.getString( "player_name" );
+//					String x = cur_object.getString( "command" );
+//					final String command = x.replace( "%s", playerName );
+//
+//					// @TODO: Update to getUUID()
+//					@SuppressWarnings( "deprecation" )
+//					Player pN = Bukkit.getServer().getPlayer( playerName );
+//
+//					if ( x.substring( 0, 3 ).equalsIgnoreCase( "give" ) ) {
+//						int count = 0;
+//						for ( ItemStack iN : pN.getInventory() ) {
+//							if ( iN == null )
+//								count++;
+//						}
+//
+//						if ( count == 0 ) return false;
+//					}
+//
+//					int id = cur_object.getInt( "id" );
+//
+//					BukkitScheduler sch = Bukkit.getServer().getScheduler();
+//
+//					// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
+//					sch.scheduleSyncDelayedTask( instance, new Runnable() {
+//						@Override
+//						public void run() {
+//							Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command );
+//						}
+//					}, 20L );
+//					rowUpdates.add( id );
+//				}
+//			}
+//			remove( rowUpdates );
+//			return true;
+//		} else {
+//			getLogger().info( this.getLang( "getLogger().no_donations" ) );
+//			if ( json.has( "data" ) ) {
+//				JSONObject data = json.getJSONObject( "data" );
+//				if ( data.has( "msg" ) ) {
+//					getLogger().severe( data.getString( "msg" ) );
+//				}
+//			}
+//			if ( json.has( "debug_info" ) ) {
+//				getLogger().info( json.getString( "debug_info" ) );
+//			}
+//		}
 
 		return false;
 	}
