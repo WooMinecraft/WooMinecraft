@@ -9,31 +9,22 @@
  */
 package com.plugish.woominecraft;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.plugish.woominecraft.Commands.WooCommand;
-import com.plugish.woominecraft.Connection.Connection;
 import com.plugish.woominecraft.Lang.LangSetup;
 import com.plugish.woominecraft.Util.BukkitRunner;
 import com.plugish.woominecraft.Util.RcHttp;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public final class WooMinecraft extends JavaPlugin {
