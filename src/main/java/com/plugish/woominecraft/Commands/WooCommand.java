@@ -69,7 +69,7 @@ public class WooCommand implements CommandExecutor {
 						}
 
 						sender.sendMessage( msg );
-					} catch ( JSONException e ) {
+					} catch ( Exception e ) {
 						plugin.getLogger().warning( e.getMessage() );
 					}
 				} else {
