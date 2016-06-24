@@ -34,13 +34,9 @@ public class WooCommand implements CommandExecutor {
 				}
 			} else if ( args[ 0 ].equalsIgnoreCase( "register" ) ) {
 				if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
-					/*
-                    * Creating a random UUID (Universally unique identifier).
-                    */
-					UUID uuid = UUID.randomUUID();
-					String key;
 					if ( plugin.getConfig().getString( "key" ).equals( "" ) ) {
-						key = uuid.toString().replaceAll( "-", "" );
+						UUID uuid = UUID.randomUUID();
+						String key = uuid.toString().replaceAll( "-", "" );
 						plugin.getConfig().set( "key", key );
 
 						// TODO: Need to figure out a way to save config WITH comments.
