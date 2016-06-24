@@ -39,9 +39,9 @@ public class WooCommand implements CommandExecutor {
                     */
 					UUID uuid = UUID.randomUUID();
 					String key;
-					if ( plugin.config.getString( "key" ).equals( "" ) ) {
+					if ( plugin.getConfig().getString( "key" ).equals( "" ) ) {
 						key = uuid.toString().replaceAll( "-", "" );
-						plugin.config.set( "key", key );
+						plugin.getConfig().set( "key", key );
 
 						// TODO: This may be causing the settings wipe
 						plugin.saveConfig();
