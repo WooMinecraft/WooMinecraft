@@ -56,18 +56,18 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 
 		initCommands();
-		getLogger().info( this.getLang( "getLogger().com_init" ));
+		getLogger().info( this.getLang( "log.com_init" ));
 
 		// Setup the scheduler
 		scheduler = new BukkitRunner( instance );
 		scheduler.runTaskTimerAsynchronously( instance, config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
 
-		getLogger().info( this.getLang( "getLogger().enabled" ) );
+		getLogger().info( this.getLang( "log.enabled" ) );
 	}
 
 	@Override
 	public void onDisable() {
-		getLogger().info( this.getLang( "getLogger().com_init" ) );
+		getLogger().info( this.getLang( "log.com_init" ) );
 	}
 
 	/**
