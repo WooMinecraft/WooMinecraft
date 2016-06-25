@@ -63,7 +63,7 @@ public final class WooMinecraft extends JavaPlugin {
 		 *  Register event handlers
 		 *  See GUI class for event and gui code.
 		 */
-		getServer().getPluginManager().registerEvents(new GUI(), this);
+		// getServer().getPluginManager().registerEvents(new GUI(), this);
 		
 		// Setup the scheduler
 		scheduler = new BukkitRunner( instance );
