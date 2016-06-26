@@ -146,7 +146,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 		JSONObject data = pendingCommands.getJSONObject( "data" );
 		Iterator<String> playerNames = data.keys();
-		JSONObject processedData = new JSONObject();
+		JSONArray processedData = new JSONArray();
 
 		while ( playerNames.hasNext() ) {
 			// Walk over players.
@@ -161,7 +161,6 @@ public final class WooMinecraft extends JavaPlugin {
 			// Get all orders for the current player.
 			JSONObject playerOrders = data.getJSONObject( playerName );
 			Iterator<String> orderIDs = playerOrders.keys();
-			JSONArray processedOrders = new JSONArray();
 			while ( orderIDs.hasNext() ) {
 				String orderID = orderIDs.next();
 
@@ -181,9 +180,8 @@ public final class WooMinecraft extends JavaPlugin {
 						}
 					}, 20L );
 				}
-				processedOrders.put( Integer.parseInt( orderID ) );
+				processedData.put( Integer.parseInt( orderID ) );
 			}
-			processedData.put( playerName, processedOrders );
 		}
 
 		HashMap<String, String> postData = new HashMap<>();
