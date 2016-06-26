@@ -9,34 +9,26 @@
  */
 package com.plugish.woominecraft;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.plugish.woominecraft.Commands.WooCommand;
-import com.plugish.woominecraft.Connection.Connection;
 import com.plugish.woominecraft.Lang.LangSetup;
 import com.plugish.woominecraft.Util.BukkitRunner;
-import org.apache.commons.lang.StringUtils;
+import com.plugish.woominecraft.Util.RcHttp;
+import org.apache.http.client.utils.URIBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public final class WooMinecraft extends JavaPlugin {
 
-	public static Logger log;
 	public static WooMinecraft instance;
 	public String lang = "en";
 
@@ -47,7 +39,6 @@ public final class WooMinecraft extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		log = getLogger();
 		instance = this;
 		this.config = ( YamlConfiguration ) getConfig();
 
@@ -55,28 +46,28 @@ public final class WooMinecraft extends JavaPlugin {
 		try{
 			saveDefaultConfig();
 		} catch ( IllegalArgumentException e ) {
-			log.warning( e.getMessage() );
+			getLogger().warning( e.getMessage() );
 		}
 
 		this.lang = getConfig().getString( "lang" );
 		if ( lang == null ) {
-			log.warning( "No default l10n set, setting to english." );
+			getLogger().warning( "No default l10n set, setting to english." );
 			this.lang = "en";
 		}
 
 		initCommands();
-		log.info( this.getLang( "log.com_init" ));
+		getLogger().info( this.getLang( "log.com_init" ));
 
 		// Setup the scheduler
 		scheduler = new BukkitRunner( instance );
 		scheduler.runTaskTimerAsynchronously( instance, config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
 
-		log.info( this.getLang( "log.enabled" ) );
+		getLogger().info( this.getLang( "log.enabled" ) );
 	}
 
 	@Override
 	public void onDisable() {
-		log.info( this.getLang( "log.com_init" ) );
+		getLogger().info( this.getLang( "log.com_init" ) );
 	}
 
 	/**
@@ -121,148 +112,84 @@ public final class WooMinecraft extends JavaPlugin {
 	 * webiste's database looking for pending donation deliveries
 	 *
 	 * @return boolean
-	 * @throws JSONException
+	 * @throws Exception
 	 */
-	public boolean check() throws JSONException {
+	public boolean check() throws Exception {
 
-		String namesResults;
-		JSONObject json = null;
+		URIBuilder uriBuilder = new URIBuilder( getConfig().getString( "url" ) );
+		uriBuilder.addParameter( "key", getConfig().getString( "key" ) );
 
-		String key = config.getString( "key" );
-		String url = config.getString( "url" );
+		String url = uriBuilder.toString();
+		if ( url.equals( "" ) ) {
+			throw new Exception( "WMC URL is empty for some reason" );
+		}
 
-		// Check for player counts first
-		Collection< ? extends Player > list = Bukkit.getOnlinePlayers();
-		if ( list.size() < 1 ) return false;
+		RcHttp rcHttp = new RcHttp( this );
+		String httpResponse = rcHttp.request( url );
 
-		// Must match main object method.
-		Connection urlConnection = new Connection( this, url, key );
-
-		if ( urlConnection.connection == null ) {
+		// No response, kill out here.
+		if ( httpResponse.equals( "" ) ) {
 			return false;
 		}
 
-		ArrayList< Integer > rowUpdates = new ArrayList< Integer >();
-		String playerList = getPlayerList();
-
-		namesResults = urlConnection.getPlayerResults( playerList );
-
-		// If the server says there are no results for the sent names
-		// just return, no need to continue.
-		if ( namesResults.equals( "" ) ) {
+		JSONObject pendingCommands = new JSONObject( httpResponse );
+		if ( ! pendingCommands.getBoolean( "success" ) ) {
+			// Failure on WP side, kill over here.
 			return false;
 		}
 
-		try {
-			json = new JSONObject( namesResults );
-		} catch ( JSONException e ) {
-			log.severe( e.getMessage() );
-		}
-
-		// Must have json data to continue.
-		if ( null == json ) {
+		Object dataCheck = pendingCommands.get( "data" );
+		if ( !( dataCheck instanceof JSONObject ) ) {
+			// Typically if the array is empty in WordPress, it stays as an array in the JSON
 			return false;
 		}
 
-		if ( json.getBoolean( "success" ) ) {
-			JSONObject jsonObject = json.getJSONObject( "data" );
-			Iterator<?> keys = jsonObject.keys();
-			while( keys.hasNext() ) {
-//			for ( int i = 0; i < jsonObject.length(); i++ ) {
-				String cur_key = ( String ) keys.next();
-				JSONArray obj = ( JSONArray ) jsonObject.get( cur_key );
+		JSONObject data = pendingCommands.getJSONObject( "data" );
+		Iterator<String> playerNames = data.keys();
+		JSONArray processedData = new JSONArray();
 
-				for( int i = 0; i < obj.length(); i++ ) {
-					JSONObject cur_object = obj.getJSONObject( i );
-					String playerName = cur_object.getString( "player_name" );
-					String x = cur_object.getString( "command" );
-					final String command = x.replace( "%s", playerName );
+		while ( playerNames.hasNext() ) {
+			// Walk over players.
+			String playerName = playerNames.next();
 
-					// @TODO: Update to getUUID()
-					@SuppressWarnings( "deprecation" )
-					Player pN = Bukkit.getServer().getPlayer( playerName );
+			@SuppressWarnings( "deprecation" )
+			Player player = Bukkit.getServer().getPlayer( playerName );
+			if ( ! player.isOnline() ) {
+				continue;
+			}
 
-					if ( x.substring( 0, 3 ).equalsIgnoreCase( "give" ) ) {
-						int count = 0;
-						for ( ItemStack iN : pN.getInventory() ) {
-							if ( iN == null )
-								count++;
-						}
+			// Get all orders for the current player.
+			JSONObject playerOrders = data.getJSONObject( playerName );
+			Iterator<String> orderIDs = playerOrders.keys();
+			while ( orderIDs.hasNext() ) {
+				String orderID = orderIDs.next();
 
-						if ( count == 0 ) return false;
-					}
+				// Get all commands per order
+				JSONArray commands = playerOrders.getJSONArray( orderID );
 
-					int id = cur_object.getInt( "id" );
-
-					BukkitScheduler sch = Bukkit.getServer().getScheduler();
+				// Walk over commands, executing them one by one.
+				for ( Integer x = 0; x < commands.length(); x++ ) {
+					String command = commands.getString( x ).replace( "%s", playerName );
+					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 
 					// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
-					sch.scheduleSyncDelayedTask( instance, new Runnable() {
+					scheduler.scheduleSyncDelayedTask( instance, new Runnable() {
 						@Override
 						public void run() {
 							Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command );
 						}
 					}, 20L );
-					rowUpdates.add( id );
 				}
-			}
-			remove( rowUpdates );
-			return true;
-		} else {
-			log.info( this.getLang( "log.no_donations" ) );
-			if ( json.has( "debug_info" ) ) {
-				log.info( json.getString( "debug_info" ) );
+				processedData.put( Integer.parseInt( orderID ) );
 			}
 		}
 
-		return false;
-	}
+		HashMap<String, String> postData = new HashMap<>();
+		postData.put( "processedOrders", processedData.toString() );
 
-	/**
-	 * Removes IDs from
-	 *
-	 * @param ids Ids to remove
-	 */
-	private void remove( ArrayList< Integer > ids ) {
-		if ( ids.isEmpty() ) return;
-
-		try {
-			String sPath = this.config.getString( "url" );
-			String key = this.config.getString( "key" );
-
-//			TODO update this and the Connection class
-			URL url = new URL( sPath + "?woo_minecraft=update&key=" + key );
-			HttpURLConnection con = ( HttpURLConnection ) url.openConnection();
-			con.setRequestMethod( "POST" );
-			con.setRequestProperty( "User-Agent", "Mozilla/5.0" );
-			String urlParams = StringUtils.join( ids, ',' );
-			con.setDoInput( true );
-			con.setDoOutput( true );
-
-			DataOutputStream wr = new DataOutputStream( con.getOutputStream() );
-			wr.writeBytes( "players=" + urlParams );
-			wr.flush();
-			wr.close();
-
-			BufferedReader input = new BufferedReader( new InputStreamReader( con.getInputStream() ) );
-
-			String response = input.readLine();
-			try{
-				JSONObject json = new JSONObject( response );
-				if ( ! json.getBoolean( "success" ) ) {
-					log.warning( this.getLang( "log.cannot_update" ) );
-					log.info( response );
-					input.close();
-				} else {
-					log.info( this.getLang( "log.don_updated" ) );
-				}
-			} catch ( JSONException e ) {
-				log.warning( e.getMessage() );
-			}
-
-		} catch ( Exception e ) {
-			e.printStackTrace();
-		}
+		String updatedCommandSet = rcHttp.send( url, postData );
+		JSONObject updatedResponse = new JSONObject( updatedCommandSet );
+		return updatedResponse.getBoolean( "success" );
 	}
 
 	/**
@@ -270,5 +197,20 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	public void initCommands() {
 		getCommand( "woo" ).setExecutor( new WooCommand() );
+	}
+
+	/**
+	 * Helper for debugging data if the config is set
+	 *
+	 * @param msg The message string
+	 * @return String
+	 */
+	public String wmcDebug( String prefix, String msg ) {
+
+		if ( config.getBoolean( "debug" ) ) {
+			getLogger().info( prefix + ": " + msg );
+		}
+
+		return msg;
 	}
 }
