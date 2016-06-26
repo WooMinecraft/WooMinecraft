@@ -14,7 +14,6 @@ public class BukkitRunner extends BukkitRunnable {
 	}
 
 	public void run() {
-//		plugin.getServer().broadcastMessage( ChatColor.RED + "Task Ran" );
 		try {
 			plugin.check();
 		} catch ( Exception e ) {
