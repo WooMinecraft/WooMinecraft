@@ -65,8 +65,6 @@ public class RcHttp {
 	 */
 	public String send( String url, HashMap<String, String> hashMap ) throws Exception {
 
-		plugin.getLogger().info( "Sending commands to " + url );
-
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpPost post = new HttpPost( url );
 
