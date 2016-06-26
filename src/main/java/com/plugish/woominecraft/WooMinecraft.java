@@ -15,7 +15,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.plugish.woominecraft.Commands.WooCommand;
-import com.plugish.woominecraft.Gui.GUI;
 import com.plugish.woominecraft.Lang.LangSetup;
 import com.plugish.woominecraft.Util.BukkitRunner;
 import com.plugish.woominecraft.Util.RcHttp;
@@ -59,12 +58,6 @@ public final class WooMinecraft extends JavaPlugin {
 		initCommands();
 		getLogger().info( this.getLang( "log.com_init" ));
 
-		/**
-		 *  Register event handlers
-		 *  See GUI class for event and gui code.
-		 */
-		// getServer().getPluginManager().registerEvents(new GUI(), this);
-		
 		// Setup the scheduler
 		scheduler = new BukkitRunner( instance );
 		scheduler.runTaskTimerAsynchronously( instance, config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
