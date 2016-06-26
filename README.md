@@ -28,6 +28,12 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 
 ## Changelog
 
+### 1.0.6
+* Refactored all HTTP connections to work on a single thread
+* Cleaned up a TON of code
+* Removed internal JSON library, used maven deps instead
+* Fixed [#88](https://github.com/WooMinecraft/WooMinecraft/issues/88), [#85](https://github.com/WooMinecraft/WooMinecraft/issues/85), [#48](https://github.com/WooMinecraft/WooMinecraft/issues/48), [#60](https://github.com/WooMinecraft/WooMinecraft/issues/60)
+
 ### 1.0.5
 * Added debug option for more straight forward debug options.
 
