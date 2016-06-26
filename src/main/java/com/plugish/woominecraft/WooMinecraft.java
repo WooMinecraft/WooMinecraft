@@ -145,6 +145,12 @@ public final class WooMinecraft extends JavaPlugin {
 			return false;
 		}
 
+		Object dataCheck = pendingCommands.get( "data" );
+		if ( !( dataCheck instanceof JSONObject ) ) {
+			// Typically if the array is empty in WordPress, it stays as an array in the JSON
+			return false;
+		}
+
 		JSONObject data = pendingCommands.getJSONObject( "data" );
 		Iterator<String> playerNames = data.keys();
 		JSONObject processedData = new JSONObject();
