@@ -4,6 +4,9 @@ WooMinecraft is a bukkit/spigot plugin for your Minecraft server that provides a
 WordPress side of things, we allow you to specify commands for product variations, general product commands, and resending of donations at any time.   
 ![WooMinecraft Logo](https://raw.githubusercontent.com/WooMinecraft/WooMinecraft/dev-nightly/src/main/resources/wmc-logo.jpg)
 
+## Upgrade Notice
+Woominecraft 1.0.6 is ONLY compatible with v1.0.5+ of the WordPress plugin. You MUST be using that version or higher, or it will not work.  
+
 ## How does it work?
 This bridges the gap between PHP, and Java by leveraging both the bukkit/spigot API ( java ) and the WordPress API with WooCommerce support ( php ). It stores commands
 per order, per player, per command ( yes you read that right ) in the WordPress database.  This plugin, either when an op requests it, or on a timer, sends a request to
