@@ -154,7 +154,6 @@ public final class WooMinecraft extends JavaPlugin {
 		JSONObject data = pendingCommands.getJSONObject( "data" );
 		Iterator<String> playerNames = data.keys();
 		JSONObject processedData = new JSONObject();
-		Integer offset = 0;
 
 		while ( playerNames.hasNext() ) {
 			// Walk over players.
@@ -189,16 +188,17 @@ public final class WooMinecraft extends JavaPlugin {
 						}
 					}, 20L );
 				}
-				processedOrders.put( orderID );
+				processedOrders.put( Integer.parseInt( orderID ) );
 			}
 			processedData.put( playerName, processedOrders );
 		}
 
 		HashMap<String, String> postData = new HashMap<>();
-		postData.put( "processedOrders", postData.toString() );
+		postData.put( "processedOrders", processedData.toString() );
 
 		String updatedCommandSet = rcHttp.send( url, postData );
-		return true;
+		JSONObject updatedResponse = new JSONObject( updatedCommandSet );
+		return updatedResponse.getBoolean( "success" );
 	}
 
 	/**
