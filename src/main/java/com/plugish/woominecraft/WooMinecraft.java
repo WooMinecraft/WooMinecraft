@@ -18,6 +18,7 @@ import com.plugish.woominecraft.Commands.WooCommand;
 import com.plugish.woominecraft.Lang.LangSetup;
 import com.plugish.woominecraft.Util.BukkitRunner;
 import com.plugish.woominecraft.Util.RcHttp;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -169,7 +170,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 				// Walk over commands, executing them one by one.
 				for ( Integer x = 0; x < commands.length(); x++ ) {
-					String command = commands.getString( x ).replace( "%s", playerName );
+					final String command = StringEscapeUtils.unescapeHtml( commands.getString( x ).replace( "%s", playerName ) );
 					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 
 					// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
