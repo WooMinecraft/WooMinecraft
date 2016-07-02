@@ -171,7 +171,7 @@ public final class WooMinecraft extends JavaPlugin {
 				// Walk over commands, executing them one by one.
 				for ( Integer x = 0; x < commands.length(); x++ ) {
 //					final String command = StringEscapeUtils.unescapeHtml( commands.getString( x ).replace( "%s", playerName ) );
-					final String command = commands.getString( x ).replace( "%s", playerName ).replace( "&quot;", "\"" );
+					final String command = commands.getString( x ).replace( "%s", playerName ).replace( "&quot;", "\"" ).replace( "&#039;", "'" );
 					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 
 					// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
