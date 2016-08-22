@@ -153,8 +153,8 @@ public final class WooMinecraft extends JavaPlugin {
 			String playerName = playerNames.next();
 
 			@SuppressWarnings( "deprecation" )
-			Player player = Bukkit.getServer().getPlayer( playerName );
-			if ( ! player.isOnline() ) {
+			Player player = Bukkit.getServer().getPlayerExact( playerName );
+			if ( ! (player == null) ) {
 				continue;
 			}
 
