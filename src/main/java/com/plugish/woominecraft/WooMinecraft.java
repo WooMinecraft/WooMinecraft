@@ -154,7 +154,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 			@SuppressWarnings( "deprecation" )
 			Player player = Bukkit.getServer().getPlayerExact( playerName );
-			if ( ! (player == null) ) {
+			if (player == null) {
 				continue;
 			}
 
