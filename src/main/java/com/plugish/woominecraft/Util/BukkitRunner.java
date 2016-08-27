@@ -18,6 +18,7 @@ public class BukkitRunner extends BukkitRunnable {
 			plugin.check();
 		} catch ( Exception e ) {
 			plugin.getLogger().warning( e.getMessage() );
+			e.printStackTrace();
 		}
 	}
 
