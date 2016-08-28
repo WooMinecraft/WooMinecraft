@@ -7,6 +7,12 @@ WordPress side of things, we allow you to specify commands for product variation
 ## Upgrade Notice
 Woominecraft 1.0.6 is ONLY compatible with v1.0.5+ of the WordPress plugin. You MUST be using that version or higher, or it will not work.  
 
+## Supported Bukkit Versions
+* 1.7
+* 1.8
+* 1.9
+* 1.10
+
 ## How does it work?
 This bridges the gap between PHP, and Java by leveraging both the bukkit/spigot API ( java ) and the WordPress API with WooCommerce support ( php ). It stores commands
 per order, per player, per command ( yes you read that right ) in the WordPress database.  This plugin, either when an op requests it, or on a timer, sends a request to
@@ -45,21 +51,3 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 
 ### 1.0.0
 * First official release
-
-## Current Bukkit Build
-
-Currently supports Bukkit/Spigot 1.8.x
-
-## New Tasks
-- [x] Update to Spigot/Bukkit 1.8.x , #1
-- [ ] Add Donation Signs , #2
-- [ ] Add Donation GUI's , #3
-- [x] Reorganize Plugin , #4
-- [ ] Create Auto-Updater , #5
-- [ ] Create Metrics , #6
-- [x] Fully Test and Make Sure it works
-- [x] Check if Below Tasks Were Completed , #8
-
-## Tasks
-- [x] Create Wiki , #1
-- [x] Wiki: Bukkit Installation & Config , #2
