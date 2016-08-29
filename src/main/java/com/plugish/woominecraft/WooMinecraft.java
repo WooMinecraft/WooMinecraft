@@ -132,15 +132,24 @@ public final class WooMinecraft extends JavaPlugin {
 			return false;
 		}
 
+		char character = httpResponse.charAt( 0 );
+		if ( character != '{' ) {
+			// Incoming exception, so pre-log the server response.
+			this.wmc_log( "Logging an improper server response", 2 );
+			this.wmc_log(  "/" + httpResponse + "/", 3 );
+		}
+
 		JSONObject pendingCommands = new JSONObject( httpResponse );
 		if ( ! pendingCommands.getBoolean( "success" ) ) {
 			// Failure on WP side, kill over here.
+			this.wmc_log( "Success was false", 2 );
 			return false;
 		}
 
 		Object dataCheck = pendingCommands.get( "data" );
 		if ( !( dataCheck instanceof JSONObject ) ) {
 			// Typically if the array is empty in WordPress, it stays as an array in the JSON
+			this.wmc_log( "No data key", 2 );
 			return false;
 		}
 
@@ -192,25 +201,30 @@ public final class WooMinecraft extends JavaPlugin {
 		return updatedResponse.getBoolean( "success" );
 	}
 
+	public void wmc_log( String message, Integer level ) {
+
+		if ( ! this.getConfig().getBoolean( "debug" ) ) {
+			return;
+		}
+
+		switch ( level ) {
+			case 1:
+				this.getLogger().info( message );
+				break;
+			case 2:
+				this.getLogger().warning( message );
+				break;
+			case 3:
+				this.getLogger().severe( message );
+				break;
+		}
+
+	}
+
 	/**
 	 * Initialize Commands
 	 */
 	public void initCommands() {
 		getCommand( "woo" ).setExecutor( new WooCommand() );
-	}
-
-	/**
-	 * Helper for debugging data if the config is set
-	 *
-	 * @param msg The message string
-	 * @return String
-	 */
-	public String wmcDebug( String prefix, String msg ) {
-
-		if ( config.getBoolean( "debug" ) ) {
-			getLogger().info( prefix + ": " + msg );
-		}
-
-		return msg;
 	}
 }
