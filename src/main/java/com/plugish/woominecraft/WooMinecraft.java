@@ -116,6 +116,10 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	public boolean check() throws Exception {
 
+		if ( 1 > getConfig().getString( "url" ).length() ) {
+			throw new Exception( "URL for your config is empty, might want to check that." );
+		}
+
 		URIBuilder uriBuilder = new URIBuilder( getConfig().getString( "url" ) );
 		uriBuilder.addParameter( "key", getConfig().getString( "key" ) );
 
