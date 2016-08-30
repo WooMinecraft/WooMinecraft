@@ -67,6 +67,7 @@ public class WooCommand implements CommandExecutor {
 						sender.sendMessage( msg );
 					} catch ( Exception e ) {
 						plugin.getLogger().warning( e.getMessage() );
+						e.printStackTrace();
 					}
 				} else {
 					String msg = plugin.getLang( "general.not_authorized" ).replace( "&", "\u00A7" );
