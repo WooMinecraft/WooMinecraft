@@ -11,14 +11,11 @@ package com.plugish.woominecraft;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.plugish.woominecraft.Commands.WooCommand;
 import com.plugish.woominecraft.Lang.LangSetup;
 import com.plugish.woominecraft.Util.BukkitRunner;
 import com.plugish.woominecraft.Util.RcHttp;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -86,26 +83,6 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 
 		return this.l10n.getString( path );
-	}
-
-	/**
-	 * Generates a comma delimited list of player names
-	 *
-	 * @return String
-	 */
-	public String getPlayerList() {
-		// Build post data based on player list
-		StringBuilder sb = new StringBuilder();
-		for ( Player player : Bukkit.getServer().getOnlinePlayers() ) {
-			sb.append( player.getName() + ", " );
-		}
-		String playerList = sb.toString();
-
-		// Remove the last and final comma
-		Pattern pattern = Pattern.compile( ", $" );
-		Matcher matcher = pattern.matcher( playerList );
-
-		return matcher.replaceAll( "" );
 	}
 
 	/**
