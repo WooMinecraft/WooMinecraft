@@ -86,6 +86,14 @@ public final class WooMinecraft extends JavaPlugin {
 		return this.l10n.getString( path );
 	}
 
+	/**
+	 * Validates the basics needed in the config.yml file.
+	 *
+	 * Multiple reports of user configs not having keys etc... so this will ensure they know of this
+	 * and will not allow checks to continue if the required data isn't set in the config.
+	 *
+	 * @throws Exception
+	 */
 	public void validateConfig() throws Exception {
 
 		if ( 1 > getConfig().getString( "url" ).length() ) {
