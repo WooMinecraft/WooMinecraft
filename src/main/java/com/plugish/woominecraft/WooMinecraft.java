@@ -18,7 +18,6 @@ import com.plugish.woominecraft.Util.BukkitRunner;
 import com.plugish.woominecraft.Util.RcHttp;
 import org.apache.http.client.utils.URIBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
