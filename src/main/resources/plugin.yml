@@ -3,7 +3,7 @@ main: ${mainClass}
 version: ${project.version}
 authors: [JerryWood, TekkitCommando, Phillmac]
 description: ${project.description}
-website:  http://www.tekkitcommando.me
+website:  http://woominecraft.com
 
 commands:
   woo:
