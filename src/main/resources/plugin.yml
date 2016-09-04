@@ -7,10 +7,8 @@ website:  http://woominecraft.com
 
 commands:
   woo:
-    description: Reload, Register, Check
+    description: Check
     usage: |
-        /<command> reload - Reload the plugins config.
-        /<command> register - register a key.
         /<command> check - check for donations.
 permissions:
   woo.admin:

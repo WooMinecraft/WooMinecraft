@@ -42,6 +42,7 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 * Code cleanup, removed unused libs, removed commented code.
 * Added config validation for users coming from older versions - will now throw exceptions if your config is not setup properly and will stop the check.
 * Fixed player online check, props [@FailPlayDE](https://github.com/FailPlayDE) - [#108](https://github.com/WooMinecraft/WooMinecraft/pull/108)
+* **REMOVED** Reload & Register commands - more problems than their worth.
 
 ### 1.0.7
 * Prints stacktraces on JSON error to log.
