@@ -13,6 +13,31 @@ Woominecraft 1.0.6 is ONLY compatible with v1.0.5+ of the WordPress plugin. You 
 * 1.9
 * 1.10
 
+## Config
+Your config should look like the below section.
+```
+# Set this to the desired language file you wish to load.
+#
+# If your l10n is not available but one is that you know how to speak,consider
+# contributing to this plugin at https://github.com/WooMinecraft/WooMinecraft/
+lang: "en"
+
+# This is how often, in seconds, the server will contact your WordPress installation
+# to see if there are donations that need made.
+update_interval: 1500
+
+# You must set this to your WordPress site URL.  If you installed WordPress in a
+# subdirectory, it should point there.
+url: "http://example.com"
+
+# This must match the WordPress key in your admin panel for WooMinecraft
+# For security purposes, you MUST NOT leave this empty.
+key: ""
+
+# Set to true in order to toggle debug information
+debug: false
+```
+
 ## How does it work?
 This bridges the gap between PHP, and Java by leveraging both the bukkit/spigot API ( java ) and the WordPress API with WooCommerce support ( php ). It stores commands
 per order, per player, per command ( yes you read that right ) in the WordPress database.  This plugin, either when an op requests it, or on a timer, sends a request to
