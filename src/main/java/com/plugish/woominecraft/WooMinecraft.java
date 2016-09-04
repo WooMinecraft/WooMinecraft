@@ -141,15 +141,17 @@ public final class WooMinecraft extends JavaPlugin {
 
 		JSONObject pendingCommands = new JSONObject( httpResponse );
 		if ( ! pendingCommands.getBoolean( "success" ) ) {
-			// Failure on WP side, kill over here.
-			this.wmc_log( "Success was false", 2 );
+			Object dataCheck = pendingCommands.get( "data" );
+			if ( dataCheck instanceof JSONObject ) {
+				String msg = ( ( JSONObject ) dataCheck ).getString( "msg" );
+				throw new Exception( msg );
+			}
+
 			return false;
 		}
 
 		Object dataCheck = pendingCommands.get( "data" );
 		if ( !( dataCheck instanceof JSONObject ) ) {
-			// Typically if the array is empty in WordPress, it stays as an array in the JSON
-			this.wmc_log( dataCheck.toString(), 1 );
 			return false;
 		}
 
