@@ -1,6 +1,6 @@
 # WooMinecraft - Self-hosted Minecraft Donations
 
-WooMinecraft is a bukkit/spigot plugin for your Minecraft server that provides a self-hosted donation solution.  By leveraging a well known eCommerce plugin on the
+[WooMinecraft](http://woominecraft.com) is a free Minecraft Donation plugin for your server that provides a self-hosted solution where you're the boss.  By leveraging a well known eCommerce plugin on the
 WordPress side of things, we allow you to specify commands for product variations, general product commands, and resending of donations at any time.   
 ![WooMinecraft Logo](https://raw.githubusercontent.com/WooMinecraft/WooMinecraft/dev-nightly/src/main/resources/wmc-logo.jpg)
 
