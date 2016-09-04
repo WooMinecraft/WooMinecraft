@@ -37,6 +37,16 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 
 ## Changelog
 
+### 1.0.8
+* Make use of the `debug: true` flag in the config.
+* Code cleanup, removed unused libs, removed commented code.
+* Added config validation for users coming from older versions - will now throw exceptions if your config is not setup properly and will stop the check.
+* Fixed player online check, props [@FailPlayDE](https://github.com/FailPlayDE) - [#108](https://github.com/WooMinecraft/WooMinecraft/pull/108)
+
+### 1.0.7
+* Prints stacktraces on JSON error to log.
+* Updated Readme.md file to reflect supported bukkit versions.
+
 ### 1.0.6
 * Refactored all HTTP connections to work on a single thread
 * Cleaned up a TON of code
