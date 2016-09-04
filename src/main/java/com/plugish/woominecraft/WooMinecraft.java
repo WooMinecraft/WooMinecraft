@@ -18,6 +18,7 @@ import com.plugish.woominecraft.Util.BukkitRunner;
 import com.plugish.woominecraft.Util.RcHttp;
 import org.apache.http.client.utils.URIBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -85,6 +86,17 @@ public final class WooMinecraft extends JavaPlugin {
 		return this.l10n.getString( path );
 	}
 
+	public void validateConfig() throws Exception {
+
+		if ( 1 > getConfig().getString( "url" ).length() ) {
+			throw new Exception( "Server URL is empty, check config." );
+		}
+
+		if ( 1 > getConfig().getString( "key" ).length() ) {
+			throw new Exception( "Server Key is empty, this is insecure, check config." );
+		}
+	}
+
 	/**
 	 * Checks all online players against the
 	 * webiste's database looking for pending donation deliveries
@@ -94,9 +106,8 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	public boolean check() throws Exception {
 
-		if ( 1 > getConfig().getString( "url" ).length() ) {
-			throw new Exception( "URL for your config is empty, might want to check that." );
-		}
+		// Make 100% sure the config has at least a key and url
+		this.validateConfig();
 
 		URIBuilder uriBuilder = new URIBuilder( getConfig().getString( "url" ) );
 		uriBuilder.addParameter( "key", getConfig().getString( "key" ) );
