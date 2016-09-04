@@ -96,18 +96,18 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	public void validateConfig() throws Exception {
 
-		if ( 1 > getConfig().getString( "url" ).length() ) {
+		if ( 1 > this.getConfig().getString( "url" ).length() ) {
 			throw new Exception( "Server URL is empty, check config." );
-		}
-
-		if ( 1 > getConfig().getString( "key" ).length() ) {
+		} else if ( this.getConfig().getString( "url" ).equals( "http://playground.dev" ) ) {
+			throw new Exception( "URL is still the default URL, check config." );
+		} else if ( 1 > this.getConfig().getString( "key" ).length() ) {
 			throw new Exception( "Server Key is empty, this is insecure, check config." );
 		}
 	}
 
 	/**
 	 * Checks all online players against the
-	 * webiste's database looking for pending donation deliveries
+	 * website's database looking for pending donation deliveries
 	 *
 	 * @return boolean
 	 * @throws Exception
