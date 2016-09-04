@@ -143,7 +143,8 @@ public final class WooMinecraft extends JavaPlugin {
 		if ( ! pendingCommands.getBoolean( "success" ) ) {
 			Object dataCheck = pendingCommands.get( "data" );
 			if ( dataCheck instanceof JSONObject ) {
-				String msg = ( ( JSONObject ) dataCheck ).getString( "msg" );
+				JSONObject errors = new JSONObject( pendingCommands.getJSONObject( "data" ) );
+				String msg = errors.getString( "msg" );
 				throw new Exception( msg );
 			}
 
