@@ -63,6 +63,7 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 ## Changelog
 
 ### 1.0.8
+* Better error handling from WordPress
 * Make use of the `debug: true` flag in the config.
 * Code cleanup, removed unused libs, removed commented code.
 * Added config validation for users coming from older versions - will now throw exceptions if your config is not setup properly and will stop the check.
