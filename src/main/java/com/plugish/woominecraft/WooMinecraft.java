@@ -117,7 +117,7 @@ public final class WooMinecraft extends JavaPlugin {
 		this.validateConfig();
 
 		URIBuilder uriBuilder = new URIBuilder( getConfig().getString( "url" ) );
-		uriBuilder.addParameter( "key", getConfig().getString( "key" ) );
+		uriBuilder.addParameter( "wmc_key", getConfig().getString( "key" ) );
 
 		String url = uriBuilder.toString();
 		if ( url.equals( "" ) ) {
