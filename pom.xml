@@ -4,19 +4,19 @@
     <groupId>com.plugish.woominecraft</groupId>
     <artifactId>WooMinecraft</artifactId>
 
-    <version>1.0.9-RC1-B1.10.2-R0.1</version>
-    <!--<version>1.0.9-RC1-B1.9.4-R0.1</version>-->
-    <!--<version>1.0.9-RC1-B1.8.8-R0.1</version>-->
-    <!--<version>1.0.9-RC1-B1.7.10-R0.1</version>-->
+    <!--<version>1.0.10-PR1-B1.10.2-R0.1</version>-->
+    <!--<version>1.0.10-PR1-B1.9.4-R0.1</version>-->
+    <!--<version>1.0.10-PR1-B1.8.8-R0.1</version>-->
+    <version>1.0.10-PR1-B1.7.10-R0.1</version>
 
     <name>WooMinecraft</name>
     <description>A WooCommerce Minecraft Bridge</description>
     <properties>
 
-        <bukkitVersion>1.10.2-R0.1-SNAPSHOT</bukkitVersion>
+        <!--<bukkitVersion>1.10.2-R0.1-SNAPSHOT</bukkitVersion>-->
         <!--<bukkitVersion>1.9.4-R0.1-SNAPSHOT</bukkitVersion>-->
         <!--<bukkitVersion>1.8.8-R0.1-SNAPSHOT</bukkitVersion>-->
-        <!--<bukkitVersion>1.7.10-R0.1-SNAPSHOT</bukkitVersion>-->
+        <bukkitVersion>1.7.10-R0.1-SNAPSHOT</bukkitVersion>
 
         <mainClass>${project.groupId}.${project.artifactId}</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

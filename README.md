@@ -62,6 +62,9 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 
 ## Changelog
 
+### 1.0.10
+* Updated public suffix list, required by HTTP client
+
 ### 1.0.9
 * Change key sent to server, fixes WooCommerce compatibility.
 
