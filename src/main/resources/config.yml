@@ -16,5 +16,9 @@ url: "http://playground.dev"
 # For security purposes, you MUST NOT leave this empty.
 key: ""
 
+# Allowed words the player need to be on to run the commands.
+whitelist-worlds:
+  - world
+
 # Set to true in order to toggle debug information
 debug: false
