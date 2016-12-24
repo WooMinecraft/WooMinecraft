@@ -169,7 +169,11 @@ public final class WooMinecraft extends JavaPlugin {
 			if (player == null) {
 				continue;
 			}
-
+			
+			if (!getConfig().getStringList("whitelist-worlds").contains(player.getWorld().getName())){
+				continue;
+			}
+			
 			// Get all orders for the current player.
 			JSONObject playerOrders = data.getJSONObject( playerName );
 			Iterator<String> orderIDs = playerOrders.keys();
