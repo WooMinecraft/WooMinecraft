@@ -221,7 +221,6 @@ public final class WooMinecraft extends JavaPlugin {
 		if ( ! status ) {
 			Object dataSet = updatedResponse.get( "data" );
 			if ( dataSet instanceof JSONObject ) {
-				// This likely has our message
 				String message = ( ( JSONObject ) dataSet ).getString( "msg" );
 				throw new Exception( message );
 			}
