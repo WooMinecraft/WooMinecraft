@@ -9,9 +9,6 @@
  */
 package com.plugish.woominecraft;
 
-import java.util.HashMap;
-import java.util.Iterator;
-
 import com.plugish.woominecraft.Commands.WooCommand;
 import com.plugish.woominecraft.Lang.LangSetup;
 import com.plugish.woominecraft.Util.BukkitRunner;
@@ -24,6 +21,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
 
 public final class WooMinecraft extends JavaPlugin {
 
@@ -207,6 +207,14 @@ public final class WooMinecraft extends JavaPlugin {
 		postData.put( "processedOrders", processedData.toString() );
 
 		String updatedCommandSet = rcHttp.send( url, postData );
+
+		character = updatedCommandSet.charAt( 0 );
+		if ( character != '{' ) {
+			// Incoming exception, so pre-log the server response.
+			this.wmc_log( "Logging an improper server response sending completed orders", 2 );
+			this.wmc_log(  "/" + updatedCommandSet + "/", 3 );
+		}
+
 		JSONObject updatedResponse = new JSONObject( updatedCommandSet );
 		return updatedResponse.getBoolean( "success" );
 	}
