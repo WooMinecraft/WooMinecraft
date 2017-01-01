@@ -169,8 +169,9 @@ public final class WooMinecraft extends JavaPlugin {
 			if (player == null) {
 				continue;
 			}
-			
-			if (!getConfig().getStringList("whitelist-worlds").contains(player.getWorld().getName())){
+
+			// If the user isn't in a white-listed world, commands will not run here.
+			if ( !getConfig().getStringList( "whitelist-worlds" ).contains( player.getWorld().getName() ) ) {
 				continue;
 			}
 			
@@ -200,19 +201,21 @@ public final class WooMinecraft extends JavaPlugin {
 			}
 		}
 
-		HashMap<String, String> postData = new HashMap<>();
+		if ( 1 > processedData.length() ) {
+			return false;
+		}
+
+		HashMap< String, String > postData = new HashMap<>();
 
 		getLogger().info( processedData.toString() );
-
 		postData.put( "processedOrders", processedData.toString() );
 
 		String updatedCommandSet = rcHttp.send( url, postData );
-
 		character = updatedCommandSet.charAt( 0 );
 		if ( character != '{' ) {
 			// Incoming exception, so pre-log the server response.
 			this.wmc_log( "Logging an improper server response sending completed orders", 2 );
-			this.wmc_log(  "/" + updatedCommandSet + "/", 3 );
+			this.wmc_log( "/" + updatedCommandSet + "/", 3 );
 		}
 
 		JSONObject updatedResponse = new JSONObject( updatedCommandSet );
