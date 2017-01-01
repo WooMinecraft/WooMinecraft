@@ -199,8 +199,6 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 
 		HashMap< String, String > postData = new HashMap<>();
-
-		getLogger().info( processedData.toString() );
 		postData.put( "processedOrders", processedData.toString() );
 
 		String updatedCommandSet = rcHttp.send( url, postData );
