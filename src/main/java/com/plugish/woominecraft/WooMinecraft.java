@@ -132,13 +132,6 @@ public final class WooMinecraft extends JavaPlugin {
 			return false;
 		}
 
-		char character = httpResponse.charAt( 0 );
-		if ( character != '{' ) {
-			// Incoming exception, so pre-log the server response.
-			this.wmc_log( "Logging an improper server response", 2 );
-			this.wmc_log(  "/" + httpResponse + "/", 3 );
-		}
-
 		JSONObject pendingCommands = new JSONObject( httpResponse );
 		if ( ! pendingCommands.getBoolean( "success" ) ) {
 			Object dataCheck = pendingCommands.get( "data" );
@@ -211,13 +204,6 @@ public final class WooMinecraft extends JavaPlugin {
 		postData.put( "processedOrders", processedData.toString() );
 
 		String updatedCommandSet = rcHttp.send( url, postData );
-		character = updatedCommandSet.charAt( 0 );
-		if ( character != '{' ) {
-			// Incoming exception, so pre-log the server response.
-			this.wmc_log( "Logging an improper server response sending completed orders", 2 );
-			this.wmc_log( "/" + updatedCommandSet + "/", 3 );
-		}
-
 		JSONObject updatedResponse = new JSONObject( updatedCommandSet );
 		boolean status = updatedResponse.getBoolean( "success" );
 
@@ -231,6 +217,14 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 
 		return true;
+	}
+
+	public void wmc_log( String message ) {
+		this.wmc_log( message, 1 );
+	}
+
+	public void wmc_log( Exception message ) {
+		this.wmc_log( message.getMessage(), 3 );
 	}
 
 	public void wmc_log( String message, Integer level ) {
@@ -250,7 +244,6 @@ public final class WooMinecraft extends JavaPlugin {
 				this.getLogger().severe( message );
 				break;
 		}
-
 	}
 
 	/**

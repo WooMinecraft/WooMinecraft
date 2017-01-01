@@ -13,6 +13,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,8 +58,19 @@ public class RcHttp {
 			result.append( line );
 		}
 
+		String resultString = result.toString();
+
+		// Some debug logging.
+		if ( plugin.getConfig().getBoolean( "debug", false ) ) {
+			plugin.wmc_log( "Sending Request" );
+			plugin.wmc_log( "URL Config Field: " + plugin.getConfig().getString( "url", "empty" ) );
+			plugin.wmc_log( "Headers: " + Arrays.toString( response.getAllHeaders() ) );
+			plugin.wmc_log( "HTTP Response Code: " + response.getStatusLine().getStatusCode() );
+			plugin.wmc_log( "Content Body Snippet (128 chars): " + resultString.substring( 0, 128 ) );
+		}
+
 		client.close();
-		return result.toString();
+		return resultString;
 	}
 
 	/**
@@ -97,8 +109,18 @@ public class RcHttp {
 			result.append( line );
 		}
 
-		client.close();
-		return result.toString();
+		String resultString = result.toString();
 
+		// Some debug logging.
+		if ( plugin.getConfig().getBoolean( "debug", false ) ) {
+			plugin.wmc_log( "Sending Request" );
+			plugin.wmc_log( "URL Config Field: " + plugin.getConfig().getString( "url", "empty" ) );
+			plugin.wmc_log( "Headers: " + Arrays.toString( response.getAllHeaders() ) );
+			plugin.wmc_log( "HTTP Response Code: " + response.getStatusLine().getStatusCode() );
+			plugin.wmc_log( "Content Body Snippet (128 chars): " + resultString.substring( 0, 128 ) );
+		}
+
+		client.close();
+		return resultString;
 	}
 }
