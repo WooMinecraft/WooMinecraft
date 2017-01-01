@@ -12,6 +12,7 @@ Woominecraft 1.0.6 is ONLY compatible with v1.0.5+ of the WordPress plugin. You 
 * 1.8
 * 1.9
 * 1.10
+* 1.11
 
 ## Config
 Your config should look like the below section.
