@@ -59,6 +59,11 @@ public class RcHttp {
 		}
 
 		String resultString = result.toString();
+		int Length = resultString.length();
+
+		if ( resultString.length() > 128 ) {
+			Length = 128;
+		}
 
 		// Some debug logging.
 		if ( plugin.getConfig().getBoolean( "debug", false ) ) {
@@ -66,7 +71,7 @@ public class RcHttp {
 			plugin.wmc_log( "URL Config Field: " + plugin.getConfig().getString( "url", "empty" ) );
 			plugin.wmc_log( "Headers: " + Arrays.toString( response.getAllHeaders() ) );
 			plugin.wmc_log( "HTTP Response Code: " + response.getStatusLine().getStatusCode() );
-			plugin.wmc_log( "Content Body Snippet (128 chars): " + resultString.substring( 0, 128 ) );
+			plugin.wmc_log( "Content Body Snippet (128 chars): " + resultString.substring( 0, Length ) );
 		}
 
 		client.close();
@@ -110,6 +115,11 @@ public class RcHttp {
 		}
 
 		String resultString = result.toString();
+		int Length = resultString.length();
+
+		if ( resultString.length() > 128 ) {
+			Length = 128;
+		}
 
 		// Some debug logging.
 		if ( plugin.getConfig().getBoolean( "debug", false ) ) {
@@ -117,7 +127,7 @@ public class RcHttp {
 			plugin.wmc_log( "URL Config Field: " + plugin.getConfig().getString( "url", "empty" ) );
 			plugin.wmc_log( "Headers: " + Arrays.toString( response.getAllHeaders() ) );
 			plugin.wmc_log( "HTTP Response Code: " + response.getStatusLine().getStatusCode() );
-			plugin.wmc_log( "Content Body Snippet (128 chars): " + resultString.substring( 0, 128 ) );
+			plugin.wmc_log( "Content Body Snippet (128 chars): " + resultString.substring( 0, Length ) );
 		}
 
 		client.close();

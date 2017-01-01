@@ -68,11 +68,12 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 ## Changelog
 
 ### 1.1.0
-* Added - Redirect Exceptions for sending/receiving data from the server. You will now get an exception if your host is redirecting the requests.
-* Updated - HTTP Requests now use `CloseableHttpClient` and `CloseableHttpResponse` so connections will now close, not sure if they weren't before.
+* Added - Redirect Exceptions for sending/receiving data from the server. You will now get an exception if your host is redirecting the requests in most cases.
+* Added - Debug logging specifically for HTTP requests. Just set `debug: true` in your config.
 * Added - Exception handling for sending order updates to server. Will now throw exceptions if plugin receives invalid data.
 * Added - World white-listing, props [FabioZumbi12](https://github.com/WooMinecraft/WooMinecraft/pull/117) - disabled by default
 * Added - Clarification around server key, props [spannerman79](https://github.com/WooMinecraft/WooMinecraft/pull/119)
+* Updated - HTTP Requests now use `CloseableHttpClient` and `CloseableHttpResponse` so connections will now close, not sure if they weren't before.
 
 ### 1.0.10
 * Updated public suffix list, required by HTTP client
