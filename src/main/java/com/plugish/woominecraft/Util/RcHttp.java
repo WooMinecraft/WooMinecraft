@@ -1,13 +1,13 @@
 package com.plugish.woominecraft.Util;
 
 import com.plugish.woominecraft.WooMinecraft;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedReader;
@@ -39,11 +39,15 @@ public class RcHttp {
 	 * @throws Exception
 	 */
 	public String request( String url ) throws Exception {
-		HttpClient client = HttpClientBuilder.create().build();
+		CloseableHttpClient client = HttpClients.createDefault();
 		HttpGet request = new HttpGet( url );
 
 		request.addHeader( "User-Agent", get_user_agent() );
-		HttpResponse response = client.execute( request );
+
+		CloseableHttpResponse response = client.execute( request );
+		if ( 200 != response.getStatusLine().getStatusCode() ) {
+			throw new Exception( "Status code is not 200 got: " + response.getStatusLine().getStatusCode() );
+		}
 
 		BufferedReader rd = new BufferedReader( new InputStreamReader( response.getEntity().getContent() ) );
 
@@ -53,11 +57,13 @@ public class RcHttp {
 			result.append( line );
 		}
 
+		client.close();
 		return result.toString();
 	}
 
 	/**
 	 * Sends a POST request to a URL.
+	 *
 	 * @param url String
 	 * @param hashMap HashMap of k/v pairs
 	 * @return String
@@ -65,11 +71,11 @@ public class RcHttp {
 	 */
 	public String send( String url, HashMap<String, String> hashMap ) throws Exception {
 
-		HttpClient client = HttpClientBuilder.create().build();
+		CloseableHttpClient client = HttpClients.createDefault();
 		HttpPost post = new HttpPost( url );
 
 		post.setHeader( "User-Agent", get_user_agent() );
-		post.addHeader("content-type", "application/x-www-form-urlencoded");
+		post.addHeader( "content-type", "application/x-www-form-urlencoded" );
 
 		List<NameValuePair> urlParameters = new ArrayList<>();
 		for ( HashMap.Entry<String, String> entry : hashMap.entrySet() ) {
@@ -78,7 +84,10 @@ public class RcHttp {
 
 		post.setEntity( new UrlEncodedFormEntity( urlParameters ) );
 
-		HttpResponse response = client.execute( post );
+		CloseableHttpResponse response = client.execute( post );
+		if ( 200 != response.getStatusLine().getStatusCode() ) {
+			throw new Exception( "Status code is not 200 got: " + response.getStatusLine().getStatusCode() );
+		}
 
 		BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( response.getEntity().getContent() ) );
 
@@ -88,6 +97,7 @@ public class RcHttp {
 			result.append( line );
 		}
 
+		client.close();
 		return result.toString();
 
 	}
