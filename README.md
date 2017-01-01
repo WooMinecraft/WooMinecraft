@@ -34,6 +34,11 @@ url: "http://example.com"
 # For security purposes, you MUST NOT leave this empty.
 key: ""
 
+# Allowed words the player need to be on to run the commands.
+# Disabled by default!
+# whitelist-worlds:
+#  - world
+
 # Set to true in order to toggle debug information
 debug: false
 ```
@@ -61,6 +66,13 @@ Since this plugin is GPL and entirely opensource, we cannot be sure how you will
 You'll need the WordPress plugin for this MC Plugin to work - you can [get it here](https://github.com/WooMinecraft/woominecraft-wp).
 
 ## Changelog
+
+### 1.1.0
+* Added - Redirect Exceptions for sending/receiving data from the server. You will now get an exception if your host is redirecting the requests.
+* Updated - HTTP Requests now use `CloseableHttpClient` and `CloseableHttpResponse` so connections will now close, not sure if they weren't before.
+* Added - Exception handling for sending order updates to server. Will now throw exceptions if plugin receives invalid data.
+* Added - World white-listing, props [FabioZumbi12](https://github.com/WooMinecraft/WooMinecraft/pull/117) - disabled by default
+* Added - Clarification around server key, props [spannerman79](https://github.com/WooMinecraft/WooMinecraft/pull/119)
 
 ### 1.0.10
 * Updated public suffix list, required by HTTP client

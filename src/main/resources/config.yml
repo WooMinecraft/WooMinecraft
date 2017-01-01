@@ -19,8 +19,9 @@ url: "http://playground.dev"
 key: ""
 
 # Allowed words the player need to be on to run the commands.
-whitelist-worlds:
-  - world
+# Disabled by default!
+# whitelist-worlds:
+#  - world
 
 # Set to true in order to toggle debug information
 debug: false
