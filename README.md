@@ -8,7 +8,6 @@ WordPress side of things, we allow you to specify commands for product variation
 Woominecraft 1.0.6 is ONLY compatible with v1.0.5+ of the WordPress plugin. You MUST be using that version or higher, or it will not work.  
 
 ## Supported Bukkit Versions
-* 1.7
 * 1.8
 * 1.9
 * 1.10
