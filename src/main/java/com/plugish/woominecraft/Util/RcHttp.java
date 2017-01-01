@@ -79,6 +79,7 @@ public class RcHttp {
 		post.setEntity( new UrlEncodedFormEntity( urlParameters ) );
 
 		HttpResponse response = client.execute( post );
+
 		BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( response.getEntity().getContent() ) );
 
 		StringBuilder result = new StringBuilder();

@@ -216,7 +216,19 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 
 		JSONObject updatedResponse = new JSONObject( updatedCommandSet );
-		return updatedResponse.getBoolean( "success" );
+		boolean status = updatedResponse.getBoolean( "success" );
+
+		if ( ! status ) {
+			Object dataSet = updatedResponse.get( "data" );
+			if ( dataSet instanceof JSONObject ) {
+				// This likely has our message
+				String message = ( ( JSONObject ) dataSet ).getString( "msg" );
+				throw new Exception( message );
+			}
+			throw new Exception( "Success failed, received a response of :" + updatedCommandSet );
+		}
+
+		return true;
 	}
 
 	public void wmc_log( String message, Integer level ) {
