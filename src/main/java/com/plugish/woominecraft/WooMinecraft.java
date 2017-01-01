@@ -225,7 +225,7 @@ public final class WooMinecraft extends JavaPlugin {
 				String message = ( ( JSONObject ) dataSet ).getString( "msg" );
 				throw new Exception( message );
 			}
-			throw new Exception( "Success failed, received a response of :" + updatedCommandSet );
+			throw new Exception( "Failed sending updated orders to the server, got this instead:" + updatedCommandSet );
 		}
 
 		return true;
