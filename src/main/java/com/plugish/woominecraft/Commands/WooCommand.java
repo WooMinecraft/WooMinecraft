@@ -8,16 +8,15 @@ import org.bukkit.command.CommandSender;
 
 public class WooCommand implements CommandExecutor {
 
-	public static WooMinecraft plugin = WooMinecraft.instance;
-	public static String chatPrefix = ChatColor.DARK_PURPLE + "[" + ChatColor.WHITE + "WooMinecraft" + ChatColor.DARK_PURPLE + "] " + ChatColor.DARK_PURPLE + "";
+	private String chatPrefix = ChatColor.DARK_PURPLE + "[" + ChatColor.WHITE + "WooMinecraft" + ChatColor.DARK_PURPLE + "] " + ChatColor.DARK_PURPLE + "";
 
 	@Override
 	public boolean onCommand( CommandSender sender, Command command, String label, String[] args ) {
 		if ( command.getName().equalsIgnoreCase( "woo" ) && args.length == 0 ) {
 			if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
-				sender.sendMessage( chatPrefix + " " + plugin.getLang( "general.avail_commands" ) + ": /woo [register , reload , check]" );
+				sender.sendMessage( getChatPrefix() + " " + getPlugin().getMessage( "general.avail_commands" ) + ": /woo [register , reload , check]" );
 			} else {
-				sender.sendMessage( chatPrefix + " " + plugin.getLang( "general.not_authorized" ) );
+				sender.sendMessage( getChatPrefix() + " " + getPlugin().getMessage( "general.not_authorized" ) );
 			}
 		} else if ( command.getName().equalsIgnoreCase( "woo" ) && args.length == 1 ) {
 			if ( args[ 0 ].equalsIgnoreCase( "check" ) ) {
@@ -25,21 +24,21 @@ public class WooCommand implements CommandExecutor {
 
 					try {
 						String msg;
-						boolean checkResults = plugin.check();
+						boolean checkResults = getPlugin().check();
 
 						if ( !checkResults ) {
-							msg = chatPrefix + " " + plugin.getLang( "general.none_avail" );
+							msg = getChatPrefix() + " " + getPlugin().getMessage( "general.none_avail" );
 						} else {
-							msg = chatPrefix + " " + plugin.getLang( "general.processed" );
+							msg = getChatPrefix() + " " + getPlugin().getMessage( "general.processed" );
 						}
 
 						sender.sendMessage( msg );
 					} catch ( Exception e ) {
-						plugin.getLogger().warning( e.getMessage() );
+						getPlugin().getLogger().warning( e.getMessage() );
 						e.printStackTrace();
 					}
 				} else {
-					String msg = plugin.getLang( "general.not_authorized" ).replace( "&", "\u00A7" );
+					String msg = getPlugin().getMessage( "general.not_authorized" ).replace( "&", "\u00A7" );
 					sender.sendMessage( msg );
 				}
 			} else {
@@ -47,5 +46,13 @@ public class WooCommand implements CommandExecutor {
 			}
 		}
 		return true;
+	}
+
+	private String getChatPrefix() {
+		return chatPrefix;
+	}
+
+	private WooMinecraft getPlugin() {
+		return WooMinecraft.getInstance();
 	}
 }

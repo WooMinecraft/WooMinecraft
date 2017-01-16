@@ -27,18 +27,18 @@ import java.util.Iterator;
 
 public final class WooMinecraft extends JavaPlugin {
 
-	public static WooMinecraft instance;
-	public String lang = "en";
+	private static WooMinecraft instance;
+	private String lang = "en";
 
-	public YamlConfiguration l10n;
-	public YamlConfiguration config;
+	private YamlConfiguration l10n;
+	private YamlConfiguration config;
 
-	public static BukkitRunner scheduler;
+	private BukkitRunner scheduler;
 
 	@Override
 	public void onEnable() {
-		instance = this;
-		this.config = ( YamlConfiguration ) getConfig();
+		setInstance(this);
+		setPluginConfig(( YamlConfiguration ) getConfig());
 
 		// Save the default config.yml
 		try{
@@ -47,25 +47,26 @@ public final class WooMinecraft extends JavaPlugin {
 			getLogger().warning( e.getMessage() );
 		}
 
-		this.lang = getConfig().getString( "lang" );
-		if ( lang == null ) {
+		setLang(getPluginConfig().getString( "lang" ));
+
+		if ( getLang() == null ) {
 			getLogger().warning( "No default l10n set, setting to english." );
-			this.lang = "en";
+			setLang("en");
 		}
 
 		initCommands();
-		getLogger().info( this.getLang( "log.com_init" ));
+		getLogger().info( this.getMessage( "log.com_init" ));
 
 		// Setup the scheduler
-		scheduler = new BukkitRunner( instance );
-		scheduler.runTaskTimerAsynchronously( instance, config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
+		setScheduler(new BukkitRunner());
+		getScheduler().runTaskTimerAsynchronously( getInstance(), getPluginConfig().getInt( "update_interval" ) * 20, getPluginConfig().getInt( "update_interval" ) * 20 );
 
-		getLogger().info( this.getLang( "log.enabled" ) );
+		getLogger().info( this.getMessage( "log.enabled" ) );
 	}
 
 	@Override
 	public void onDisable() {
-		getLogger().info( this.getLang( "log.com_init" ) );
+		getLogger().info( this.getMessage( "log.com_init" ) );
 	}
 
 	/**
@@ -75,14 +76,14 @@ public final class WooMinecraft extends JavaPlugin {
 	 * @param path Path to the config var
 	 * @return String
 	 */
-	public String getLang( String path ) {
-		if ( null == this.l10n ) {
+	public String getMessage( String path ) {
+		if ( getL10n() == null ) {
 
-			LangSetup lang = new LangSetup( instance );
-			l10n = lang.loadConfig();
+			LangSetup lang = new LangSetup( getInstance() );
+			setL10n(lang.loadConfig());
 		}
 
-		return this.l10n.getString( path );
+		return getL10n().getString( path );
 	}
 
 	/**
@@ -124,7 +125,7 @@ public final class WooMinecraft extends JavaPlugin {
 			throw new Exception( "WMC URL is empty for some reason" );
 		}
 
-		RcHttp rcHttp = new RcHttp( this );
+		RcHttp rcHttp = new RcHttp();
 		String httpResponse = rcHttp.request( url );
 
 		// No response, kill out here.
@@ -208,7 +209,7 @@ public final class WooMinecraft extends JavaPlugin {
 					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 
 					// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
-					scheduler.scheduleSyncDelayedTask( instance, new Runnable() {
+					scheduler.scheduleSyncDelayedTask( getInstance(), new Runnable() {
 						@Override
 						public void run() {
 							Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command );
@@ -279,5 +280,45 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	public void initCommands() {
 		getCommand( "woo" ).setExecutor( new WooCommand() );
+	}
+
+	public static WooMinecraft getInstance() {
+		return instance;
+	}
+
+	public void setInstance(WooMinecraft instance) {
+		this.instance = instance;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	public YamlConfiguration getL10n() {
+		return l10n;
+	}
+
+	public void setL10n(YamlConfiguration l10n) {
+		this.l10n = l10n;
+	}
+
+	public BukkitRunner getScheduler() {
+		return scheduler;
+	}
+
+	public void setScheduler(BukkitRunner scheduler) {
+		this.scheduler = scheduler;
+	}
+
+	public YamlConfiguration getPluginConfig() {
+		return config;
+	}
+
+	public void setPluginConfig(YamlConfiguration config) {
+		this.config = config;
 	}
 }

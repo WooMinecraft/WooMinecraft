@@ -19,11 +19,9 @@ import java.util.List;
 
 public class RcHttp {
 
-	public WooMinecraft plugin;
-
-	public RcHttp( WooMinecraft plugin ){
-		this.plugin = plugin;
-	}
+	private CloseableHttpResponse response;
+	private String resultString;
+	private int Length;
 
 	/**
 	 * Just a helper method to return the user agent, so it's easily replaced.
@@ -45,7 +43,8 @@ public class RcHttp {
 
 		request.addHeader( "User-Agent", get_user_agent() );
 
-		CloseableHttpResponse response = client.execute( request );
+		response = client.execute( request );
+
 		if ( 200 != response.getStatusLine().getStatusCode() ) {
 			throw new Exception( "Status code is not 200 got: " + response.getStatusLine().getStatusCode() );
 		}
@@ -58,20 +57,16 @@ public class RcHttp {
 			result.append( line );
 		}
 
-		String resultString = result.toString();
-		int Length = resultString.length();
+		resultString = result.toString();
+		Length = resultString.length();
 
 		if ( resultString.length() > 128 ) {
 			Length = 128;
 		}
 
 		// Some debug logging.
-		if ( plugin.getConfig().getBoolean( "debug", false ) ) {
-			plugin.wmc_log( "Sending Request" );
-			plugin.wmc_log( "URL Config Field: " + plugin.getConfig().getString( "url", "empty" ) );
-			plugin.wmc_log( "Headers: " + Arrays.toString( response.getAllHeaders() ) );
-			plugin.wmc_log( "HTTP Response Code: " + response.getStatusLine().getStatusCode() );
-			plugin.wmc_log( "Content Body Snippet (128 chars): " + resultString.substring( 0, Length ) );
+		if ( getPlugin().getConfig().getBoolean( "debug", false ) ) {
+			debug();
 		}
 
 		client.close();
@@ -122,15 +117,23 @@ public class RcHttp {
 		}
 
 		// Some debug logging.
-		if ( plugin.getConfig().getBoolean( "debug", false ) ) {
-			plugin.wmc_log( "Sending Request" );
-			plugin.wmc_log( "URL Config Field: " + plugin.getConfig().getString( "url", "empty" ) );
-			plugin.wmc_log( "Headers: " + Arrays.toString( response.getAllHeaders() ) );
-			plugin.wmc_log( "HTTP Response Code: " + response.getStatusLine().getStatusCode() );
-			plugin.wmc_log( "Content Body Snippet (128 chars): " + resultString.substring( 0, Length ) );
+		if ( getPlugin().getConfig().getBoolean( "debug", false ) ) {
+			debug();
 		}
 
 		client.close();
 		return resultString;
 	}
+
+	private void debug() {
+		getPlugin().wmc_log( "Sending Request" );
+		getPlugin().wmc_log( "URL Config Field: " + getPlugin().getConfig().getString( "url", "empty" ) );
+		getPlugin().wmc_log( "Headers: " + Arrays.toString( response.getAllHeaders() ) );
+		getPlugin().wmc_log( "HTTP Response Code: " + response.getStatusLine().getStatusCode() );
+		getPlugin().wmc_log( "Content Body Snippet (128 chars): " + resultString.substring( 0, Length ) );
+	}
+
+	private WooMinecraft getPlugin() {
+	    return WooMinecraft.getInstance();
+    }
 }
