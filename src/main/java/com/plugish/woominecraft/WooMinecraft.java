@@ -129,6 +129,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 		// No response, kill out here.
 		if ( httpResponse.equals( "" ) ) {
+			throw new Exception( "No HTTP response received." );
 			return false;
 		}
 
