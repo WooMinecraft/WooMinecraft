@@ -163,9 +163,12 @@ public final class WooMinecraft extends JavaPlugin {
 				continue;
 			}
 
-			// If the user isn't in a white-listed world, commands will not run here.
-			if ( !getConfig().getStringList( "whitelist-worlds" ).contains( player.getWorld().getName() ) ) {
-				continue;
+			//Check for enabled world whitelisting in config
+			if(getConfig.getBoolean("enable-world-whitelist"){
+				// If the user isn't in a white-listed world, commands will not run here.
+				if ( !getConfig().getStringList( "whitelist-worlds" ).contains( player.getWorld().getName() ) ) {
+					continue;
+				}
 			}
 			
 			// Get all orders for the current player.
