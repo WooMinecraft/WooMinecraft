@@ -176,7 +176,7 @@ public final class WooMinecraft extends JavaPlugin {
 			}
 
 			//Check for enabled world whitelisting in config
-			if(getConfig.getBoolean("enable-world-whitelist"){
+			if(getConfig.getBoolean("enable-world-whitelist")){
 				// If the user isn't in a white-listed world, commands will not run here.
 				if ( !getConfig().getStringList( "whitelist-worlds" ).contains( player.getWorld().getName() ) ) {
 				wmc_log( "Player online, but not in a white-listed world.", 1 );
