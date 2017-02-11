@@ -132,12 +132,20 @@ public final class WooMinecraft extends JavaPlugin {
 			return false;
 		}
 
+		// Grab the pending commands
 		JSONObject pendingCommands = new JSONObject( httpResponse );
+
+		// If the request was not a WordPress success, we may have a message
 		if ( ! pendingCommands.getBoolean( "success" ) ) {
+
+			wmc_log( "Server response was false, checking for message and bailing.", 2 );
+
+			// See if we have a data object.
 			Object dataCheck = pendingCommands.get( "data" );
 			if ( dataCheck instanceof JSONObject ) {
 				JSONObject errors = pendingCommands.getJSONObject( "data" );
 				String msg = errors.getString( "msg" );
+				// Throw the message as an exception.
 				throw new Exception( msg );
 			}
 
@@ -146,6 +154,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 		Object dataCheck = pendingCommands.get( "data" );
 		if ( !( dataCheck instanceof JSONObject ) ) {
+			wmc_log( "Data check was not an instance of JSONObject, so bailing." );
 			return false;
 		}
 
@@ -153,13 +162,16 @@ public final class WooMinecraft extends JavaPlugin {
 		Iterator<String> playerNames = data.keys();
 		JSONArray processedData = new JSONArray();
 
+		wmc_log( "Player names acquired -- walking over them now." );
 		while ( playerNames.hasNext() ) {
 			// Walk over players.
 			String playerName = playerNames.next();
+			wmc_log( "Checking for player: " + playerName );
 
 			@SuppressWarnings( "deprecation" )
 			Player player = Bukkit.getServer().getPlayerExact( playerName );
-			if (player == null) {
+			if ( player == null ) {
+				wmc_log( "Player not found.", 2 );
 				continue;
 			}
 
@@ -167,22 +179,35 @@ public final class WooMinecraft extends JavaPlugin {
 			if(getConfig.getBoolean("enable-world-whitelist")){
 				// If the user isn't in a white-listed world, commands will not run here.
 				if ( !getConfig().getStringList( "whitelist-worlds" ).contains( player.getWorld().getName() ) ) {
+				wmc_log( "Player online, but not in a white-listed world.", 1 );
 					continue;
 				}
 			}
-			
+     
 			// Get all orders for the current player.
 			JSONObject playerOrders = data.getJSONObject( playerName );
 			Iterator<String> orderIDs = playerOrders.keys();
+
+			wmc_log( "Walking over orders for player.", 1 );
 			while ( orderIDs.hasNext() ) {
 				String orderID = orderIDs.next();
 
 				// Get all commands per order
 				JSONArray commands = playerOrders.getJSONArray( orderID );
 
+				wmc_log( "Processing command for order: " + orderID );
+				wmc_log( "Command Set: " + commands.toString() );
+
 				// Walk over commands, executing them one by one.
 				for ( Integer x = 0; x < commands.length(); x++ ) {
-					final String command = commands.getString( x ).replace( "%s", playerName ).replace( "&quot;", "\"" ).replace( "&#039;", "'" );
+					String baseCommand = commands.getString( x );
+
+					wmc_log( "Dirty Command: " + baseCommand );
+
+					final String command = baseCommand.replace( "%s", playerName ).replace( "&quot;", "\"" ).replace( "&#039;", "'" );
+
+					wmc_log( "Clean Command: " + command );
+
 					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 
 					// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
@@ -198,8 +223,11 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 
 		if ( 1 > processedData.length() ) {
+			wmc_log( "Processed zero data, exiting.", 2 );
 			return false;
 		}
+
+		wmc_log( "Sending data to the website." );
 
 		HashMap< String, String > postData = new HashMap<>();
 		postData.put( "processedOrders", processedData.toString() );
@@ -216,6 +244,8 @@ public final class WooMinecraft extends JavaPlugin {
 			}
 			throw new Exception( "Failed sending updated orders to the server, got this instead:" + updatedCommandSet );
 		}
+
+		wmc_log( "All order data processed." );
 
 		return true;
 	}
