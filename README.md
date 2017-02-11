@@ -67,6 +67,10 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 
 ## Changelog
 
+### 1.1.1
+* Fixed - [#137](https://github.com/WooMinecraft/WooMinecraft/issues/137) - Removed missing commands from help message.
+* Fixed - [#130](https://github.com/WooMinecraft/WooMinecraft/issues/130) - Commands not processing due to new white-list worlds config being commented out.
+
 ### 1.1.0
 * Added - Redirect Exceptions for sending/receiving data from the server. You will now get an exception if your host is redirecting the requests in most cases.
 * Added - Debug logging specifically for HTTP requests. Just set `debug: true` in your config.
