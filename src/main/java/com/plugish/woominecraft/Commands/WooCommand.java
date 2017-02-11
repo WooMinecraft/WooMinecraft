@@ -15,7 +15,7 @@ public class WooCommand implements CommandExecutor {
 	public boolean onCommand( CommandSender sender, Command command, String label, String[] args ) {
 		if ( command.getName().equalsIgnoreCase( "woo" ) && args.length == 0 ) {
 			if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
-				sender.sendMessage( chatPrefix + " " + plugin.getLang( "general.avail_commands" ) + ": /woo [register , reload , check]" );
+				sender.sendMessage( chatPrefix + " " + plugin.getLang( "general.avail_commands" ) + ": /woo check" );
 			} else {
 				sender.sendMessage( chatPrefix + " " + plugin.getLang( "general.not_authorized" ) );
 			}
