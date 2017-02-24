@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 public final class WooMinecraft extends JavaPlugin {
 
@@ -175,10 +176,16 @@ public final class WooMinecraft extends JavaPlugin {
 				continue;
 			}
 
-			// If the user isn't in a white-listed world, commands will not run here.
-			if ( !getConfig().getStringList( "whitelist-worlds" ).contains( player.getWorld().getName() ) ) {
-				wmc_log( "Player online, but not in a white-listed world.", 1 );
-				continue;
+			/**
+			 * Use white-list worlds check, if it's set.
+			 */
+			if ( getConfig().isSet( "whitelist-worlds" ) ) {
+				List<String> whitelistWorlds = getConfig().getStringList( "whitelist-worlds" );
+				String playerWorld = player.getWorld().getName();
+				if ( ! whitelistWorlds.contains( playerWorld ) ) {
+					wmc_log( "Player " + player.getDisplayName() + " was in world " + playerWorld + " which is not in the white-list, no commands were ran." );
+					continue;
+				}
 			}
 			
 			// Get all orders for the current player.
