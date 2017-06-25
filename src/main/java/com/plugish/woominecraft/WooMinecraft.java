@@ -48,6 +48,13 @@ public final class WooMinecraft extends JavaPlugin {
 			getLogger().warning( e.getMessage() );
 		}
 
+		// Make 100% sure the config has at least a key and url
+		try {
+			this.validateConfig();
+		} catch ( Exception e ) {
+			getLogger().severe( e.getMessage() );
+		}
+
 		this.lang = getConfig().getString( "lang" );
 		if ( lang == null ) {
 			getLogger().warning( "No default l10n set, setting to english." );
@@ -113,9 +120,6 @@ public final class WooMinecraft extends JavaPlugin {
 	 * @throws Exception
 	 */
 	public boolean check() throws Exception {
-
-		// Make 100% sure the config has at least a key and url
-		this.validateConfig();
 
 		URIBuilder uriBuilder = new URIBuilder( getConfig().getString( "url" ) );
 		uriBuilder.addParameter( "wmc_key", getConfig().getString( "key" ) );
