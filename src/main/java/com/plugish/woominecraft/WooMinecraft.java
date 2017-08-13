@@ -12,11 +12,13 @@ package com.plugish.woominecraft;
 import com.plugish.woominecraft.Commands.WooCommand;
 import com.plugish.woominecraft.Lang.LangSetup;
 import com.plugish.woominecraft.Util.BukkitRunner;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 
@@ -32,6 +34,8 @@ public final class WooMinecraft extends JavaPlugin {
 
 	public final String restBase = "wp-json/woominecraft/v1/";
 
+	public String serverEndpoint;
+
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -42,6 +46,14 @@ public final class WooMinecraft extends JavaPlugin {
 			saveDefaultConfig();
 		} catch ( IllegalArgumentException e ) {
 			getLogger().warning( e.getMessage() );
+			Bukkit.getPluginManager().disablePlugin( this );
+		}
+
+		try {
+			serverEndpoint = getServerUrl().toString();
+		} catch ( Exception e ) {
+			getLogger().severe( e.getMessage() );
+			Bukkit.getPluginManager().disablePlugin( this );
 		}
 
 		// Make 100% sure the config has at least a key and url
@@ -49,6 +61,7 @@ public final class WooMinecraft extends JavaPlugin {
 			this.validateConfig();
 		} catch ( Exception e ) {
 			getLogger().severe( e.getMessage() );
+			Bukkit.getPluginManager().disablePlugin( this );
 		}
 
 		this.lang = getConfig().getString( "lang" );
@@ -57,6 +70,7 @@ public final class WooMinecraft extends JavaPlugin {
 			this.lang = "en";
 		}
 
+		// Initialize commands
 		initCommands();
 		getLogger().info( this.getLang( "log.com_init" ));
 
@@ -106,6 +120,20 @@ public final class WooMinecraft extends JavaPlugin {
 		} else if ( 1 > this.getConfig().getString( "key" ).length() ) {
 			throw new Exception( "Server Key is empty, this is insecure, check config." );
 		}
+
+		if ( ! urlIsValidJSON() ) {
+			throw new Exception( "The URL does not have access to the /wp-json endpoint. Ensure your website URL is the WordPress URL." );
+		}
+	}
+
+	public Boolean urlIsValidJSON() throws Exception {
+		Client client = ClientBuilder.newClient();
+		Response response = client.target( getServerUrl().toString() ).request().get();
+
+		MediaType contentType = response.getMediaType();
+		Boolean eq = MediaType.APPLICATION_JSON_TYPE.equals( contentType );
+		client.close(); // gotta be nice and close.
+		return eq;
 	}
 
 	/**
