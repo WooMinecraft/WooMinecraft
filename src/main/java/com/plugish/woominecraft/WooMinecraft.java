@@ -15,6 +15,11 @@ import com.plugish.woominecraft.Util.BukkitRunner;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Response;
+import java.net.URI;
+
 public final class WooMinecraft extends JavaPlugin {
 
 	public static WooMinecraft instance;
@@ -24,6 +29,8 @@ public final class WooMinecraft extends JavaPlugin {
 	public YamlConfiguration config;
 
 	public static BukkitRunner scheduler;
+
+	public final String restBase = "wp-json/woominecraft/v1/";
 
 	@Override
 	public void onEnable() {
@@ -101,7 +108,43 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 	}
 
+	/**
+	 * Builds a URI for REST requests.
+	 *
+	 * @return URI
+	 * @throws Exception
+	 */
+	private URI getServerUrl() throws Exception {
+		URI uri = new URI( getConfig().getString( "url" ) );
+		String key = getConfig().getString( "key" );
+		String path = uri.getPath();
+
+		if( path.charAt( path.length() - 1 ) == '/' ) {
+			path = path + this.restBase;
+		} else {
+			path = path + "/" + this.restBase;
+		}
+
+		return uri.resolve( path + key );
+	}
+
 	public void check() throws Exception {
+
+		// Get server URL
+		URI serverUrl = this.getServerUrl();
+
+		// Build client and make request
+		Client client = ClientBuilder.newClient();
+		Response response = client.target( serverUrl.toString() ).request().get();
+
+		// Check status
+		int status = response.getStatus();
+
+		if ( 200 != status ) {
+			throw new Exception( "Expected 200 response, got " + status );
+		}
+
+
 
 	}
 
