@@ -11,7 +11,9 @@ package com.plugish.woominecraft;
 
 import com.plugish.woominecraft.Commands.WooCommand;
 import com.plugish.woominecraft.Lang.LangSetup;
+import com.plugish.woominecraft.Pojo.OrderResponse;
 import com.plugish.woominecraft.Util.BukkitRunner;
+import com.plugish.woominecraft.Util.Orders;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +23,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
+import java.util.ArrayList;
 
 public final class WooMinecraft extends JavaPlugin {
 
@@ -49,6 +52,7 @@ public final class WooMinecraft extends JavaPlugin {
 			Bukkit.getPluginManager().disablePlugin( this );
 		}
 
+		// Ensure we have a valid server URL.
 		try {
 			serverEndpoint = getServerUrl().toString();
 		} catch ( Exception e ) {
@@ -126,12 +130,17 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 	}
 
+	/**
+	 * Ensures the URL provided in the config has access to the WP-JSON endpoint.
+	 * @return True if the app has access to wp-json/
+	 * @throws Exception
+	 */
 	public Boolean urlIsValidJSON() throws Exception {
 		Client client = ClientBuilder.newClient();
 		Response response = client.target( getServerUrl().toString() ).request().get();
 
 		MediaType contentType = response.getMediaType();
-		Boolean eq = MediaType.APPLICATION_JSON_TYPE.equals( contentType );
+		Boolean eq = contentType.equals( MediaType.APPLICATION_JSON_TYPE );
 		client.close(); // gotta be nice and close.
 		return eq;
 	}
@@ -158,21 +167,9 @@ public final class WooMinecraft extends JavaPlugin {
 
 	public void check() throws Exception {
 
-		// Get server URL
-		URI serverUrl = this.getServerUrl();
-
-		// Build client and make request
-		Client client = ClientBuilder.newClient();
-		Response response = client.target( serverUrl.toString() ).request().get();
-
-		// Check status
-		int status = response.getStatus();
-
-		if ( 200 != status ) {
-			throw new Exception( "Expected 200 response, got " + status );
-		}
-
-
+		Orders orders = new Orders();
+		ArrayList<Integer> processedOrders = new ArrayList<>();
+		OrderResponse allOrders = orders.getAllOrders( serverEndpoint );
 
 	}
 
