@@ -16,7 +16,7 @@ public class OrderData {
 	Integer orderID;
 
 	@JsonProperty(required = false)
-	Boolean online;
+	Boolean online = true;
 
 	@JsonProperty
 	ArrayList<String> commands;
