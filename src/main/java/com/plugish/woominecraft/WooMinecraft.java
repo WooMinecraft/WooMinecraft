@@ -173,6 +173,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 	/**
 	 * Tries to get and execute commands that are pending.
+	 *
 	 * @throws Exception
 	 */
 	public void check() throws Exception {
@@ -204,6 +205,12 @@ public final class WooMinecraft extends JavaPlugin {
 		orders.updateOrders( serverEndpoint, processedOrders );
 	}
 
+	/**
+	 * Executes the commands.
+	 *
+	 * @param commands A list of commands.
+	 * @param playerName The player name, duh!
+	 */
 	private void executeCommands( ArrayList< String > commands, String playerName ) {
 		for ( String command : commands ) {
 			// some replacements on the command.
