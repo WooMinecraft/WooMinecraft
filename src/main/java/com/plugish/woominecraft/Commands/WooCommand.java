@@ -24,14 +24,8 @@ public class WooCommand implements CommandExecutor {
 				if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
 
 					try {
-						String msg;
-						boolean checkResults = plugin.check();
-
-						if ( !checkResults ) {
-							msg = chatPrefix + " " + plugin.getLang( "general.none_avail" );
-						} else {
-							msg = chatPrefix + " " + plugin.getLang( "general.processed" );
-						}
+						plugin.check();
+						String msg = chatPrefix + " " + plugin.getLang( "general.processed" );
 
 						sender.sendMessage( msg );
 					} catch ( Exception e ) {
