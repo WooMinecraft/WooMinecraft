@@ -11,6 +11,7 @@ package com.plugish.woominecraft;
 
 import com.plugish.woominecraft.Commands.WooCommand;
 import com.plugish.woominecraft.Lang.LangSetup;
+import com.plugish.woominecraft.Pojo.OrderData;
 import com.plugish.woominecraft.Pojo.OrderResponse;
 import com.plugish.woominecraft.Util.BukkitRunner;
 import com.plugish.woominecraft.Util.Orders;
@@ -148,7 +149,7 @@ public final class WooMinecraft extends JavaPlugin {
 	/**
 	 * Builds a URI for REST requests.
 	 *
-	 * @return URI
+	 * @return URI A full URL to the REST path.
 	 * @throws Exception
 	 */
 	private URI getServerUrl() throws Exception {
@@ -170,6 +171,10 @@ public final class WooMinecraft extends JavaPlugin {
 		Orders orders = new Orders();
 		ArrayList<Integer> processedOrders = new ArrayList<>();
 		OrderResponse allOrders = orders.getAllOrders( serverEndpoint );
+
+		for ( OrderData orderData : allOrders.getOrderData() ) {
+			String playerName = orderData.getPlayer();
+		}
 
 	}
 

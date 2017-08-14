@@ -16,8 +16,24 @@ public class OrderData {
 	Integer orderID;
 
 	@JsonProperty(required = false)
-	String online;
+	Boolean online;
 
 	@JsonProperty
 	ArrayList<String> commands;
+
+	public String getPlayer() {
+		return player;
+	}
+
+	public Integer getOrderID() {
+		return orderID;
+	}
+
+	public Boolean getOnline(){
+		return online;
+	}
+
+	public ArrayList<String> getCommands() {
+		return commands;
+	}
 }
