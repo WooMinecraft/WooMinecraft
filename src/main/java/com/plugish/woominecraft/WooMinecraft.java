@@ -84,8 +84,22 @@ public final class WooMinecraft extends JavaPlugin {
 		getLogger().info( this.getLang( "log.com_init" ));
 
 		// Setup the scheduler
-		scheduler = new BukkitRunner( instance );
-		scheduler.runTaskTimerAsynchronously( instance, config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
+//		scheduler = new BukkitRunner( instance );
+//		scheduler.runTaskTimerAsynchronously( Bukkit.getPluginManager().getPlugin("WooMinecraft"), config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
+
+		BukkitScheduler scheduler = getServer().getScheduler();
+		Integer i = config.getInt( "update_interval" ) * 20;
+		Long interval = Long.valueOf( i );
+		scheduler.runTaskTimerAsynchronously( this, new Runnable() {
+			@Override
+			public void run() {
+				try{
+					check();
+				} catch ( Exception e ) {
+					getLogger().severe( e.getMessage() );
+				}
+			}
+		}, interval, interval );
 
 		getLogger().info( this.getLang( "log.enabled" ) );
 	}
