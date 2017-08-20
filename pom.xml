@@ -23,6 +23,37 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <relocations>
+                        <relocation>
+                            <pattern>javax.ws.rs</pattern>
+                            <shadedPattern>com.plugish.javax.ws.rs</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.glassfish.jersey.core</pattern>
+                            <shadedPattern>com.plugish.org.glassfish.jersey.core</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.glassfish.jersey.media</pattern>
+                            <shadedPattern>com.plugish.org.glassfish.jersey.media</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
         <resources>
@@ -59,7 +90,7 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
-            <version>2.25.1</version>
+            <version>2.25</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

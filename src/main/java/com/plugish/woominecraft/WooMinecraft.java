@@ -40,7 +40,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 	public static BukkitRunner scheduler;
 
-	public final String restBase = "wp-json/woominecraft/v1/";
+	public final String restBase = "wp-json/woominecraft/v1/server/";
 
 	public String serverEndpoint;
 
@@ -54,7 +54,9 @@ public final class WooMinecraft extends JavaPlugin {
 			saveDefaultConfig();
 		} catch ( IllegalArgumentException e ) {
 			getLogger().warning( e.getMessage() );
+			e.printStackTrace();
 			Bukkit.getPluginManager().disablePlugin( this );
+			return;
 		}
 
 		// Ensure we have a valid server URL.
@@ -62,7 +64,9 @@ public final class WooMinecraft extends JavaPlugin {
 			serverEndpoint = getServerUrl().toString();
 		} catch ( Exception e ) {
 			getLogger().severe( e.getMessage() );
+			e.printStackTrace();
 			Bukkit.getPluginManager().disablePlugin( this );
+			return;
 		}
 
 		// Make 100% sure the config has at least a key and url
@@ -70,7 +74,9 @@ public final class WooMinecraft extends JavaPlugin {
 			this.validateConfig();
 		} catch ( Exception e ) {
 			getLogger().severe( e.getMessage() );
+			e.printStackTrace();
 			Bukkit.getPluginManager().disablePlugin( this );
+			return;
 		}
 
 		this.lang = getConfig().getString( "lang" );
@@ -158,11 +164,17 @@ public final class WooMinecraft extends JavaPlugin {
 	public Boolean urlIsValidJSON() throws Exception {
 		Client client = ClientBuilder.newClient();
 		Response response = client.target( getServerUrl().toString() ).request().get();
-
 		MediaType contentType = response.getMediaType();
-		Boolean eq = contentType.equals( MediaType.APPLICATION_JSON_TYPE );
+
+		Boolean isValid = false;
+
+		if ( contentType.getType().equals( MediaType.APPLICATION_JSON_TYPE.getType() )
+			&& contentType.getSubtype().equals( MediaType.APPLICATION_JSON_TYPE.getSubtype() )
+		) {
+			isValid = true;
+		}
 		client.close(); // gotta be nice and close.
-		return eq;
+		return isValid;
 	}
 
 	/**
@@ -172,15 +184,19 @@ public final class WooMinecraft extends JavaPlugin {
 	 * @throws Exception
 	 */
 	private URI getServerUrl() throws Exception {
+
 		URI uri = new URI( getConfig().getString( "url" ) );
 		String key = getConfig().getString( "key" );
 		String path = uri.getPath();
 
-		if( path.charAt( path.length() - 1 ) == '/' ) {
+		if ( null == path || path.length() == 0 ) {
+			path = "/" + this.restBase;
+		} else if ( path.charAt( path.length() - 1 ) == '/' ) {
 			path = path + this.restBase;
 		} else {
 			path = path + "/" + this.restBase;
 		}
+
 
 		return uri.resolve( path + key );
 	}
