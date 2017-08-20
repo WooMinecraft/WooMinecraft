@@ -12,6 +12,8 @@ public class CompletedOrders {
 	@JsonProperty
 	private ArrayList<Integer> Orders = new ArrayList<>();
 
+	public CompletedOrders(){}
+
 	public CompletedOrders( ArrayList<Integer> orders ) {
 		Orders = orders;
 	}

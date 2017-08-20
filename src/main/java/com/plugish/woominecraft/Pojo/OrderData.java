@@ -21,6 +21,8 @@ public class OrderData {
 	@JsonProperty
 	ArrayList<String> commands;
 
+	public OrderData() {}
+
 	public String getPlayer() {
 		return player;
 	}

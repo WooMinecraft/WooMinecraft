@@ -17,4 +17,6 @@ public class UpdatedResponse {
 
 	@JsonProperty
 	ArrayList<Integer> processed;
+
+	public UpdatedResponse(){}
 }

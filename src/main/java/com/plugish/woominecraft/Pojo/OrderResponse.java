@@ -15,6 +15,8 @@ public class OrderResponse {
 	@JsonProperty
 	private ArrayList<OrderData> orderData;
 
+	public OrderResponse(){}
+
 	/**
 	 * Gets the server key.
 	 * @return String
