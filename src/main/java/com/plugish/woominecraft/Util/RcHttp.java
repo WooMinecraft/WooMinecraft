@@ -9,6 +9,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -55,7 +56,7 @@ public class RcHttp {
 		StringBuilder result = new StringBuilder();
 		String line;
 		while ( ( line = rd.readLine() ) != null ) {
-			result.append( line );
+			result.append( StringEscapeUtils.unescapeHtml( line ) );
 		}
 
 		String resultString = result.toString();
