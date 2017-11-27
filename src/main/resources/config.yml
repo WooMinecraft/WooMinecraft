@@ -20,8 +20,8 @@ key: ""
 
 # Allowed words the player need to be on to run the commands.
 # Disabled by default!
-whitelist-worlds:
-  - world
+#whitelist-worlds:
+#  - world
 
 # Set to true in order to toggle debug information
 debug: false

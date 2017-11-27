@@ -11,19 +11,23 @@ package com.plugish.woominecraft;
 
 import com.plugish.woominecraft.Commands.WooCommand;
 import com.plugish.woominecraft.Lang.LangSetup;
+import com.plugish.woominecraft.Pojo.OrderData;
+import com.plugish.woominecraft.Pojo.OrderResponse;
 import com.plugish.woominecraft.Util.BukkitRunner;
-import com.plugish.woominecraft.Util.RcHttp;
-import org.apache.http.client.utils.URIBuilder;
+import com.plugish.woominecraft.Util.Orders;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class WooMinecraft extends JavaPlugin {
@@ -36,6 +40,10 @@ public final class WooMinecraft extends JavaPlugin {
 
 	public static BukkitRunner scheduler;
 
+	public final String restBase = "wp-json/woominecraft/v1/server/";
+
+	public String serverEndpoint;
+
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -46,6 +54,29 @@ public final class WooMinecraft extends JavaPlugin {
 			saveDefaultConfig();
 		} catch ( IllegalArgumentException e ) {
 			getLogger().warning( e.getMessage() );
+			e.printStackTrace();
+			Bukkit.getPluginManager().disablePlugin( this );
+			return;
+		}
+
+		// Ensure we have a valid server URL.
+		try {
+			serverEndpoint = getServerUrl().toString();
+		} catch ( Exception e ) {
+			getLogger().severe( e.getMessage() );
+			e.printStackTrace();
+			Bukkit.getPluginManager().disablePlugin( this );
+			return;
+		}
+
+		// Make 100% sure the config has at least a key and url
+		try {
+			this.validateConfig();
+		} catch ( Exception e ) {
+			getLogger().severe( e.getMessage() );
+			e.printStackTrace();
+			Bukkit.getPluginManager().disablePlugin( this );
+			return;
 		}
 
 		this.lang = getConfig().getString( "lang" );
@@ -54,12 +85,27 @@ public final class WooMinecraft extends JavaPlugin {
 			this.lang = "en";
 		}
 
+		// Initialize commands
 		initCommands();
 		getLogger().info( this.getLang( "log.com_init" ));
 
 		// Setup the scheduler
-		scheduler = new BukkitRunner( instance );
-		scheduler.runTaskTimerAsynchronously( instance, config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
+//		scheduler = new BukkitRunner( instance );
+//		scheduler.runTaskTimerAsynchronously( Bukkit.getPluginManager().getPlugin("WooMinecraft"), config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
+
+		BukkitScheduler scheduler = getServer().getScheduler();
+		Integer i = config.getInt( "update_interval" ) * 20;
+		Long interval = Long.valueOf( i );
+		scheduler.runTaskTimerAsynchronously( this, new Runnable() {
+			@Override
+			public void run() {
+				try{
+					check();
+				} catch ( Exception e ) {
+					getLogger().severe( e.getMessage() );
+				}
+			}
+		}, interval, interval );
 
 		getLogger().info( this.getLang( "log.enabled" ) );
 	}
@@ -103,155 +149,105 @@ public final class WooMinecraft extends JavaPlugin {
 		} else if ( 1 > this.getConfig().getString( "key" ).length() ) {
 			throw new Exception( "Server Key is empty, this is insecure, check config." );
 		}
+
+		if ( ! urlIsValidJSON() ) {
+			throw new Exception( "The URL does not have access to the /wp-json endpoint. Ensure your website URL is the WordPress URL." );
+		}
 	}
 
 	/**
-	 * Checks all online players against the
-	 * website's database looking for pending donation deliveries
+	 * Ensures the URL provided in the config has access to the WP-JSON endpoint.
 	 *
-	 * @return boolean
+	 * @return True if the app has access to wp-json/
 	 * @throws Exception
 	 */
-	public boolean check() throws Exception {
+	public Boolean urlIsValidJSON() throws Exception {
+		Client client = ClientBuilder.newClient();
+		Response response = client.target( getServerUrl().toString() ).request().get();
+		MediaType contentType = response.getMediaType();
 
-		// Make 100% sure the config has at least a key and url
-		this.validateConfig();
+		Boolean isValid = false;
 
-		URIBuilder uriBuilder = new URIBuilder( getConfig().getString( "url" ) );
-		uriBuilder.addParameter( "wmc_key", getConfig().getString( "key" ) );
+		if ( contentType.getType().equals( MediaType.APPLICATION_JSON_TYPE.getType() )
+			&& contentType.getSubtype().equals( MediaType.APPLICATION_JSON_TYPE.getSubtype() )
+		) {
+			isValid = true;
+		}
+		client.close(); // gotta be nice and close.
+		return isValid;
+	}
 
-		String url = uriBuilder.toString();
-		if ( url.equals( "" ) ) {
-			throw new Exception( "WMC URL is empty for some reason" );
+	/**
+	 * Builds a URI for REST requests.
+	 *
+	 * @return URI A full URL to the REST path.
+	 * @throws Exception
+	 */
+	private URI getServerUrl() throws Exception {
+
+		URI uri = new URI( getConfig().getString( "url" ) );
+		String key = getConfig().getString( "key" );
+		String path = uri.getPath();
+
+		if ( null == path || path.length() == 0 ) {
+			path = "/" + this.restBase;
+		} else if ( path.charAt( path.length() - 1 ) == '/' ) {
+			path = path + this.restBase;
+		} else {
+			path = path + "/" + this.restBase;
 		}
 
-		RcHttp rcHttp = new RcHttp( this );
-		String httpResponse = rcHttp.request( url );
 
-		// No response, kill out here.
-		if ( httpResponse.equals( "" ) ) {
-			return false;
-		}
+		return uri.resolve( path + key );
+	}
 
-		// Grab the pending commands
-		JSONObject pendingCommands = new JSONObject( httpResponse );
+	/**
+	 * Tries to get and execute commands that are pending.
+	 *
+	 * @throws Exception
+	 */
+	public void check() throws Exception {
 
-		// If the request was not a WordPress success, we may have a message
-		if ( ! pendingCommands.getBoolean( "success" ) ) {
+		Orders orders = new Orders();
+		ArrayList<Integer> processedOrders = new ArrayList<>();
+		OrderResponse allOrders = orders.getAllOrders( serverEndpoint );
 
-			wmc_log( "Server response was false, checking for message and bailing.", 2 );
-
-			// See if we have a data object.
-			Object dataCheck = pendingCommands.get( "data" );
-			if ( dataCheck instanceof JSONObject ) {
-				JSONObject errors = pendingCommands.getJSONObject( "data" );
-				String msg = errors.getString( "msg" );
-				// Throw the message as an exception.
-				throw new Exception( msg );
-			}
-
-			return false;
-		}
-
-		Object dataCheck = pendingCommands.get( "data" );
-		if ( !( dataCheck instanceof JSONObject ) ) {
-			wmc_log( "Data check was not an instance of JSONObject, so bailing." );
-			return false;
-		}
-
-		JSONObject data = pendingCommands.getJSONObject( "data" );
-		Iterator<String> playerNames = data.keys();
-		JSONArray processedData = new JSONArray();
-
-		wmc_log( "Player names acquired -- walking over them now." );
-		while ( playerNames.hasNext() ) {
-			// Walk over players.
-			String playerName = playerNames.next();
-			wmc_log( "Checking for player: " + playerName );
-
-			@SuppressWarnings( "deprecation" )
-			Player player = Bukkit.getServer().getPlayerExact( playerName );
-			if ( player == null ) {
-				wmc_log( "Player not found.", 2 );
-				continue;
-			}
-
-			/**
-			 * Use white-list worlds check, if it's set.
-			 */
-			if ( getConfig().isSet( "whitelist-worlds" ) ) {
-				List<String> whitelistWorlds = getConfig().getStringList( "whitelist-worlds" );
-				String playerWorld = player.getWorld().getName();
-				if ( ! whitelistWorlds.contains( playerWorld ) ) {
-					wmc_log( "Player " + player.getDisplayName() + " was in world " + playerWorld + " which is not in the white-list, no commands were ran." );
-					continue;
+		for ( OrderData orderData : allOrders.getOrderData() ) {
+			if ( orderData.getOnline() ) {
+				Player player = Bukkit.getServer().getPlayerExact( orderData.getPlayer() );
+				if ( getConfig().isSet( "whitelist-worlds" ) ) {
+					List< String > whitelistWorlds = getConfig().getStringList( "whitelist-worlds" );
+					String playerWorld = player.getWorld().getName();
+					if ( !whitelistWorlds.contains( playerWorld ) ) {
+						wmc_log( "Player " + player.getDisplayName() + " was in world " + playerWorld + " which is not in the white-list, no commands were ran." );
+						continue;
+					}
 				}
-			}
-			
-			// Get all orders for the current player.
-			JSONObject playerOrders = data.getJSONObject( playerName );
-			Iterator<String> orderIDs = playerOrders.keys();
-
-			wmc_log( "Walking over orders for player.", 1 );
-			while ( orderIDs.hasNext() ) {
-				String orderID = orderIDs.next();
-
-				// Get all commands per order
-				JSONArray commands = playerOrders.getJSONArray( orderID );
-
-				wmc_log( "Processing command for order: " + orderID );
-				wmc_log( "Command Set: " + commands.toString() );
-
-				// Walk over commands, executing them one by one.
-				for ( Integer x = 0; x < commands.length(); x++ ) {
-					String baseCommand = commands.getString( x );
-
-					wmc_log( "Dirty Command: " + baseCommand );
-
-					final String command = baseCommand.replace( "%s", playerName ).replace( "&quot;", "\"" ).replace( "&#039;", "'" );
-
-					wmc_log( "Clean Command: " + command );
-
-					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-
-					// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
-					scheduler.scheduleSyncDelayedTask( instance, new Runnable() {
-						@Override
-						public void run() {
-							Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command );
-						}
-					}, 20L );
-				}
-				processedData.put( Integer.parseInt( orderID ) );
+				executeCommands( orderData.getCommands(), player.getName() );
+				processedOrders.add( orderData.getOrderID() );
+			} else {
+				OfflinePlayer player = Bukkit.getServer().getOfflinePlayer( orderData.getPlayer() );
+				executeCommands( orderData.getCommands(), player.getName() );
+				processedOrders.add( orderData.getOrderID() );
 			}
 		}
 
-		if ( 1 > processedData.length() ) {
-			wmc_log( "Processed zero data, exiting.", 2 );
-			return false;
+		orders.updateOrders( serverEndpoint, processedOrders );
+	}
+
+	/**
+	 * Executes the commands.
+	 *
+	 * @param commands A list of commands.
+	 * @param playerName The player name, duh!
+	 */
+	private void executeCommands( ArrayList< String > commands, String playerName ) {
+		for ( String command : commands ) {
+			// some replacements on the command.
+			final String _command = command.replace( "%s", playerName ).replace( "&quot;", "\"" ).replace( "&#039;", "'" );
+			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask( instance, () -> Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), _command ), 20L );
 		}
-
-		wmc_log( "Sending data to the website." );
-
-		HashMap< String, String > postData = new HashMap<>();
-		postData.put( "processedOrders", processedData.toString() );
-
-		String updatedCommandSet = rcHttp.send( url, postData );
-		JSONObject updatedResponse = new JSONObject( updatedCommandSet );
-		boolean status = updatedResponse.getBoolean( "success" );
-
-		if ( ! status ) {
-			Object dataSet = updatedResponse.get( "data" );
-			if ( dataSet instanceof JSONObject ) {
-				String message = ( ( JSONObject ) dataSet ).getString( "msg" );
-				throw new Exception( message );
-			}
-			throw new Exception( "Failed sending updated orders to the server, got this instead:" + updatedCommandSet );
-		}
-
-		wmc_log( "All order data processed." );
-
-		return true;
 	}
 
 	public void wmc_log( String message ) {

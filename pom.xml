@@ -3,21 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.plugish.woominecraft</groupId>
     <artifactId>WooMinecraft</artifactId>
-
-    <!--<version>1.1.1-B1.11.1-R0.1</version>-->
-    <!--<version>1.1.1-B1.10.2-R0.1</version>-->
-    <!--<version>1.1.1-B1.9.4-R0.1</version>-->
-    <version>1.1.1-B1.8.8-R0.1</version>
-
+    <version>2.0.0-B1.12-R0.1</version>
     <name>WooMinecraft</name>
     <description>A WooCommerce Minecraft Bridge</description>
     <properties>
-
-        <!--<bukkitVersion>1.11.1-R0.1-SNAPSHOT</bukkitVersion>-->
-        <!--<bukkitVersion>1.10.2-R0.1-SNAPSHOT</bukkitVersion>-->
-        <!--<bukkitVersion>1.9.4-R0.1-SNAPSHOT</bukkitVersion>-->
-        <bukkitVersion>1.8.8-R0.1-SNAPSHOT</bukkitVersion>
-
+        <bukkitVersion>1.12-R0.1-SNAPSHOT</bukkitVersion>
         <mainClass>${project.groupId}.${project.artifactId}</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -42,12 +32,16 @@
                     <createDependencyReducedPom>false</createDependencyReducedPom>
                     <relocations>
                         <relocation>
-                            <pattern>org.apache.http</pattern>
-                            <shadedPattern>com.plugish.apache.http</shadedPattern>
+                            <pattern>javax.ws.rs</pattern>
+                            <shadedPattern>com.plugish.javax.ws.rs</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>org.apache.commons</pattern>
-                            <shadedPattern>com.plugish.apache.commons</shadedPattern>
+                            <pattern>org.glassfish.jersey.core</pattern>
+                            <shadedPattern>com.plugish.org.glassfish.jersey.core</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.glassfish.jersey.media</pattern>
+                            <shadedPattern>com.plugish.org.glassfish.jersey.media</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -88,16 +82,21 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20160212</version>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>2.25.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.2</version>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>2.25</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0</version>
         </dependency>
     </dependencies>
 </project>
