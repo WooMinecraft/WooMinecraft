@@ -67,6 +67,12 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 
 ## Changelog
 
+## 1.1.2
+* Tested on Spigot 1.12.1
+* Cleaned up a lot of pointless code.
+* Privatized a lot of methods.
+* Make OrderID more visible in the sea of text.
+
 ### 1.1.1
 * Fixed - [#137](https://github.com/WooMinecraft/WooMinecraft/issues/137) - Removed missing commands from help message.
 * Fixed - [#130](https://github.com/WooMinecraft/WooMinecraft/issues/130) - Commands not processing due to new white-list worlds config being commented out.

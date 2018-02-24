@@ -29,17 +29,13 @@ import java.util.List;
 public final class WooMinecraft extends JavaPlugin {
 
 	public static WooMinecraft instance;
-	public String lang = "en";
 
-	public YamlConfiguration l10n;
-	public YamlConfiguration config;
-
-	public static BukkitRunner scheduler;
+	private YamlConfiguration l10n;
 
 	@Override
 	public void onEnable() {
 		instance = this;
-		this.config = ( YamlConfiguration ) getConfig();
+		YamlConfiguration config = (YamlConfiguration) getConfig();
 
 		// Save the default config.yml
 		try{
@@ -48,17 +44,16 @@ public final class WooMinecraft extends JavaPlugin {
 			getLogger().warning( e.getMessage() );
 		}
 
-		this.lang = getConfig().getString( "lang" );
+		String lang = getConfig().getString("lang");
 		if ( lang == null ) {
 			getLogger().warning( "No default l10n set, setting to english." );
-			this.lang = "en";
 		}
 
 		initCommands();
 		getLogger().info( this.getLang( "log.com_init" ));
 
 		// Setup the scheduler
-		scheduler = new BukkitRunner( instance );
+		BukkitRunner scheduler = new BukkitRunner(instance);
 		scheduler.runTaskTimerAsynchronously( instance, config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
 
 		getLogger().info( this.getLang( "log.enabled" ) );
@@ -92,9 +87,9 @@ public final class WooMinecraft extends JavaPlugin {
 	 * Multiple reports of user configs not having keys etc... so this will ensure they know of this
 	 * and will not allow checks to continue if the required data isn't set in the config.
 	 *
-	 * @throws Exception
+	 * @throws Exception Reason for failing to validate the config.
 	 */
-	public void validateConfig() throws Exception {
+	private void validateConfig() throws Exception {
 
 		if ( 1 > this.getConfig().getString( "url" ).length() ) {
 			throw new Exception( "Server URL is empty, check config." );
@@ -110,7 +105,7 @@ public final class WooMinecraft extends JavaPlugin {
 	 * website's database looking for pending donation deliveries
 	 *
 	 * @return boolean
-	 * @throws Exception
+	 * @throws Exception Why the operation failed.
 	 */
 	public boolean check() throws Exception {
 
@@ -155,7 +150,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 		Object dataCheck = pendingCommands.get( "data" );
 		if ( !( dataCheck instanceof JSONObject ) ) {
-			wmc_log( "Data check was not an instance of JSONObject, so bailing." );
+			wmc_log( "No data to process, or data is invalid." );
 			return false;
 		}
 
@@ -176,7 +171,7 @@ public final class WooMinecraft extends JavaPlugin {
 				continue;
 			}
 
-			/**
+			/*
 			 * Use white-list worlds check, if it's set.
 			 */
 			if ( getConfig().isSet( "whitelist-worlds" ) ) {
@@ -195,11 +190,13 @@ public final class WooMinecraft extends JavaPlugin {
 			wmc_log( "Walking over orders for player.", 1 );
 			while ( orderIDs.hasNext() ) {
 				String orderID = orderIDs.next();
+				wmc_log( "===========================" );
 
 				// Get all commands per order
 				JSONArray commands = playerOrders.getJSONArray( orderID );
 
 				wmc_log( "Processing command for order: " + orderID );
+                wmc_log( "===========================" );
 				wmc_log( "Command Set: " + commands.toString() );
 
 				// Walk over commands, executing them one by one.
@@ -258,11 +255,7 @@ public final class WooMinecraft extends JavaPlugin {
 		this.wmc_log( message, 1 );
 	}
 
-	public void wmc_log( Exception message ) {
-		this.wmc_log( message.getMessage(), 3 );
-	}
-
-	public void wmc_log( String message, Integer level ) {
+	private void wmc_log(String message, Integer level) {
 
 		if ( ! this.getConfig().getBoolean( "debug" ) ) {
 			return;
@@ -284,7 +277,7 @@ public final class WooMinecraft extends JavaPlugin {
 	/**
 	 * Initialize Commands
 	 */
-	public void initCommands() {
+	private void initCommands() {
 		getCommand( "woo" ).setExecutor( new WooCommand() );
 	}
 }
