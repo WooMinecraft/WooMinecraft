@@ -71,7 +71,7 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 * Tested on Spigot 1.12.1
 * Cleaned up a lot of pointless code.
 * Privatized a lot of methods.
-* Added Order ID logging to the log, like we need more logging.
+* Make OrderID more visible in the sea of text.
 
 ### 1.1.1
 * Fixed - [#137](https://github.com/WooMinecraft/WooMinecraft/issues/137) - Removed missing commands from help message.

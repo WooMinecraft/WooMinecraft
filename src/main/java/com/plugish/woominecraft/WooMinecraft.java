@@ -191,12 +191,12 @@ public final class WooMinecraft extends JavaPlugin {
 			while ( orderIDs.hasNext() ) {
 				String orderID = orderIDs.next();
 				wmc_log( "===========================" );
-				wmc_log( "Processing order: " + orderID );
 
 				// Get all commands per order
 				JSONArray commands = playerOrders.getJSONArray( orderID );
 
 				wmc_log( "Processing command for order: " + orderID );
+                wmc_log( "===========================" );
 				wmc_log( "Command Set: " + commands.toString() );
 
 				// Walk over commands, executing them one by one.
