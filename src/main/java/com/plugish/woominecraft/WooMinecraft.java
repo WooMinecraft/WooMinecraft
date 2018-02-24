@@ -150,7 +150,7 @@ public final class WooMinecraft extends JavaPlugin {
 
 		Object dataCheck = pendingCommands.get( "data" );
 		if ( !( dataCheck instanceof JSONObject ) ) {
-			wmc_log( "Data check was not an instance of JSONObject, so bailing." );
+			wmc_log( "No data to process, or data is invalid." );
 			return false;
 		}
 
