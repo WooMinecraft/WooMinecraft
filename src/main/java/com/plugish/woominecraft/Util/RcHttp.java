@@ -29,7 +29,7 @@ public class RcHttp {
 	 * Just a helper method to return the user agent, so it's easily replaced.
 	 * @return String
 	 */
-	public String get_user_agent() {
+	private String get_user_agent() {
 		return "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2";
 	}
 
@@ -37,7 +37,7 @@ public class RcHttp {
 	 * Sends a GET request to a URL.
 	 * @param url String
 	 * @return String
-	 * @throws Exception
+	 * @throws Exception If getting the URL fails, or if status code is not 200.
 	 */
 	public String request( String url ) throws Exception {
 		CloseableHttpClient client = HttpClients.createDefault();
@@ -84,7 +84,7 @@ public class RcHttp {
 	 * @param url String
 	 * @param hashMap HashMap of k/v pairs
 	 * @return String
-	 * @throws Exception
+	 * @throws Exception If status code is not 200
 	 */
 	public String send( String url, HashMap<String, String> hashMap ) throws Exception {
 
