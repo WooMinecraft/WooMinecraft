@@ -18,8 +18,12 @@ url: "http://playground.dev"
 # For security purposes, you MUST NOT leave this empty.
 key: ""
 
+# Whether or not a player must be online for purchase commands to execute 
+# for that player. Required if using whitelist-worlds.
+require-player-be-online: true
+
 # Allowed words the player need to be on to run the commands.
-# Disabled by default!
+# Disabled by default! Requires 
 #whitelist-worlds:
 #  - world
 

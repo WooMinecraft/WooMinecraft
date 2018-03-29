@@ -162,24 +162,30 @@ public final class WooMinecraft extends JavaPlugin {
 		while ( playerNames.hasNext() ) {
 			// Walk over players.
 			String playerName = playerNames.next();
-			wmc_log( "Checking for player: " + playerName );
-
-			@SuppressWarnings( "deprecation" )
-			Player player = Bukkit.getServer().getPlayerExact( playerName );
-			if ( player == null ) {
-				wmc_log( "Player not found.", 2 );
-				continue;
-			}
-
+			
 			/*
-			 * Use white-list worlds check, if it's set.
+			 * Check if players are online if require-player-be-online is true
 			 */
-			if ( getConfig().isSet( "whitelist-worlds" ) ) {
-				List<String> whitelistWorlds = getConfig().getStringList( "whitelist-worlds" );
-				String playerWorld = player.getWorld().getName();
-				if ( ! whitelistWorlds.contains( playerWorld ) ) {
-					wmc_log( "Player " + player.getDisplayName() + " was in world " + playerWorld + " which is not in the white-list, no commands were ran." );
+			if (!getConfig().isSet("require-player-be-online") || getConfig().getBoolean("require-player-be-online")) {
+				wmc_log( "Checking for player: " + playerName );
+	
+				@SuppressWarnings( "deprecation" )
+				Player player = Bukkit.getServer().getPlayerExact( playerName );
+				if ( player == null ) {
+					wmc_log( "Player not found.", 2 );
 					continue;
+				}
+
+				/*
+				 * Use white-list worlds check, if it's set.
+				 */
+				if ( getConfig().isSet( "whitelist-worlds" ) ) {	
+					List<String> whitelistWorlds = getConfig().getStringList( "whitelist-worlds" );
+					String playerWorld = player.getWorld().getName();
+					if ( ! whitelistWorlds.contains( playerWorld ) ) {
+						wmc_log( "Player " + player.getDisplayName() + " was in world " + playerWorld + " which is not in the white-list, no commands were ran." );
+						continue;
+					}
 				}
 			}
 			
