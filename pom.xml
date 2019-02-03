@@ -5,7 +5,7 @@
     <artifactId>WooMinecraft</artifactId>
 
     <!--Base version off of Spigot for now-->
-    <version>1.1.2-S1.12.1-R0.1</version>
+    <version>1.2.0</version>
 
     <name>WooMinecraft</name>
     <description>A WooCommerce Minecraft Bridge</description>
@@ -74,21 +74,12 @@
     </repositories>
     <dependencies>
 
-        <!--Spigot Dependency-->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.12.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-
-        <!--Bukkit Dependency-->
-        <!--<dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>${bukkitVersion}</version>
-            <scope>provided</scope>
-        </dependency>-->
 
         <dependency>
             <groupId>org.json</groupId>
