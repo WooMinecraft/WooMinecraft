@@ -7,13 +7,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.InputStream;
 
-public class LangSetup {
+class LangSetup {
 
 	private JavaPlugin plugin;
 
-	public static String resourcePath;
+	private static String resourcePath;
 
-	public LangSetup( JavaPlugin plugin ) {
+	LangSetup(JavaPlugin plugin) {
 		this.plugin = plugin;
 		FileConfiguration config = plugin.getConfig();
 
@@ -44,7 +44,7 @@ public class LangSetup {
 		}
 	}
 
-	public YamlConfiguration loadConfig() {
+	YamlConfiguration loadConfig() {
 		return YamlConfiguration.loadConfiguration( new File( plugin.getDataFolder(), resourcePath ) );
 	}
 
@@ -58,7 +58,4 @@ public class LangSetup {
 			plugin.getLogger().warning( e.getMessage() );
 		}
 	}
-
-
-
 }
