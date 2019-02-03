@@ -1,6 +1,5 @@
 package com.plugish.woominecraft;
 
-import com.plugish.woominecraft.WooMinecraft;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class BukkitRunner extends BukkitRunnable {

@@ -9,15 +9,11 @@
  */
 package com.plugish.woominecraft;
 
-import com.plugish.woominecraft.Util.RcHttp;
-import org.apache.http.client.utils.URIBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
