@@ -107,144 +107,24 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	boolean check() throws Exception {
 
+		/*
+		 * The process:
+		 * Contact SERVER
+		 * -- if DATA is empty
+		 * do nothing
+		 * -- else
+		 * foreach PLAYERS in JSON feed
+		 * -- if PLAYER is online
+		 * -- foreach orders
+		 * -- -- run commands for PLAYER
+		 * -- else
+		 * do nothing
+		 */
+
 		// Make 100% sure the config has at least a key and url
 		this.validateConfig();
 
-		URIBuilder uriBuilder = new URIBuilder( getConfig().getString( "url" ) );
-		uriBuilder.addParameter( "wmc_key", getConfig().getString( "key" ) );
 
-		String url = uriBuilder.toString();
-		if ( url.equals( "" ) ) {
-			throw new Exception( "WMC URL is empty for some reason" );
-		}
-
-		RcHttp rcHttp = new RcHttp( this );
-		String httpResponse = rcHttp.request( url );
-
-		// No response, kill out here.
-		if ( httpResponse.equals( "" ) ) {
-			return false;
-		}
-
-		// Grab the pending commands
-		JSONObject pendingCommands = new JSONObject( httpResponse );
-
-		// If the request was not a WordPress success, we may have a message
-		if ( ! pendingCommands.getBoolean( "success" ) ) {
-
-			wmc_log( "Server response was false, checking for message and bailing.", 2 );
-
-			// See if we have a data object.
-			Object dataCheck = pendingCommands.get( "data" );
-			if ( dataCheck instanceof JSONObject ) {
-				JSONObject errors = pendingCommands.getJSONObject( "data" );
-				String msg = errors.getString( "msg" );
-				// Throw the message as an exception.
-				throw new Exception( msg );
-			}
-
-			return false;
-		}
-
-		Object dataCheck = pendingCommands.get( "data" );
-		if ( !( dataCheck instanceof JSONObject ) ) {
-			wmc_log( "No data to process, or data is invalid." );
-			return false;
-		}
-
-		JSONObject data = pendingCommands.getJSONObject( "data" );
-		Iterator<String> playerNames = data.keys();
-		JSONArray processedData = new JSONArray();
-
-		wmc_log( "Player names acquired -- walking over them now." );
-		while ( playerNames.hasNext() ) {
-			// Walk over players.
-			String playerName = playerNames.next();
-			wmc_log( "Checking for player: " + playerName );
-
-			@SuppressWarnings( "deprecation" )
-			Player player = Bukkit.getServer().getPlayerExact( playerName );
-			if ( player == null ) {
-				wmc_log( "Player not found.", 2 );
-				continue;
-			}
-
-			/*
-			 * Use white-list worlds check, if it's set.
-			 */
-			if ( getConfig().isSet( "whitelist-worlds" ) ) {
-				List<String> whitelistWorlds = getConfig().getStringList( "whitelist-worlds" );
-				String playerWorld = player.getWorld().getName();
-				if ( ! whitelistWorlds.contains( playerWorld ) ) {
-					wmc_log( "Player " + player.getDisplayName() + " was in world " + playerWorld + " which is not in the white-list, no commands were ran." );
-					continue;
-				}
-			}
-			
-			// Get all orders for the current player.
-			JSONObject playerOrders = data.getJSONObject( playerName );
-			Iterator<String> orderIDs = playerOrders.keys();
-
-			wmc_log( "Walking over orders for player.", 1 );
-			while ( orderIDs.hasNext() ) {
-				String orderID = orderIDs.next();
-				wmc_log( "===========================" );
-
-				// Get all commands per order
-				JSONArray commands = playerOrders.getJSONArray( orderID );
-
-				wmc_log( "Processing command for order: " + orderID );
-                wmc_log( "===========================" );
-				wmc_log( "Command Set: " + commands.toString() );
-
-				// Walk over commands, executing them one by one.
-				for ( Integer x = 0; x < commands.length(); x++ ) {
-					String baseCommand = commands.getString( x );
-
-					wmc_log( "Dirty Command: " + baseCommand );
-
-					final String command = baseCommand.replace( "%s", playerName ).replace( "&quot;", "\"" ).replace( "&#039;", "'" );
-
-					wmc_log( "Clean Command: " + command );
-
-					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-
-					// TODO: Make this better... nesting a 'new' class while not a bad idea is bad practice.
-					scheduler.scheduleSyncDelayedTask( instance, new Runnable() {
-						@Override
-						public void run() {
-							Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command );
-						}
-					}, 20L );
-				}
-				processedData.put( Integer.parseInt( orderID ) );
-			}
-		}
-
-		if ( 1 > processedData.length() ) {
-			wmc_log( "Processed zero data, exiting.", 2 );
-			return false;
-		}
-
-		wmc_log( "Sending data to the website." );
-
-		HashMap< String, String > postData = new HashMap<>();
-		postData.put( "processedOrders", processedData.toString() );
-
-		String updatedCommandSet = rcHttp.send( url, postData );
-		JSONObject updatedResponse = new JSONObject( updatedCommandSet );
-		boolean status = updatedResponse.getBoolean( "success" );
-
-		if ( ! status ) {
-			Object dataSet = updatedResponse.get( "data" );
-			if ( dataSet instanceof JSONObject ) {
-				String message = ( ( JSONObject ) dataSet ).getString( "msg" );
-				throw new Exception( message );
-			}
-			throw new Exception( "Failed sending updated orders to the server, got this instead:" + updatedCommandSet );
-		}
-
-		wmc_log( "All order data processed." );
 
 		return true;
 	}
