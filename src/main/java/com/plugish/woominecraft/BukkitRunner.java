@@ -6,7 +6,7 @@ public class BukkitRunner extends BukkitRunnable {
 
 	public final WooMinecraft plugin;
 
-	public BukkitRunner( WooMinecraft plugin ) {
+	BukkitRunner(WooMinecraft plugin) {
 		this.plugin = plugin;
 	}
 
