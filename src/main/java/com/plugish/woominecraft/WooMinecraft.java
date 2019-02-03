@@ -21,7 +21,7 @@ import java.util.List;
 
 public final class WooMinecraft extends JavaPlugin {
 
-	public static WooMinecraft instance;
+	static WooMinecraft instance;
 
 	private YamlConfiguration l10n;
 
@@ -42,18 +42,23 @@ public final class WooMinecraft extends JavaPlugin {
 			getLogger().warning( "No default l10n set, setting to english." );
 		}
 
-		initCommands();
+		// Load the commands.
+		getCommand( "woo" ).setExecutor( new WooCommand() );
+
+		// Log when plugin is initialized.
 		getLogger().info( this.getLang( "log.com_init" ));
 
 		// Setup the scheduler
 		BukkitRunner scheduler = new BukkitRunner(instance);
 		scheduler.runTaskTimerAsynchronously( instance, config.getInt( "update_interval" ) * 20, config.getInt( "update_interval" ) * 20 );
 
+		// Log when plugin is fully enabled ( setup complete ).
 		getLogger().info( this.getLang( "log.enabled" ) );
 	}
 
 	@Override
 	public void onDisable() {
+		// Log when the plugin is fully shut down.
 		getLogger().info( this.getLang( "log.com_init" ) );
 	}
 
@@ -64,7 +69,7 @@ public final class WooMinecraft extends JavaPlugin {
 	 * @param path Path to the config var
 	 * @return String
 	 */
-	public String getLang( String path ) {
+	String getLang(String path) {
 		if ( null == this.l10n ) {
 
 			LangSetup lang = new LangSetup( instance );
@@ -100,7 +105,7 @@ public final class WooMinecraft extends JavaPlugin {
 	 * @return boolean
 	 * @throws Exception Why the operation failed.
 	 */
-	public boolean check() throws Exception {
+	boolean check() throws Exception {
 
 		// Make 100% sure the config has at least a key and url
 		this.validateConfig();
@@ -244,7 +249,7 @@ public final class WooMinecraft extends JavaPlugin {
 		return true;
 	}
 
-	public void wmc_log( String message ) {
+	private void wmc_log(String message) {
 		this.wmc_log( message, 1 );
 	}
 
@@ -265,12 +270,5 @@ public final class WooMinecraft extends JavaPlugin {
 				this.getLogger().severe( message );
 				break;
 		}
-	}
-
-	/**
-	 * Initialize Commands
-	 */
-	private void initCommands() {
-		getCommand( "woo" ).setExecutor( new WooCommand() );
 	}
 }
