@@ -1,4 +1,4 @@
-package com.plugish.woominecraft.Util;
+package com.plugish.woominecraft;
 
 import com.plugish.woominecraft.WooMinecraft;
 import org.bukkit.scheduler.BukkitRunnable;

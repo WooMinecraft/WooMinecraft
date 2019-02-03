@@ -9,9 +9,6 @@
  */
 package com.plugish.woominecraft;
 
-import com.plugish.woominecraft.Commands.WooCommand;
-import com.plugish.woominecraft.Lang.LangSetup;
-import com.plugish.woominecraft.Util.BukkitRunner;
 import com.plugish.woominecraft.Util.RcHttp;
 import org.apache.http.client.utils.URIBuilder;
 import org.bukkit.Bukkit;
