@@ -9,12 +9,17 @@
  */
 package com.plugish.woominecraft;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.plugish.woominecraft.pojo.Order;
+import com.plugish.woominecraft.pojo.WMCPojo;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.List;
 
 public final class WooMinecraft extends JavaPlugin {
 
@@ -114,15 +119,25 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	boolean check() throws Exception {
 
+		// Make 100% sure the config has at least a key and url
+		this.validateConfig();
+
 		//
 		// The process:
 		// Contact SERVER
 		String pendingOrders = getPendingOrders();
 
-		wmc_log( pendingOrders );
-
 		// -- if DATA is empty
 		// do nothing
+		if ( pendingOrders.isEmpty() ) {
+			return false;
+		}
+
+		// Create new object from JSON response.
+		Gson gson = new GsonBuilder().create();
+		WMCPojo wmcPojo = gson.fromJson( pendingOrders, WMCPojo.class );
+		List<Order> orderList = wmcPojo.getOrders();
+
 		// -- else
 		// foreach PLAYERS in JSON feed
 		// -- if PLAYER is online
@@ -130,17 +145,24 @@ public final class WooMinecraft extends JavaPlugin {
 		// -- -- run commands for PLAYER
 		// -- else
 		// do nothing
-		//
 
-		// Make 100% sure the config has at least a key and url
-		this.validateConfig();
+		wmc_log( pendingOrders );
+		if ( orderList.isEmpty() ) {
+			wmc_log( "No orders to process.", 2 );
+		}
 
-
+		wmc_log( orderList.get(0).getPlayer() );
+		wmc_log( orderList.get(0).toString() );
 
 		return true;
 	}
 
-
+	/**
+	 * Gets pending orders from the WordPress JSON endpoint.
+	 *
+	 * @return String
+	 * @throws Exception On failure.
+	 */
 	private String getPendingOrders() throws Exception {
 		URL baseURL = getSiteURL();
 		BufferedReader in = new BufferedReader( new InputStreamReader( baseURL.openStream() ) );
