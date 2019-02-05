@@ -9,15 +9,12 @@
  */
 package com.plugish.woominecraft;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 public final class WooMinecraft extends JavaPlugin {
 
@@ -99,6 +96,16 @@ public final class WooMinecraft extends JavaPlugin {
 	}
 
 	/**
+	 * Gets the site URL
+	 *
+	 * @return URL
+	 * @throws Exception Why the URL failed.
+	 */
+	private URL getSiteURL() throws Exception {
+		return new URL( getConfig().getString( "url" ) + "/wp-json/wmc/v1/server/" + getConfig().getString( "key" ) );
+	}
+
+	/**
 	 * Checks all online players against the
 	 * website's database looking for pending donation deliveries
 	 *
@@ -107,19 +114,23 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	boolean check() throws Exception {
 
-		/*
-		 * The process:
-		 * Contact SERVER
-		 * -- if DATA is empty
-		 * do nothing
-		 * -- else
-		 * foreach PLAYERS in JSON feed
-		 * -- if PLAYER is online
-		 * -- foreach orders
-		 * -- -- run commands for PLAYER
-		 * -- else
-		 * do nothing
-		 */
+		//
+		// The process:
+		// Contact SERVER
+		String pendingOrders = getPendingOrders();
+
+		wmc_log( pendingOrders );
+
+		// -- if DATA is empty
+		// do nothing
+		// -- else
+		// foreach PLAYERS in JSON feed
+		// -- if PLAYER is online
+		// -- foreach orders
+		// -- -- run commands for PLAYER
+		// -- else
+		// do nothing
+		//
 
 		// Make 100% sure the config has at least a key and url
 		this.validateConfig();
@@ -127,6 +138,23 @@ public final class WooMinecraft extends JavaPlugin {
 
 
 		return true;
+	}
+
+
+	private String getPendingOrders() throws Exception {
+		URL baseURL = getSiteURL();
+		BufferedReader in = new BufferedReader( new InputStreamReader( baseURL.openStream() ) );
+		StringBuilder buffer = new StringBuilder();
+
+		// Walk over each line of the response.
+		String line;
+		while ( ( line = in.readLine() ) != null ) {
+			buffer.append( line );
+		}
+
+		in.close();
+
+		return buffer.toString();
 	}
 
 	private void wmc_log(String message) {
