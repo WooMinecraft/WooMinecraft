@@ -218,8 +218,16 @@ public final class WooMinecraft extends JavaPlugin {
 		Request request = new Request.Builder().url( getSiteURL() ).post( body ).build();
 		Response response = client.newCall( request ).execute();
 
-		String bodyContent = response.body().string();
+		String responseBody = "";
+		try {
+			responseBody = response.body().string();
+		} catch ( Exception e ) {
+			wmc_log( e.getMessage(), 3 );
+			return false;
+		}
 
+		WMCPojo wmcPojo = gson.fromJson( responseBody, WMCPojo.class );
+		wmc_log( wmcPojo.getCode(), 2 );
 
 		return true;
 	}
