@@ -222,17 +222,13 @@ public final class WooMinecraft extends JavaPlugin {
 		Request request = new Request.Builder().url( getSiteURL() ).post( body ).build();
 		Response response = client.newCall( request ).execute();
 
-		String responseBody;
-		try {
-			responseBody = response.body().string();
-		} catch ( Exception e ) {
-			// Don't really want to throw an exception here, catch it and log instead.
-			wmc_log( e.getMessage(), 3 );
-			return false;
+		// If the body is empty we can do nothing.
+		if ( null == response.body() ) {
+			throw new Exception( "Received empty response from your server, check connections." );
 		}
 
 		// Get the JSON reply from the endpoint.
-		WMCPojo wmcPojo = gson.fromJson( responseBody, WMCPojo.class );
+		WMCPojo wmcPojo = gson.fromJson( response.body().string(), WMCPojo.class );
 		if ( null != wmcPojo.getCode() ) {
 			wmc_log( "Received error when trying to send post data:" + wmcPojo.getCode(), 3 );
 			throw new Exception( wmcPojo.getMessage() );
