@@ -128,11 +128,8 @@ public final class WooMinecraft extends JavaPlugin {
 		// Make 100% sure the config has at least a key and url
 		this.validateConfig();
 
-		//
-		// The process:
-		// Contact SERVER
+		// Contact the server.
 		String pendingOrders = getPendingOrders();
-
 
 		// Server returned an empty response, bail here.
 		if ( pendingOrders.isEmpty() ) {
@@ -144,15 +141,14 @@ public final class WooMinecraft extends JavaPlugin {
 		WMCPojo wmcPojo = gson.fromJson( pendingOrders, WMCPojo.class );
 		List<Order> orderList = wmcPojo.getOrders();
 
-		// Debugging only.
-		// wmc_log( pendingOrders );
+		// Log if debugging is enabled.
+		wmc_log( pendingOrders );
 
 		// Validate we can indeed process what we need to.
 		if ( wmcPojo.getData() != null ) {
 			// We have an error, so we need to bail.
 			wmc_log( "Code:" + wmcPojo.getCode(), 3 );
-			wmc_log( wmcPojo.getMessage(), 3 );
-			return false;
+			throw new Exception( wmcPojo.getMessage() );
 		}
 
 		if ( orderList == null || orderList.isEmpty() ) {
@@ -168,9 +164,7 @@ public final class WooMinecraft extends JavaPlugin {
 				continue;
 			}
 
-			/*
-			 * Use white-list worlds check, if it's set.
-			 */
+			// World whitelisting.
 			if ( getConfig().isSet( "whitelist-worlds" ) ) {
 				List<String> whitelistWorlds = getConfig().getStringList( "whitelist-worlds" );
 				String playerWorld = player.getWorld().getName();
@@ -196,10 +190,7 @@ public final class WooMinecraft extends JavaPlugin {
 			return false;
 		}
 
-
-		// Don't forget to save orders to an array list or something so GSON can
-		// send the JSON data back to the site.
-
+		// Send/update processed orders.
 		return sendProcessedOrders( processedOrders );
 	}
 
@@ -216,8 +207,10 @@ public final class WooMinecraft extends JavaPlugin {
 		wmcProcessedOrders.setProcessedOrders( processedOrders );
 		String orders = gson.toJson( wmcProcessedOrders );
 
+		// Setup the client.
 		OkHttpClient client = new OkHttpClient();
 
+		// Process stuffs now.
 		RequestBody body = RequestBody.create( MediaType.parse( "application/json; charset=utf-8" ), orders );
 		Request request = new Request.Builder().url( getSiteURL() ).post( body ).build();
 		Response response = client.newCall( request ).execute();
