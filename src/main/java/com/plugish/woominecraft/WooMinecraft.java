@@ -13,12 +13,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.plugish.woominecraft.pojo.Order;
 import com.plugish.woominecraft.pojo.WMCPojo;
+import okhttp3.*;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class WooMinecraft extends JavaPlugin {
@@ -127,8 +132,8 @@ public final class WooMinecraft extends JavaPlugin {
 		// Contact SERVER
 		String pendingOrders = getPendingOrders();
 
-		// -- if DATA is empty
-		// do nothing
+
+		// Server returned an empty response, bail here.
 		if ( pendingOrders.isEmpty() ) {
 			return false;
 		}
@@ -138,23 +143,94 @@ public final class WooMinecraft extends JavaPlugin {
 		WMCPojo wmcPojo = gson.fromJson( pendingOrders, WMCPojo.class );
 		List<Order> orderList = wmcPojo.getOrders();
 
-		// -- else
-		// foreach PLAYERS in JSON feed
-		// -- if PLAYER is online
-		// -- foreach orders
-		// -- -- run commands for PLAYER
-		// -- else
-		// do nothing
+		// Debugging only.
+		// wmc_log( pendingOrders );
 
-		wmc_log( pendingOrders );
-		if ( orderList.isEmpty() ) {
-			wmc_log( "No orders to process.", 2 );
+		// Validate we can indeed process what we need to.
+		if ( wmcPojo.getData() != null ) {
+			// We have an error, so we need to bail.
+			wmc_log( "Code:" + wmcPojo.getCode(), 3 );
+			wmc_log( wmcPojo.getMessage(), 3 );
+			return false;
 		}
 
-		wmc_log( orderList.get(0).getPlayer() );
-		wmc_log( orderList.get(0).toString() );
+		if ( orderList == null || orderList.isEmpty() ) {
+			wmc_log( "No orders to process.", 2 );
+			return false;
+		}
+
+		// foreach ORDERS in JSON feed
+		List<String> processedOrders = new ArrayList<>();
+		for ( Order order : orderList ) {
+			Player player = getServer().getPlayerExact( order.getPlayer() );
+			if ( null == player ) {
+				continue;
+			}
+
+			/*
+			 * Use white-list worlds check, if it's set.
+			 */
+			if ( getConfig().isSet( "whitelist-worlds" ) ) {
+				List<String> whitelistWorlds = getConfig().getStringList( "whitelist-worlds" );
+				String playerWorld = player.getWorld().getName();
+				if ( ! whitelistWorlds.contains( playerWorld ) ) {
+					wmc_log( "Player " + player.getDisplayName() + " was in world " + playerWorld + " which is not in the white-list, no commands were ran." );
+					continue;
+				}
+			}
+
+			// Walk over all commands and run them at the next available tick.
+			for ( String command : order.getCommands() ) {
+				BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+				scheduler.scheduleSyncDelayedTask( instance, () -> Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command ), 20L );
+			}
+
+			wmc_log( "Adding item to list - " + order.getOrderId() );
+			processedOrders.add( order.getOrderId().toString() );
+			wmc_log( "Processed length is " + processedOrders.size() );
+		}
+
+		// If it's empty, we skip it.
+		if ( processedOrders.isEmpty() ) {
+			return false;
+		}
+
+
+		// Don't forget to save orders to an array list or something so GSON can
+		// send the JSON data back to the site.
+
+		return sendProcessedOrders( processedOrders );
+	}
+
+	/**
+	 * Sends the processed orders to the site.
+	 *
+	 * @param processedOrders A list of order IDs which were processed.
+	 * @return boolean
+	 */
+	private boolean sendProcessedOrders( List<String> processedOrders ) throws Exception {
+		// Build the GSON data to send.
+		Gson gson = new Gson();
+		String orders = gson.toJson( processedOrders );
+		OkHttpClient client = new OkHttpClient();
+
+		RequestBody body = RequestBody.create( MediaType.parse( "application/json; charset=utf-8" ), orders );
+		Request request = new Request.Builder().url( getSiteURL() ).post( body ).build();
+		Response response = client.newCall( request ).execute();
+
+		String bodyContent = response.body().string();
+
 
 		return true;
+	}
+
+	/**
+	 * If debugging is enabled.
+	 *
+	 * @return boolean
+	 */
+	private boolean isDebug() {
+		return getConfig().getBoolean( "debug" );
 	}
 
 	/**
@@ -179,10 +255,21 @@ public final class WooMinecraft extends JavaPlugin {
 		return buffer.toString();
 	}
 
+	/**
+	 * Log stuffs.
+	 *
+	 * @param message The message to log.
+	 */
 	private void wmc_log(String message) {
 		this.wmc_log( message, 1 );
 	}
 
+	/**
+	 * Log stuffs.
+	 *
+	 * @param message The message to log.
+	 * @param level The level to log it at.
+	 */
 	private void wmc_log(String message, Integer level) {
 
 		if ( ! this.getConfig().getBoolean( "debug" ) ) {
