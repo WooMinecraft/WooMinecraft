@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.plugish.woominecraft.pojo.Order;
 import com.plugish.woominecraft.pojo.WMCPojo;
+import com.plugish.woominecraft.pojo.WMCProcessedOrders;
 import okhttp3.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -160,7 +161,7 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 
 		// foreach ORDERS in JSON feed
-		List<String> processedOrders = new ArrayList<>();
+		List<Integer> processedOrders = new ArrayList<>();
 		for ( Order order : orderList ) {
 			Player player = getServer().getPlayerExact( order.getPlayer() );
 			if ( null == player ) {
@@ -186,7 +187,7 @@ public final class WooMinecraft extends JavaPlugin {
 			}
 
 			wmc_log( "Adding item to list - " + order.getOrderId() );
-			processedOrders.add( order.getOrderId().toString() );
+			processedOrders.add( order.getOrderId() );
 			wmc_log( "Processed length is " + processedOrders.size() );
 		}
 
@@ -208,26 +209,34 @@ public final class WooMinecraft extends JavaPlugin {
 	 * @param processedOrders A list of order IDs which were processed.
 	 * @return boolean
 	 */
-	private boolean sendProcessedOrders( List<String> processedOrders ) throws Exception {
+	private boolean sendProcessedOrders( List<Integer> processedOrders ) throws Exception {
 		// Build the GSON data to send.
 		Gson gson = new Gson();
-		String orders = gson.toJson( processedOrders );
+		WMCProcessedOrders wmcProcessedOrders = new WMCProcessedOrders();
+		wmcProcessedOrders.setProcessedOrders( processedOrders );
+		String orders = gson.toJson( wmcProcessedOrders );
+
 		OkHttpClient client = new OkHttpClient();
 
 		RequestBody body = RequestBody.create( MediaType.parse( "application/json; charset=utf-8" ), orders );
 		Request request = new Request.Builder().url( getSiteURL() ).post( body ).build();
 		Response response = client.newCall( request ).execute();
 
-		String responseBody = "";
+		String responseBody;
 		try {
 			responseBody = response.body().string();
 		} catch ( Exception e ) {
+			// Don't really want to throw an exception here, catch it and log instead.
 			wmc_log( e.getMessage(), 3 );
 			return false;
 		}
 
+		// Get the JSON reply from the endpoint.
 		WMCPojo wmcPojo = gson.fromJson( responseBody, WMCPojo.class );
-		wmc_log( wmcPojo.getCode(), 2 );
+		if ( null != wmcPojo.getCode() ) {
+			wmc_log( "Received error when trying to send post data:" + wmcPojo.getCode(), 3 );
+			throw new Exception( wmcPojo.getMessage() );
+		}
 
 		return true;
 	}
