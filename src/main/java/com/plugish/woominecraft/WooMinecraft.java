@@ -285,7 +285,7 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	private void wmc_log(String message, Integer level) {
 
-		if ( ! this.getConfig().getBoolean( "debug" ) ) {
+		if ( ! isDebug() ) {
 			return;
 		}
 
