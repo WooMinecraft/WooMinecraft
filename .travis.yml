@@ -2,5 +2,5 @@ language: java
 jdk: oraclejdk9
 install: true
 script:
-  - mvn clean,package
+  - mvn clean package
   - ls -alh .
