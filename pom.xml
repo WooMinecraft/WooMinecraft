@@ -9,7 +9,7 @@
     <name>WooMinecraft</name>
     <description>A WooCommerce Minecraft Bridge</description>
     <properties>
-        <spigotVersion>1.12.2</spigotVersion>
+        <spigotVersion>1.14.4</spigotVersion>
         <mainClass>${project.groupId}.${project.artifactId}</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
