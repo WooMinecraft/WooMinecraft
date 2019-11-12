@@ -3,4 +3,4 @@ jdk: oraclejdk11
 install: true
 script:
   - mvn install package
-  - ls -alh .
+  - ls -alh target/
