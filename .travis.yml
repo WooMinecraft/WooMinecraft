@@ -3,4 +3,14 @@ jdk: oraclejdk11
 install: true
 script:
   - mvn install package
-  - ls -alh target/
+  - tar -cvzf WooMinecraft.tar.gz target/*rc.jar
+deploy:
+  provider: releases
+  api_key: $API_KEY
+  file: $RELEASE_PREFIX$TRAVIS_BUILD_NUMBER.tar.gz
+  skip_cleanup: true
+  draft: true
+  on:
+    tags: false
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^release\/.*$
