@@ -4,14 +4,11 @@
 WordPress side of things, we allow you to specify commands for product variations, general product commands, and resending of donations at any time.   
 ![WooMinecraft Logo](https://raw.githubusercontent.com/WooMinecraft/WooMinecraft/dev-nightly/src/main/resources/wmc-logo.jpg)
 
-## Upgrade Notice
-Woominecraft 1.0.6 is ONLY compatible with v1.0.5+ of the WordPress plugin. You MUST be using that version or higher, or it will not work.  
+## IMPORTANT
+This build supports only **Minecraft Spigot 1.12.2**
 
-## Supported Bukkit Versions
-* 1.8
-* 1.9
-* 1.10
-* 1.11
+If in your config you are using the **/shop** path as your URL, you must NOT use that going forward. Your host MUST support
+access to the WordPress Rest API. If they do not, you should consider changing hosts.
 
 ## Config
 Your config should look like the below section.
@@ -66,6 +63,12 @@ Since this plugin is GPL and entirely opensource, we cannot be sure how you will
 You'll need the WordPress plugin for this MC Plugin to work - you can [get it here](https://github.com/WooMinecraft/woominecraft-wp).
 
 ## Changelog
+
+## 1.2.0
+* Tested on Spigot 1.12.2
+* Cleaned up a lot of internals by simplifying a ton of requests.
+* Now building with okHTTP3 library for ease of use.
+* Move to REST API.
 
 ## 1.1.2
 * Tested on Spigot 1.12.1

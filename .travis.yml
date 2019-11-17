@@ -1,0 +1,16 @@
+language: java
+jdk: openjdk8
+install: true
+env:
+  - RELEASE_PREFIX="WooMinecraft-java-b"
+script:
+  - mvn clean package
+  - tar -cvzf $RELEASE_PREFIX$TRAVIS_BUILD_NUMBER.tar.gz target/*rc.jar
+deploy:
+  provider: releases
+  api_key: $API_KEY
+  file: $RELEASE_PREFIX$TRAVIS_BUILD_NUMBER.tar.gz
+  skip_cleanup: true
+  draft: true
+  on:
+    tags: true
