@@ -4,7 +4,7 @@ install: true
 env:
   - RELEASE_PREFIX="WooMinecraft-java-b"
 script:
-  - mvn install package
+  - mvn clean package
   - tar -cvzf $RELEASE_PREFIX$TRAVIS_BUILD_NUMBER.tar.gz target/*rc.jar
 deploy:
   provider: releases
