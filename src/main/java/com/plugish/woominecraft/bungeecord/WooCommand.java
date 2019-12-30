@@ -21,6 +21,7 @@ public class WooCommand extends Command {
 	public void execute(CommandSender commandSender, String[] strings) {
 		if(strings.length == 1 && strings[0].equals("reload")){
 			plugin.reloadConfig();
+			commandSender.sendMessage( new TextComponent(chatPrefix + " " + plugin.getLang( "general.reloaded" )) );
 			return;
 		}
 
