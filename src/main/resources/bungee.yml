@@ -1,0 +1,6 @@
+name: ${project.name}
+version: ${project.version}
+authors: [JerryWood, TekkitCommando, Phillmac, Peda1996]
+description: ${project.description}
+website:  http://woominecraft.com
+main: ${bungeeMainClass}

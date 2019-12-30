@@ -1,4 +1,4 @@
-package com.plugish.woominecraft;
+package com.plugish.woominecraft.bukkit;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

@@ -7,7 +7,7 @@
  * Copyright 2014 All rights Reserved
  * 
  */
-package com.plugish.woominecraft;
+package com.plugish.woominecraft.bukkit;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
