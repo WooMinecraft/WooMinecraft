@@ -5,8 +5,6 @@ WordPress side of things, we allow you to specify commands for product variation
 ![WooMinecraft Logo](https://raw.githubusercontent.com/WooMinecraft/WooMinecraft/dev-nightly/src/main/resources/wmc-logo.jpg)
 
 ## IMPORTANT
-This build supports only **Minecraft Spigot 1.12.2**
-
 If in your config you are using the **/shop** path as your URL, you must NOT use that going forward. Your host MUST support
 access to the WordPress Rest API. If they do not, you should consider changing hosts.
 
