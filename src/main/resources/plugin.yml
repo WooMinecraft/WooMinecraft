@@ -1,9 +1,10 @@
 name: ${project.name}
 main: ${mainClass}
 version: ${project.version}
+api-version: 1.13
 authors: [JerryWood, TekkitCommando, Phillmac]
 description: ${project.description}
-website:  http://woominecraft.com
+website: http://woominecraft.com
 
 commands:
   woo:

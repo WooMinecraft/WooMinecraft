@@ -4,12 +4,12 @@
     <groupId>com.plugish.woominecraft</groupId>
     <artifactId>WooMinecraft</artifactId>
 
-    <version>1.2.0-${spigotVersion}</version>
+    <version>1.2.0</version>
 
     <name>WooMinecraft</name>
     <description>A WooCommerce Minecraft Bridge</description>
     <properties>
-        <spigotVersion>1.14.4</spigotVersion>
+
         <mainClass>${project.groupId}.${project.artifactId}</mainClass>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>${spigotVersion}-R0.1-SNAPSHOT</version>
+            <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
