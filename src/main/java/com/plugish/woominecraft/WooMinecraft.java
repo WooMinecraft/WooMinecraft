@@ -20,7 +20,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
@@ -52,7 +51,9 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 
 		// Load the commands.
-		getCommand( "woo" ).setExecutor( new WooCommand() );
+		WooCommand command = new WooCommand();
+		getCommand( "woo" ).setExecutor( command );
+		getCommand( "woo" ).setTabCompleter( command );
 
 		// Log when plugin is initialized.
 		getLogger().info( this.getLang( "log.com_init" ));
