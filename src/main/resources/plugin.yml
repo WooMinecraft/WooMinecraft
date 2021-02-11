@@ -4,6 +4,7 @@ version: ${project.version}
 authors: [JerryWood, TekkitCommando, Phillmac]
 description: ${project.description}
 website:  http://woominecraft.com
+api-version: 1.13
 
 commands:
   woo:
