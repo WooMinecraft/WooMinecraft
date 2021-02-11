@@ -139,10 +139,17 @@ public final class WooMinecraft extends JavaPlugin {
 			// See if we have a data object.
 			Object dataCheck = pendingCommands.get( "data" );
 			if ( dataCheck instanceof JSONObject ) {
-				JSONObject errors = pendingCommands.getJSONObject( "data" );
-				String msg = errors.getString( "msg" );
-				// Throw the message as an exception.
-				throw new Exception( msg );
+				JSONObject errors = null;
+				try {
+					errors = pendingCommands.getJSONObject( "data" );
+				} catch (IllegalStateException e) {
+					getLogger().info(String.valueOf(e));
+					String msg = errors.getString( "msg" );
+					// Throw the message as an exception.
+					throw new Exception( msg );
+				}
+
+
 			}
 
 			return false;
