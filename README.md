@@ -5,7 +5,7 @@ WordPress side of things, we allow you to specify commands for product variation
 ![WooMinecraft Logo](https://raw.githubusercontent.com/WooMinecraft/WooMinecraft/master/src/main/resources/wmc-logo.jpg)
 
 ## IMPORTANT
-This build supports only **Minecraft Spigot 1.12.2**
+This build supports only **Minecraft Spigot 1.16.4/5**
 
 If in your config you are using the **/shop** path as your URL, you must NOT use that going forward. Your host MUST support
 access to the WordPress Rest API. If they do not, you should consider changing hosts.
@@ -63,6 +63,10 @@ Since this plugin is GPL and entirely opensource, we cannot be sure how you will
 You'll need the WordPress plugin for this MC Plugin to work - you can [get it here](https://github.com/WooMinecraft/woominecraft-wp).
 
 ## Changelog
+
+##1.2.1
+* Disabled legacy support, "should still work on 1.12 and below(untested)"
+* Update spigot api to 1.14.4+
 
 ## 1.2.0
 * Tested on Spigot 1.12.2
