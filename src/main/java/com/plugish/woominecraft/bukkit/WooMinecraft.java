@@ -176,9 +176,10 @@ public final class WooMinecraft extends JavaPlugin {
 			}
 
 			// Walk over all commands and run them at the next available tick.
+			int i = 1; //wait 1 second between each command!
 			for ( String command : order.getCommands() ) {
 				BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-				scheduler.scheduleSyncDelayedTask( instance, () -> Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command ), 20L );
+				scheduler.scheduleSyncDelayedTask( instance, () -> Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command ), 20L*i++ );
 			}
 
 			wmc_log( "Adding item to list - " + order.getOrderId() );

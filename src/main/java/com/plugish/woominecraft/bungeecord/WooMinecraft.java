@@ -186,10 +186,11 @@ public final class WooMinecraft extends Plugin {
 
 
             // Walk over all commands and run them at the next available tick.
+            int i = 1; //wait 1 second between each command!
             for (String command : order.getCommands()) {
             	getProxy().getScheduler().schedule(this, () ->  {
 					ProxyServer.getInstance().getPluginManager().dispatchCommand(ProxyServer.getInstance().getConsole(), command);
-				}, 1,TimeUnit.SECONDS);
+				}, i++,TimeUnit.SECONDS);
             }
 
             wmc_log("Adding item to list - " + order.getOrderId());
