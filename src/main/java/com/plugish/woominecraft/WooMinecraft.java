@@ -250,13 +250,13 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	private String getPendingOrders() throws Exception {
 		URL baseURL = getSiteURL();
+		// java was yelling about this var
 		BufferedReader in = null;
 		try {
 			try {
 				in = new BufferedReader(new InputStreamReader(baseURL.openStream()));
 			} catch (IOException e) {
-				String msg = e.getMessage().replace(getConfig().getString("key"), "privateKey");
-				WooMinecraft.instance.wmc_log(msg);
+				// this can throw either exception depending on the setup, this should fix that
 				throw new FileNotFoundException(e.toString());
 			}
 		} catch (FileNotFoundException e) {
