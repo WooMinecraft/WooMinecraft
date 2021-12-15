@@ -23,6 +23,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -114,7 +115,8 @@ public final class WooMinecraft extends JavaPlugin {
 	 * @throws Exception Why the URL failed.
 	 */
 	private URL getSiteURL() throws Exception {
-		return new URL( getConfig().getString( "url" ) + "/wp-json/wmc/v1/server/" + getConfig().getString( "key" ) );
+		//Enable use of non pretty permlink support / custom post url / should also help with debugging other users issues
+		return new URL( getConfig().getString( "url" ) + "/index.php?rest_route=/wmc/v1/server/" + getConfig().getString( "key" ) );
 	}
 
 	/**
@@ -248,12 +250,18 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	private String getPendingOrders() throws Exception {
 		URL baseURL = getSiteURL();
-		BufferedReader in;
+		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new InputStreamReader(baseURL.openStream()));
-		} catch( FileNotFoundException e ) {
-			String msg = e.getMessage().replace( getConfig().getString( "key" ), "privateKey" );
-			throw new FileNotFoundException( msg );
+			try {
+				in = new BufferedReader(new InputStreamReader(baseURL.openStream()));
+			} catch (IOException e) {
+				String msg = e.getMessage().replace(getConfig().getString("key"), "privateKey");
+				WooMinecraft.instance.wmc_log(msg);
+				throw new FileNotFoundException(e.toString());
+			}
+		} catch (FileNotFoundException e) {
+			String msg = e.getMessage().replace(getConfig().getString("key"), "privateKey");
+			WooMinecraft.instance.wmc_log(msg);
 		}
 
 		StringBuilder buffer = new StringBuilder();

@@ -1,15 +1,17 @@
 package com.plugish.woominecraft;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.Configuration;
 
 public class WooCommand implements CommandExecutor {
 
 	public static WooMinecraft plugin = WooMinecraft.instance;
 	private static String chatPrefix = ChatColor.DARK_PURPLE + "[" + ChatColor.WHITE + "WooMinecraft" + ChatColor.DARK_PURPLE + "] " + ChatColor.DARK_PURPLE + "";
-
 	@Override
 	public boolean onCommand( CommandSender sender, Command command, String label, String[] args ) {
 		if ( command.getName().equalsIgnoreCase( "woo" ) && args.length == 0 ) {
@@ -40,6 +42,18 @@ public class WooCommand implements CommandExecutor {
 				} else {
 					String msg = plugin.getLang( "general.not_authorized" ).replace( "&", "\u00A7" );
 					sender.sendMessage( msg );
+				}
+				//added support for on the fly debug enable/disable
+			} else if ( args[ 0 ].equalsIgnoreCase( "debug" ) ) {
+				if (plugin.getConfig().getBoolean("debug")) {
+					plugin.getConfig().set("debug", false);
+					plugin.saveConfig();
+					sender.sendMessage(chatPrefix + "Debug Disabled");
+					return true;
+				} else {
+					plugin.getConfig().set("debug", true);
+					plugin.saveConfig();
+					sender.sendMessage(chatPrefix + "Debug enabled");
 				}
 			} else {
 				sender.sendMessage( "Usage: /woo check" );
