@@ -47,12 +47,10 @@ public class WooCommand implements CommandExecutor {
 			} else if ( args[ 0 ].equalsIgnoreCase( "debug" ) ) {
 				if (plugin.getConfig().getBoolean("debug")) {
 					plugin.getConfig().set("debug", false);
-					plugin.saveConfig();
 					sender.sendMessage(chatPrefix + "Debug Disabled");
 					return true;
 				} else {
 					plugin.getConfig().set("debug", true);
-					plugin.saveConfig();
 					sender.sendMessage(chatPrefix + "Debug enabled");
 				}
 			} else {

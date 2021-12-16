@@ -25,6 +25,3 @@ key: ""
 
 # Set to true in order to toggle debug information
 debug: false
-
-#Not working yet
-BungeeMode: false

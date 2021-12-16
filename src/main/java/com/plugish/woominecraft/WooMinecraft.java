@@ -16,6 +16,9 @@ import com.plugish.woominecraft.pojo.WMCPojo;
 import com.plugish.woominecraft.pojo.WMCProcessedOrders;
 import okhttp3.*;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,6 +28,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public final class WooMinecraft extends JavaPlugin {
@@ -32,13 +36,15 @@ public final class WooMinecraft extends JavaPlugin {
 	static WooMinecraft instance;
 
 	private YamlConfiguration l10n;
+	private File rawfile;
+	//make a list and store each user's name:uuid:True/false(and if they are cracked or not)
+	//to cut down on api calls from the server, list clears upon reboot/reload
 	private List<String> Players = new ArrayList<>();
 
 	@Override
 	public void onEnable() {
 		instance = this;
 		YamlConfiguration config = (YamlConfiguration) getConfig();
-
 		// Save the default config.yml
 		try{
 			saveDefaultConfig();
@@ -63,6 +69,13 @@ public final class WooMinecraft extends JavaPlugin {
 
 		// Log when plugin is fully enabled ( setup complete ).
 		getLogger().info( this.getLang( "log.enabled" ) );
+		//check bungeecord mode/offline mode
+		if (!Bukkit.getOnlineMode() && !Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")) {
+			getLogger().severe(String.valueOf(Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")));
+			getLogger().severe("WooMinecraft doesn't support offLine mode");
+			Bukkit.getPluginManager().disablePlugin(this);
+		}
+
 	}
 
 	@Override
@@ -316,19 +329,21 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 	}
 	//Mojang api check
-	public boolean AuCh(Player p) {
+	private boolean AuCh(Player p) {
+		//check if server is in online/offline mode
 		if (Bukkit.getServer().getOnlineMode()) {
 			return true;
-		} else if (WooMinecraft.instance.getConfig().getBoolean("BungeeMode")) {
+			//check if the server is connected to a bungee network
+		} else if (Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")) {
 			if (!Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + true)) {
 				if (Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + false)) {
 					p.sendMessage("Mojang Auth: Please Speak with a admin about your purchase");
 					wmc_log("Offline mode not supported");
-
 					return false;
 				}
 				Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
 					try (InputStream inputStream = new URL("https://api.mojang.com/users/profiles/minecraft/" + p.getName()).openStream(); Scanner scanner = new Scanner(inputStream)) {
+						//if User doesn't exist throws IOException
 						String a = scanner.next();
 						if (isDebug()) {
 							wmc_log(inputStream.toString());
@@ -338,12 +353,14 @@ public final class WooMinecraft extends JavaPlugin {
 							if (a.contains(p.getUniqueId().toString())) {
 								Players.add(p.getName() + ':' + p.getUniqueId() + ':' + true);
 							} else {
+								//if Username exists but is using the offline uuid(doesn't match mojang records) throw IOException and add player to the list as cracked
 								Players.add(p.getName() + ':' + p.getUniqueId() + ':' + false);
 								throw new IOException("Mojang Auth: PlayerName doesn't match uuid for account");
 							}
 						} else {
+							//add username to the Players list, but as cracked, throws IOE
 							Players.add(p.getName() + ':' + p.getUniqueId() + ':' + false);
-							throw new IOException(" Mojang Auth: PlayerName doesn't exist");
+							throw new IOException("Mojang Auth: PlayerName doesn't exist");
 						}
 					} catch (IOException e) {
 						wmc_log(e.getMessage(), 3);
