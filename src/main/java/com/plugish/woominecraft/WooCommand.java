@@ -20,7 +20,7 @@ public class WooCommand implements CommandExecutor {
 			} else {
 				sender.sendMessage( chatPrefix + " " + plugin.getLang( "general.not_authorized" ) );
 			}
-		} else if ( command.getName().equalsIgnoreCase( "woo" ) && args.length == 1 ) {
+		} else if ( command.getName().equalsIgnoreCase( "woo" ) && args.length <= 1 ) {
 			if ( args[ 0 ].equalsIgnoreCase( "check" ) ) {
 				if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
 

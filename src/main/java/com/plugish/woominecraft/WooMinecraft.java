@@ -21,19 +21,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public final class WooMinecraft extends JavaPlugin {
 
 	static WooMinecraft instance;
 
 	private YamlConfiguration l10n;
+	private List<String> Players = new ArrayList<>();
 
 	@Override
 	public void onEnable() {
@@ -179,8 +178,14 @@ public final class WooMinecraft extends JavaPlugin {
 
 			// Walk over all commands and run them at the next available tick.
 			for ( String command : order.getCommands() ) {
-				BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-				scheduler.scheduleSyncDelayedTask( instance, () -> Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command ), 20L );
+				//Auth player against Mojang api
+				if (AuCh(player)) {
+					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+					scheduler.scheduleSyncDelayedTask(instance, () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command), 20L);
+				} else {
+
+				}
+
 			}
 
 			wmc_log( "Adding item to list - " + order.getOrderId() );
@@ -309,5 +314,50 @@ public final class WooMinecraft extends JavaPlugin {
 				this.getLogger().severe( message );
 				break;
 		}
+	}
+	//Mojang api check
+	public boolean AuCh(Player p) {
+		if (Bukkit.getServer().getOnlineMode()) {
+			return true;
+		} else if (WooMinecraft.instance.getConfig().getBoolean("BungeeMode")) {
+			if (!Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + true)) {
+				if (Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + false)) {
+					p.sendMessage("Mojang Auth: Please Speak with a admin about your purchase");
+					wmc_log("Offline mode not supported");
+
+					return false;
+				}
+				Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
+					try (InputStream inputStream = new URL("https://api.mojang.com/users/profiles/minecraft/" + p.getName()).openStream(); Scanner scanner = new Scanner(inputStream)) {
+						String a = scanner.next();
+						if (isDebug()) {
+							wmc_log(inputStream.toString());
+							wmc_log(a);
+						}
+						if (a.contains(p.getName())) {
+							if (a.contains(p.getUniqueId().toString())) {
+								Players.add(p.getName() + ':' + p.getUniqueId() + ':' + true);
+							} else {
+								Players.add(p.getName() + ':' + p.getUniqueId() + ':' + false);
+								throw new IOException("Mojang Auth: PlayerName doesn't match uuid for account");
+							}
+						} else {
+							Players.add(p.getName() + ':' + p.getUniqueId() + ':' + false);
+							throw new IOException(" Mojang Auth: PlayerName doesn't exist");
+						}
+					} catch (IOException e) {
+						wmc_log(e.getMessage(), 3);
+						p.sendMessage("Mojang Auth:Please Speak with a admin about your purchase");
+						if (isDebug()) {
+							wmc_log(Players.toString());
+						}
+					}
+				});
+			}
+		} else {
+			wmc_log("Server in offline Mode");
+			return false;
+		}
+		return true;
 	}
 }
