@@ -192,9 +192,11 @@ public final class WooMinecraft extends JavaPlugin {
 			// Walk over all commands and run them at the next available tick.
 			for ( String command : order.getCommands() ) {
 				//Auth player against Mojang api
-				if (AuCh(player)) {
+				if (isPaidUser(player)) {
 					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 					scheduler.scheduleSyncDelayedTask(instance, () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command), 20L);
+				} else {
+					return false;
 				}
 
 			}
@@ -277,7 +279,7 @@ public final class WooMinecraft extends JavaPlugin {
 			}
 		} catch (FileNotFoundException e) {
 			String msg = e.getMessage().replace(getConfig().getString("key"), "privateKey");
-			WooMinecraft.instance.wmc_log(msg);
+			throw new FileNotFoundException(msg);
 		}
 
 		StringBuilder buffer = new StringBuilder();
@@ -327,12 +329,13 @@ public final class WooMinecraft extends JavaPlugin {
 		}
 	}
 	//Mojang api check
-	private boolean AuCh(Player p) {
+	private boolean isPaidUser(Player p) {
 		//check if server is in online/offline mode
 		if (Bukkit.getServer().getOnlineMode()) {
 			return true;
 			//check if the server is connected to a bungee network
-		} else if (Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")) {
+		}
+		if (Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")) {
 			if (!Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + true)) {
 				if (Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + false)) {
 					p.sendMessage("Mojang Auth: Please Speak with a admin about your purchase");
