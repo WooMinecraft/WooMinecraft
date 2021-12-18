@@ -195,8 +195,6 @@ public final class WooMinecraft extends JavaPlugin {
 				if (AuCh(player)) {
 					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 					scheduler.scheduleSyncDelayedTask(instance, () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command), 20L);
-				} else {
-
 				}
 
 			}

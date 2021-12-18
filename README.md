@@ -57,8 +57,13 @@ Since this plugin is GPL and entirely opensource, we cannot be sure how you will
 You'll need the WordPress plugin for this MC Plugin to work - you can [get it here](https://github.com/WooMinecraft/woominecraft-wp).
 
 ## Changelog
+## 1.4.0
+* edit RestApi Url to fix alot of user issues
+* extend compatibility for mc versions 1.10 - 1.18.1
+* added debug command( /woo debug )
+* added mojang auth to the plugin side, [jerzean](https://github.com/WooMinecraft/WooMinecraft/pull/256)
 
-## 1.3
+## 1.3.0
 * Added polish translation props [YouHaveTrouble](https://github.com/WooMinecraft/WooMinecraft/pull/233)
 * 1.16.x support props [jerzean](https://github.com/WooMinecraft/WooMinecraft/pull/237)
 * Cleanup various readme sections.
