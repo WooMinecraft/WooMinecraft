@@ -60,7 +60,7 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 ## 1.4.0
 * edit RestApi Url to fix alot of user issues
 * extend compatibility for mc versions 1.10 - 1.18.1
-* added debug command( /woo debug )
+* added debug command( /woo debug ) and a ping command ( /woo ping)
 * added mojang auth to the plugin side, [jerzean](https://github.com/WooMinecraft/WooMinecraft/pull/256)
 
 ## 1.3.0
