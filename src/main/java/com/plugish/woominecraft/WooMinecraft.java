@@ -16,29 +16,35 @@ import com.plugish.woominecraft.pojo.WMCPojo;
 import com.plugish.woominecraft.pojo.WMCProcessedOrders;
 import okhttp3.*;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Scanner;
 
 public final class WooMinecraft extends JavaPlugin {
 
 	static WooMinecraft instance;
 
 	private YamlConfiguration l10n;
+	private File rawfile;
+	//make a list and store each user's name:uuid:True/false(and if they are cracked or not)
+	//to cut down on api calls from the server, list clears upon reboot/reload
+	private List<String> Players = new ArrayList<>();
 
 	@Override
 	public void onEnable() {
 		instance = this;
 		YamlConfiguration config = (YamlConfiguration) getConfig();
-
 		// Save the default config.yml
 		try{
 			saveDefaultConfig();
@@ -63,6 +69,13 @@ public final class WooMinecraft extends JavaPlugin {
 
 		// Log when plugin is fully enabled ( setup complete ).
 		getLogger().info( this.getLang( "log.enabled" ) );
+		//check bungeecord mode/offline mode
+		if (!Bukkit.getOnlineMode() && !Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")) {
+			getLogger().severe(String.valueOf(Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")));
+			getLogger().severe("WooMinecraft doesn't support offLine mode");
+			Bukkit.getPluginManager().disablePlugin(this);
+		}
+
 	}
 
 	@Override
@@ -114,7 +127,8 @@ public final class WooMinecraft extends JavaPlugin {
 	 * @throws Exception Why the URL failed.
 	 */
 	private URL getSiteURL() throws Exception {
-		return new URL( getConfig().getString( "url" ) + "/wp-json/wmc/v1/server/" + getConfig().getString( "key" ) );
+		//Enable use of non pretty permlink support / custom post url / should also help with debugging other users issues
+		return new URL( getConfig().getString( "url" ) + "/index.php?rest_route=/wmc/v1/server/" + getConfig().getString( "key" ) );
 	}
 
 	/**
@@ -177,8 +191,14 @@ public final class WooMinecraft extends JavaPlugin {
 
 			// Walk over all commands and run them at the next available tick.
 			for ( String command : order.getCommands() ) {
-				BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-				scheduler.scheduleSyncDelayedTask( instance, () -> Bukkit.getServer().dispatchCommand( Bukkit.getServer().getConsoleSender(), command ), 20L );
+				//Auth player against Mojang api
+				if (isPaidUser(player)) {
+					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+					scheduler.scheduleSyncDelayedTask(instance, () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command), 20L);
+				} else {
+					return false;
+				}
+
 			}
 
 			wmc_log( "Adding item to list - " + order.getOrderId() );
@@ -248,12 +268,18 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	private String getPendingOrders() throws Exception {
 		URL baseURL = getSiteURL();
-		BufferedReader in;
+		// java was yelling about this var
+		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new InputStreamReader(baseURL.openStream()));
-		} catch( FileNotFoundException e ) {
-			String msg = e.getMessage().replace( getConfig().getString( "key" ), "privateKey" );
-			throw new FileNotFoundException( msg );
+			try {
+				in = new BufferedReader(new InputStreamReader(baseURL.openStream()));
+			} catch (IOException e) {
+				// this can throw either exception depending on the setup, this should fix that
+				throw new FileNotFoundException(e.toString());
+			}
+		} catch (FileNotFoundException e) {
+			String msg = e.getMessage().replace(getConfig().getString("key"), "privateKey");
+			return "";
 		}
 
 		StringBuilder buffer = new StringBuilder();
@@ -301,5 +327,55 @@ public final class WooMinecraft extends JavaPlugin {
 				this.getLogger().severe( message );
 				break;
 		}
+	}
+	//Mojang api check
+	private boolean isPaidUser(Player p) {
+		//check if server is in online/offline mode
+		if (Bukkit.getServer().getOnlineMode()) {
+			return true;
+			//check if the server is connected to a bungee network
+		}
+		if (Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")) {
+			if (!Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + true)) {
+				if (Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + false)) {
+					p.sendMessage("Mojang Auth: Please Speak with a admin about your purchase");
+					wmc_log("Offline mode not supported");
+					return false;
+				}
+				Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
+					try (InputStream inputStream = new URL("https://api.mojang.com/users/profiles/minecraft/" + p.getName()).openStream(); Scanner scanner = new Scanner(inputStream)) {
+						//if User doesn't exist throws IOException
+						String a = scanner.next();
+						if (isDebug()) {
+							wmc_log(inputStream.toString());
+							wmc_log(a);
+						}
+						if (a.contains(p.getName())) {
+							if (a.contains(p.getUniqueId().toString())) {
+								Players.add(p.getName() + ':' + p.getUniqueId() + ':' + true);
+							} else {
+								//if Username exists but is using the offline uuid(doesn't match mojang records) throw IOException and add player to the list as cracked
+								Players.add(p.getName() + ':' + p.getUniqueId() + ':' + false);
+								throw new IOException("Mojang Auth: PlayerName doesn't match uuid for account");
+							}
+						} else {
+							//add username to the Players list, but as cracked, throws IOE
+							Players.add(p.getName() + ':' + p.getUniqueId() + ':' + false);
+							throw new IOException("Mojang Auth: PlayerName doesn't exist");
+						}
+					} catch (IOException e) {
+						wmc_log(e.getMessage(), 3);
+						p.sendMessage("Mojang Auth:Please Speak with a admin about your purchase");
+						if (isDebug()) {
+							wmc_log(Players.toString());
+						}
+					}
+				});
+			}
+		} else {
+			wmc_log("Server in offline Mode");
+			return false;
+		}
+		return true;
 	}
 }
