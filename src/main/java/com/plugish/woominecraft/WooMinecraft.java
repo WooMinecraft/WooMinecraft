@@ -399,6 +399,7 @@ public final class WooMinecraft extends JavaPlugin {
 			}
 		});
 
-		return true;
+		// Default to false, worst case they have to run this twice.
+		return false;
 	}
 }
