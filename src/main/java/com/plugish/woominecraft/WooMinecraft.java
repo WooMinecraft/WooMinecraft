@@ -279,7 +279,7 @@ public final class WooMinecraft extends JavaPlugin {
 			}
 		} catch (FileNotFoundException e) {
 			String msg = e.getMessage().replace(getConfig().getString("key"), "privateKey");
-			throw new FileNotFoundException(msg);
+			return "";
 		}
 
 		StringBuilder buffer = new StringBuilder();
