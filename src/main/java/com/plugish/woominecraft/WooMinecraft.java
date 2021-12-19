@@ -16,19 +16,16 @@ import com.plugish.woominecraft.pojo.WMCPojo;
 import com.plugish.woominecraft.pojo.WMCProcessedOrders;
 import okhttp3.*;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 
 public final class WooMinecraft extends JavaPlugin {
@@ -36,10 +33,13 @@ public final class WooMinecraft extends JavaPlugin {
 	static WooMinecraft instance;
 
 	private YamlConfiguration l10n;
-	private File rawfile;
-	//make a list and store each user's name:uuid:True/false(and if they are cracked or not)
-	//to cut down on api calls from the server, list clears upon reboot/reload
-	private List<String> Players = new ArrayList<>();
+
+	/**
+	 * Stores the player data to prevent double checks.
+	 *
+	 * i.e. name:uuid:true|false
+	 */
+	private List<String> PlayersMap = new ArrayList<>();
 
 	@Override
 	public void onEnable() {
@@ -328,54 +328,77 @@ public final class WooMinecraft extends JavaPlugin {
 				break;
 		}
 	}
-	//Mojang api check
-	private boolean isPaidUser(Player p) {
-		//check if server is in online/offline mode
+
+	/**
+	 * Determines if the user is a paid user or not.
+	 *
+	 * @param player A player object
+	 * @return If the user is a paid player.
+	 */
+	private boolean isPaidUser(Player player) {
+		String playerName = player.getName();
+		String playerUUID = player.getUniqueId().toString();
+		String playerKeyBase = playerName + ':' + playerUUID + ':';
+		String validPlayerKey = playerKeyBase + true;
+		String invalidPlayerKey = playerKeyBase + false;
+
+		// Check if server is in online mode.
 		if (Bukkit.getServer().getOnlineMode()) {
 			return true;
-			//check if the server is connected to a bungee network
 		}
-		if (Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")) {
-			if (!Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + true)) {
-				if (Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + false)) {
-					p.sendMessage("Mojang Auth: Please Speak with a admin about your purchase");
-					wmc_log("Offline mode not supported");
-					return false;
-				}
-				Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
-					try (InputStream inputStream = new URL("https://api.mojang.com/users/profiles/minecraft/" + p.getName()).openStream(); Scanner scanner = new Scanner(inputStream)) {
-						//if User doesn't exist throws IOException
-						String a = scanner.next();
-						if (isDebug()) {
-							wmc_log(inputStream.toString());
-							wmc_log(a);
-						}
-						if (a.contains(p.getName())) {
-							if (a.contains(p.getUniqueId().toString())) {
-								Players.add(p.getName() + ':' + p.getUniqueId() + ':' + true);
-							} else {
-								//if Username exists but is using the offline uuid(doesn't match mojang records) throw IOException and add player to the list as cracked
-								Players.add(p.getName() + ':' + p.getUniqueId() + ':' + false);
-								throw new IOException("Mojang Auth: PlayerName doesn't match uuid for account");
-							}
-						} else {
-							//add username to the Players list, but as cracked, throws IOE
-							Players.add(p.getName() + ':' + p.getUniqueId() + ':' + false);
-							throw new IOException("Mojang Auth: PlayerName doesn't exist");
-						}
-					} catch (IOException e) {
-						wmc_log(e.getMessage(), 3);
-						p.sendMessage("Mojang Auth:Please Speak with a admin about your purchase");
-						if (isDebug()) {
-							wmc_log(Players.toString());
-						}
-					}
-				});
-			}
-		} else {
+
+		if ( ! Bukkit.spigot().getConfig().getBoolean("settings.bungeecord") ) {
 			wmc_log("Server in offline Mode");
 			return false;
 		}
+
+		// Check the base pattern, if it exists, return if the player is valid or not.
+		// Doing so should save on many if/else statements
+		if ( PlayersMap.contains( playerKeyBase ) ) {
+			boolean valid = PlayersMap.contains( validPlayerKey );
+			if ( ! valid ) {
+				player.sendMessage( "Mojang Auth: Please Speak with a admin about your purchase" );
+				wmc_log("Offline mode not supported");
+			}
+
+			return valid;
+		}
+
+		// TODO: Simplify this where the value can be returned and checked.
+		// Might be able to add players to the hash map on login using the onPlayerJoin event.
+		Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
+			try {
+				URL mojangUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" +  playerName);
+				InputStream inputStream = mojangUrl.openStream();
+				Scanner scanner = new Scanner(inputStream);
+
+				//if User doesn't exist throws IOException
+				String token = scanner.next();
+
+				if ( ! token.contains( playerName ) ) {
+					PlayersMap.add( invalidPlayerKey );
+					throw new IOException("Mojang Auth: PlayerName doesn't exist");
+				}
+
+				if ( ! token.contains( playerUUID ) ) {
+					//if Username exists but is using the offline uuid(doesn't match mojang records) throw IOException and add player to the list as cracked
+					PlayersMap.add( invalidPlayerKey );
+					throw new IOException("Mojang Auth: PlayerName doesn't match uuid for account");
+				}
+
+				PlayersMap.add( validPlayerKey );
+			} catch ( MalformedURLException urlException ) {
+				wmc_log(urlException.getMessage(), 2);
+				player.sendMessage( "Mojang API Error: Please try again later or contact an admin about your purchase." );
+			} catch ( IOException e ) {
+				wmc_log(e.getMessage(), 3);
+				player.sendMessage("Mojang Auth:Please Speak with a admin about your purchase");
+				if (isDebug()) {
+					wmc_log(PlayersMap.toString());
+				}
+			}
+		});
+
 		return true;
 	}
 }
