@@ -335,32 +335,37 @@ public final class WooMinecraft extends JavaPlugin {
 			return true;
 			//check if the server is connected to a bungee network
 		}
+		String Uuid = p.getUniqueId().toString().replace("-","");
+		String Pname = p.getName();
 		if (Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")) {
-			if (!Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + true)) {
-				if (Players.contains(p.getName() + ':' + p.getUniqueId() + ':' + false)) {
+			if (!Players.contains(Pname + ':' + Uuid + ':' + true)) {
+				if (Players.contains(Pname + ':' + Uuid + ':' + false)) {
 					p.sendMessage("Mojang Auth: Please Speak with a admin about your purchase");
 					wmc_log("Offline mode not supported");
 					return false;
 				}
 				Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
-					try (InputStream inputStream = new URL("https://api.mojang.com/users/profiles/minecraft/" + p.getName()).openStream(); Scanner scanner = new Scanner(inputStream)) {
+					try (InputStream inputStream = new URL("https://api.mojang.com/users/profiles/minecraft/" + Pname).openStream(); Scanner scanner = new Scanner(inputStream)) {
 						//if User doesn't exist throws IOException
 						String a = scanner.next();
+
 						if (isDebug()) {
 							wmc_log(inputStream.toString());
 							wmc_log(a);
+							wmc_log(Pname);
+							wmc_log(Uuid);
 						}
-						if (a.contains(p.getName())) {
-							if (a.contains(p.getUniqueId().toString())) {
-								Players.add(p.getName() + ':' + p.getUniqueId() + ':' + true);
+						if (a.contains(Pname)) {
+							if (a.contains(Uuid)) {
+								Players.add(Pname + ':' + Uuid + ':' + true);
 							} else {
 								//if Username exists but is using the offline uuid(doesn't match mojang records) throw IOException and add player to the list as cracked
-								Players.add(p.getName() + ':' + p.getUniqueId() + ':' + false);
+								Players.add(Pname + ':' + Uuid + ':' + false);
 								throw new IOException("Mojang Auth: PlayerName doesn't match uuid for account");
 							}
 						} else {
 							//add username to the Players list, but as cracked, throws IOE
-							Players.add(p.getName() + ':' + p.getUniqueId() + ':' + false);
+							Players.add(Pname + ':' + Uuid + ':' + false);
 							throw new IOException("Mojang Auth: PlayerName doesn't exist");
 						}
 					} catch (IOException e) {

@@ -65,6 +65,8 @@ public class WooCommand implements CommandExecutor {
 					plugin.getConfig().set("debug", true);
 					sender.sendMessage(chatPrefix + "Debug enabled");
 				}
+				//checking server connection status
+				//not done but works for now
 			}else if ( args[ 0 ].equalsIgnoreCase( "ping" ) ) {
 				Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
 					try {
