@@ -32,7 +32,6 @@ public final class WooMinecraft extends JavaPlugin {
 	static WooMinecraft instance;
 
 	private YamlConfiguration l10n;
-	private File rawfile;
 	//make a list and store each user's name:uuid:True/false(and if they are cracked or not)
 	//to cut down on api calls from the server, list clears upon reboot/reload
 	private List<String> Players = new ArrayList<>();
