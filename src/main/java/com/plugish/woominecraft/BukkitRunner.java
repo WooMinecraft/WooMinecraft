@@ -1,5 +1,6 @@
 package com.plugish.woominecraft;
 
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class BukkitRunner extends BukkitRunnable {
@@ -11,12 +12,15 @@ public class BukkitRunner extends BukkitRunnable {
 	}
 
 	public void run() {
-		try {
-			plugin.check();
-		} catch ( Exception e ) {
-			plugin.getLogger().warning( e.getMessage() );
-			e.printStackTrace();
-		}
+		//force running in async// not main thread
+		Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
+			try {
+				plugin.check();
+			} catch (Exception e) {
+				plugin.getLogger().warning(e.getMessage());
+				e.printStackTrace();
+			}
+		});
 	}
 
 }

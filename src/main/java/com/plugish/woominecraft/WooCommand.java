@@ -2,11 +2,12 @@ package com.plugish.woominecraft;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.Configuration;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class WooCommand implements CommandExecutor {
 
@@ -20,29 +21,29 @@ public class WooCommand implements CommandExecutor {
 			} else {
 				sender.sendMessage( chatPrefix + " " + plugin.getLang( "general.not_authorized" ) );
 			}
-		} else if ( command.getName().equalsIgnoreCase( "woo" ) && args.length <= 1 ) {
-			if ( args[ 0 ].equalsIgnoreCase( "check" ) ) {
-				if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
+		} else if ( command.getName().equalsIgnoreCase( "woo" ) && args.length > 0 ) {
+			//fixed some wonky perm issues
+			if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
+				if ( args[ 0 ].equalsIgnoreCase( "check" ) ) {
+					//force server to run url checks in async/not in main thread
+					Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
+						try {
+							String msg;
+							boolean checkResults = plugin.check();
 
-					try {
-						String msg;
-						boolean checkResults = plugin.check();
+							if (!checkResults) {
+								msg = chatPrefix + " " + plugin.getLang("general.none_avail");
+							} else {
+								msg = chatPrefix + " " + plugin.getLang("general.processed");
+							}
 
-						if ( !checkResults ) {
-							msg = chatPrefix + " " + plugin.getLang( "general.none_avail" );
-						} else {
-							msg = chatPrefix + " " + plugin.getLang( "general.processed" );
+							sender.sendMessage(msg);
+						} catch (Exception e) {
+							plugin.getLogger().warning(e.getMessage());
+							e.printStackTrace();
 						}
+					});
 
-						sender.sendMessage( msg );
-					} catch ( Exception e ) {
-						plugin.getLogger().warning( e.getMessage() );
-						e.printStackTrace();
-					}
-				} else {
-					String msg = plugin.getLang( "general.not_authorized" ).replace( "&", "\u00A7" );
-					sender.sendMessage( msg );
-				}
 				//added support for on the fly debug enable/disable
 			} else if ( args[ 0 ].equalsIgnoreCase( "debug" ) ) {
 				if (plugin.getConfig().getBoolean("debug")) {
@@ -53,9 +54,54 @@ public class WooCommand implements CommandExecutor {
 					plugin.getConfig().set("debug", true);
 					sender.sendMessage(chatPrefix + "Debug enabled");
 				}
+				//checking server connection status
+				//not done but works for now
+			}else if ( args[ 0 ].equalsIgnoreCase( "ping" ) ) {
+				Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
+					try {
+						sender.sendMessage(chatPrefix+"Checking connection to server");
+						HttpURLConnection ping = (HttpURLConnection) new URL(plugin.getConfig().getString("url")).openConnection();
+						ping.setConnectTimeout(700);
+						ping.setReadTimeout(700);
+						ping.setRequestMethod("HEAD");
+						int Rc = ping.getResponseCode();
+						String rs = ping.getResponseMessage();
+						ping.disconnect();
+						sender.sendMessage(chatPrefix + "Server response: " + Rc + " "+ rs);
+					} catch (IOException e) {
+						WooMinecraft.instance.getLogger().severe(e.getMessage());
+						sender.sendMessage(chatPrefix + "Server response: Failed");
+						if (plugin.isDebug()) {
+							WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("key"));
+							WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("url"));
+						}
+					}
+					try {
+						sender.sendMessage(chatPrefix + "Checking Rest Api Url");
+						HttpURLConnection ping = (HttpURLConnection) new URL(plugin.getConfig().getString("url")+"/index.php?rest_route=/wmc/v1/server/"+ plugin.getConfig().getString("key")).openConnection();
+						ping.setConnectTimeout(700);
+						ping.setReadTimeout(700);
+						ping.setRequestMethod("HEAD");
+						int Rc = ping.getResponseCode();
+						String rs = ping.getResponseMessage();
+						ping.disconnect();
+						sender.sendMessage(chatPrefix + "Server response: " + Rc + " "+ rs);
+					} catch (IOException e) {
+						WooMinecraft.instance.getLogger().severe(e.getMessage());
+						sender.sendMessage(chatPrefix + "Server response: Failed");
+						if (plugin.isDebug()) {
+							WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("key"));
+							WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("url"));
+						}
+					}
+					});
+				}
 			} else {
-				sender.sendMessage( "Usage: /woo check" );
+				String msg = plugin.getLang( "general.not_authorized" ).replace( "&", "\u00A7" );
+				sender.sendMessage( msg );
 			}
+		} else {
+			sender.sendMessage( "Usage: /woo check" );
 		}
 		return true;
 	}

@@ -256,7 +256,7 @@ public final class WooMinecraft extends JavaPlugin {
 	 *
 	 * @return boolean
 	 */
-	private boolean isDebug() {
+	public boolean isDebug() {
 		return getConfig().getBoolean( "debug" );
 	}
 
