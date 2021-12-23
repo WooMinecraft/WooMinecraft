@@ -3,106 +3,83 @@ package com.plugish.woominecraft;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.bukkit.command.TabExecutor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class WooCommand implements CommandExecutor {
+public class WooCommand implements TabExecutor {
 
-	public static WooMinecraft plugin = WooMinecraft.instance;
-	private static String chatPrefix = ChatColor.DARK_PURPLE + "[" + ChatColor.WHITE + "WooMinecraft" + ChatColor.DARK_PURPLE + "] " + ChatColor.DARK_PURPLE + "";
-	@Override
-	public boolean onCommand( CommandSender sender, Command command, String label, String[] args ) {
-		if ( command.getName().equalsIgnoreCase( "woo" ) && args.length == 0 ) {
-			if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
-				sender.sendMessage( chatPrefix + " " + plugin.getLang( "general.avail_commands" ) + ": /woo check" );
-			} else {
-				sender.sendMessage( chatPrefix + " " + plugin.getLang( "general.not_authorized" ) );
-			}
-		} else if ( command.getName().equalsIgnoreCase( "woo" ) && args.length > 0 ) {
-			//fixed some wonky perm issues
-			if ( sender.hasPermission( "woo.admin" ) || sender.isOp() ) {
-				if ( args[ 0 ].equalsIgnoreCase( "check" ) ) {
-					//force server to run url checks in async/not in main thread
-					Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
-						try {
-							String msg;
-							boolean checkResults = plugin.check();
+    public WooMinecraft plugin = WooMinecraft.instance;
+    private final String chatPrefix = ChatColor.translateAlternateColorCodes('&', "&5[&fWooMinecraft&5] ");
 
-							if (!checkResults) {
-								msg = chatPrefix + " " + plugin.getLang("general.none_avail");
-							} else {
-								msg = chatPrefix + " " + plugin.getLang("general.processed");
-							}
+    // Hashmap for storing subcommand names and permissions for them
+    private final HashMap<String, String> subCommands = new HashMap<>();
 
-							sender.sendMessage(msg);
-						} catch (Exception e) {
-							plugin.getLogger().warning(e.getMessage());
-							e.printStackTrace();
-						}
-					});
+    public WooCommand() {
+        // add future subcommands here for automatic tab completion
+        subCommands.put("check", "woo.admin");
+    }
 
-				//added support for on the fly debug enable/disable
-			} else if ( args[ 0 ].equalsIgnoreCase( "debug" ) ) {
-				if (plugin.getConfig().getBoolean("debug")) {
-					plugin.getConfig().set("debug", false);
-					sender.sendMessage(chatPrefix + "Debug Disabled");
-					return true;
-				} else {
-					plugin.getConfig().set("debug", true);
-					sender.sendMessage(chatPrefix + "Debug enabled");
-				}
-				//checking server connection status
-				//not done but works for now
-			}else if ( args[ 0 ].equalsIgnoreCase( "ping" ) ) {
-				Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
-					try {
-						sender.sendMessage(chatPrefix+"Checking connection to server");
-						HttpURLConnection ping = (HttpURLConnection) new URL(plugin.getConfig().getString("url")).openConnection();
-						ping.setConnectTimeout(700);
-						ping.setReadTimeout(700);
-						ping.setRequestMethod("HEAD");
-						int Rc = ping.getResponseCode();
-						String rs = ping.getResponseMessage();
-						ping.disconnect();
-						sender.sendMessage(chatPrefix + "Server response: " + Rc + " "+ rs);
-					} catch (IOException e) {
-						WooMinecraft.instance.getLogger().severe(e.getMessage());
-						sender.sendMessage(chatPrefix + "Server response: Failed");
-						if (plugin.isDebug()) {
-							WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("key"));
-							WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("url"));
-						}
-					}
-					try {
-						sender.sendMessage(chatPrefix + "Checking Rest Api Url");
-						HttpURLConnection ping = (HttpURLConnection) new URL(plugin.getConfig().getString("url")+"/index.php?rest_route=/wmc/v1/server/"+ plugin.getConfig().getString("key")).openConnection();
-						ping.setConnectTimeout(700);
-						ping.setReadTimeout(700);
-						ping.setRequestMethod("HEAD");
-						int Rc = ping.getResponseCode();
-						String rs = ping.getResponseMessage();
-						ping.disconnect();
-						sender.sendMessage(chatPrefix + "Server response: " + Rc + " "+ rs);
-					} catch (IOException e) {
-						WooMinecraft.instance.getLogger().severe(e.getMessage());
-						sender.sendMessage(chatPrefix + "Server response: Failed");
-						if (plugin.isDebug()) {
-							WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("key"));
-							WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("url"));
-						}
-					}
-					});
-				}
-			} else {
-				String msg = plugin.getLang( "general.not_authorized" ).replace( "&", "\u00A7" );
-				sender.sendMessage( msg );
-			}
-		} else {
-			sender.sendMessage( "Usage: /woo check" );
-		}
-		return true;
-	}
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 0) {
+            if (sender.hasPermission("woo.admin")) {
+                sender.sendMessage(chatPrefix + plugin.getLang("general.avail_commands") + ": /woo check");
+            } else {
+                sender.sendMessage(chatPrefix + plugin.getLang("general.not_authorized"));
+            }
+            return true;
+        } else if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("check")) {
+                checkSubcommand(sender);
+            } else {
+                sender.sendMessage(chatPrefix + "Usage: /woo check");
+            }
+            return true;
+        }
+        sender.sendMessage(chatPrefix +"Usage: /woo check");
+        return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] args) {
+        List<String> completions = new ArrayList<>();
+
+        // only care about first argument
+        if (args.length != 1)
+            return null;
+
+        for (Map.Entry<String, String> subCommand : subCommands.entrySet()) {
+            if (subCommand.getKey().startsWith(args[0]) && sender.hasPermission(subCommand.getValue()))
+                completions.add(subCommand.getKey());
+        }
+        return completions;
+    }
+
+    private void checkSubcommand(CommandSender sender) {
+        if (!sender.hasPermission("woo.admin")) {
+            String msg = chatPrefix + ChatColor.translateAlternateColorCodes('&', plugin.getLang("general.not_authorized"));
+            sender.sendMessage(msg);
+            return;
+        }
+        // Run check off the main thread
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            try {
+                String msg = chatPrefix+" ";
+                if (plugin.check()) {
+                    msg = msg + plugin.getLang("general.processed");
+                } else {
+                    msg = msg + plugin.getLang("general.none_avail");
+                }
+                sender.sendMessage(msg);
+            } catch (Exception e) {
+                // send feedback for the sender
+                sender.sendMessage(chatPrefix+ChatColor.RED+e.getMessage());
+                e.printStackTrace();
+            }
+        });
+    }
 }
