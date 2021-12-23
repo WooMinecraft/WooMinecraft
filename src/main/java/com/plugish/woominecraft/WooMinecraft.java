@@ -337,7 +337,7 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	private boolean isPaidUser(Player player) {
 		String playerName = player.getName();
-		String playerUUID = player.getUniqueId().toString();
+		String playerUUID = player.getUniqueId().toString().replace( "-", "" );
 		String playerKeyBase = playerName + ':' + playerUUID + ':';
 		String validPlayerKey = playerKeyBase + true;
 		String invalidPlayerKey = playerKeyBase + false;
@@ -375,6 +375,13 @@ public final class WooMinecraft extends JavaPlugin {
 				//if User doesn't exist throws IOException
 				String token = scanner.next();
 
+				if (isDebug()) {
+					wmc_log(inputStream.toString());
+					wmc_log(token);
+					wmc_log(playerName);
+					wmc_log(playerUUID);
+				}
+
 				if ( ! token.contains( playerName ) ) {
 					PlayersMap.add( invalidPlayerKey );
 					throw new IOException("Mojang Auth: PlayerName doesn't exist");
@@ -392,7 +399,7 @@ public final class WooMinecraft extends JavaPlugin {
 				player.sendMessage( "Mojang API Error: Please try again later or contact an admin about your purchase." );
 			} catch ( IOException e ) {
 				wmc_log(e.getMessage(), 3);
-				player.sendMessage("Mojang Auth:Please Speak with a admin about your purchase");
+				player.sendMessage("Mojang Auth: Please Speak with a admin about your purchase");
 				if (isDebug()) {
 					wmc_log(PlayersMap.toString());
 				}
