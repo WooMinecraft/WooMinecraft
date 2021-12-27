@@ -57,7 +57,17 @@ Since this plugin is GPL and entirely opensource, we cannot be sure how you will
 You'll need the WordPress plugin for this MC Plugin to work - you can [get it here](https://github.com/WooMinecraft/woominecraft-wp).
 
 ## Changelog
-## 1.4.0
+
+## 1.4.2
+* Updates the helpsite command.
+* Finishes the `/woo ping` command.
+* Closed #238 - thanks @YouHaveTrouble
+
+## 1.4.1-pre
+* Fixes an issue with UUIDs on server-side authentication ( @jerzan )
+* Adds some additional command logic and cleans things up.  ( @jerzan )
+
+## 1.4.0-pre
 * edit RestApi Url to fix alot of user issues
 * extend compatibility for mc versions 1.10 - 1.18.1
 * added debug command( /woo debug ) and a ping command ( /woo ping)
