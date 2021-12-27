@@ -5,6 +5,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginDescriptionFile;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -96,12 +99,18 @@ public class WooCommand implements TabExecutor {
             }
         });
     }
+
+    /**
+     * Pings the user's server they have set in the config.
+     * @param sender Who sent the message.
+     */
     private void pingSubcommand(CommandSender sender) {
         if (!sender.hasPermission("woo.admin")) {
             String msg = chatPrefix + ChatColor.translateAlternateColorCodes('&', plugin.getLang("general.not_authorized"));
             sender.sendMessage(msg);
             return;
         }
+
         // Run check off the main thread
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
@@ -136,6 +145,7 @@ public class WooCommand implements TabExecutor {
             try {
                 String msg = chatPrefix+" ";
                 sender.sendMessage(chatPrefix + "Checking Rest Api Url");
+
                 HttpURLConnection ping = (HttpURLConnection) new URL(plugin.getConfig().getString("url")+"/index.php?rest_route=/wmc/v1/server/"+ plugin.getConfig().getString("key")).openConnection();
                 ping.setConnectTimeout(700);
                 ping.setReadTimeout(700);
@@ -163,23 +173,33 @@ public class WooCommand implements TabExecutor {
             }
         });
     }
+
+    /**
+     * Sets the debug setting from a command.
+     * @param sender Who sent the message.
+     */
     private void debugSubcommand(CommandSender sender) {
-        if (plugin.getConfig().getBoolean("debug")) {
-            plugin.getConfig().set("debug", false);
-            sender.sendMessage(chatPrefix + "Debug "+ChatColor.DARK_RED+"False");
-        } else {
-            plugin.getConfig().set("debug", true);
-            sender.sendMessage(chatPrefix + "Debug "+ChatColor.GREEN+"True");
+        FileConfiguration pluginConfig = plugin.getConfig();
+
+        if (pluginConfig.getBoolean("debug")) {
+            pluginConfig.set("debug", false);
+            sender.sendMessage(chatPrefix + "Set debug to: " + ChatColor.DARK_RED + "False");
+            return;
         }
+
+        pluginConfig.set("debug", true);
+        sender.sendMessage(chatPrefix + "Set debug to: " + ChatColor.GREEN + "True");
     }
+
+    /**
+     * Shows the sender all the available commands.
+     * @param sender Who sent the message.
+     */
     private void helpSubcommand(CommandSender sender) {
-        String auth = "";
-        for (int i = 0;i < plugin.getDescription().getAuthors().size()-1; i++) {
-            auth = auth+plugin.getDescription().getAuthors().get(i)+", ";
-        }
-        auth = auth+plugin.getDescription().getAuthors().get(plugin.getDescription().getAuthors().size()-1);
-        sender.sendMessage(chatPrefix +" Ver"+ plugin.getDescription().getVersion());
-        sender.sendMessage(ChatColor.DARK_PURPLE + "By " + auth);
+        PluginDescriptionFile descriptionFile = plugin.getDescription();
+
+        sender.sendMessage(chatPrefix +" Ver"+ descriptionFile.getVersion());
+        sender.sendMessage(ChatColor.DARK_PURPLE + "By " + String.join( ",", descriptionFile.getAuthors() ) );
         sender.sendMessage(ChatColor.DARK_PURPLE + "/woo help" +ChatColor.WHITE+ " Shows this Helpsite");
         sender.sendMessage(ChatColor.DARK_PURPLE + "/woo check" +ChatColor.WHITE+ " Check for donations/orders");
         sender.sendMessage(ChatColor.DARK_PURPLE + "/woo ping" +ChatColor.WHITE+ " Test server connection");
