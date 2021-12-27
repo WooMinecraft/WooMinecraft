@@ -1,7 +1,7 @@
 name: ${project.name}
 main: ${mainClass}
 version: ${project.version}
-authors: [JerryWood, TekkitCommando, Phillmac]
+authors: [JerryWood, TekkitCommando, Phillmac, Jerzean]
 description: ${project.description}
 website:  http://woominecraft.com
 api-version: 1.13
