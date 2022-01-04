@@ -57,6 +57,15 @@ Since this plugin is GPL and entirely opensource, we cannot be sure how you will
 You'll need the WordPress plugin for this MC Plugin to work - you can [get it here](https://github.com/WooMinecraft/woominecraft-wp).
 
 ## Changelog
+## 1.4.2
+* add velocity support
+* switch to PaperSpigot for compiling
+* fix a key issue
+
+## 1.4.1
+* fix '/woo ping' and '/woo check'
+* general bug fixes/debug info changes 
+
 ## 1.4.0
 * edit RestApi Url to fix alot of user issues
 * extend compatibility for mc versions 1.10 - 1.18.1
@@ -68,7 +77,7 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 * 1.16.x support props [jerzean](https://github.com/WooMinecraft/WooMinecraft/pull/237)
 * Cleanup various readme sections.
 
-##1.2.1
+## 1.2.1
 * Disabled legacy support, "should still work on 1.12 and below(untested)"
 * Update spigot api to 1.14.4+
 

@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -129,7 +130,7 @@ public class WooCommand implements TabExecutor {
                 WooMinecraft.instance.getLogger().severe(e.getMessage());
                 sender.sendMessage(chatPrefix +ChatColor.DARK_RED+"Server Status: Failed");
                 if (plugin.isDebug()) {
-                    WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("key"));
+                    //Do not output store keys to console, can open up potential issues
                     WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("url"));
                 }
             }
@@ -157,13 +158,18 @@ public class WooCommand implements TabExecutor {
                 WooMinecraft.instance.getLogger().severe(e.getMessage());
                 sender.sendMessage(chatPrefix +ChatColor.DARK_RED+"Server Status: Failed");
                 if (plugin.isDebug()) {
-                    WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("key"));
+                    //Do not output store keys to console, can open up potential issues
                     WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("url"));
                 }
             }
         });
     }
     private void debugSubcommand(CommandSender sender) {
+        if (!sender.hasPermission("woo.admin")) {
+            String msg = chatPrefix + ChatColor.translateAlternateColorCodes('&', plugin.getLang("general.not_authorized"));
+            sender.sendMessage(msg);
+            return;
+        }
         if (plugin.getConfig().getBoolean("debug")) {
             plugin.getConfig().set("debug", false);
             sender.sendMessage(chatPrefix + "Debug "+ChatColor.DARK_RED+"False");
