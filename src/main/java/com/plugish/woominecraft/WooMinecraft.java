@@ -15,7 +15,9 @@ import com.plugish.woominecraft.pojo.Order;
 import com.plugish.woominecraft.pojo.WMCPojo;
 import com.plugish.woominecraft.pojo.WMCProcessedOrders;
 import okhttp3.*;
+import org.bukkit.Server.Spigot;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -69,12 +71,42 @@ public final class WooMinecraft extends JavaPlugin {
 
 		// Log when plugin is fully enabled ( setup complete ).
 		getLogger().info( this.getLang( "log.enabled" ) );
-		//check bungeecord mode/offline mode
-		if (!Bukkit.getOnlineMode() && !Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")) {
-			getLogger().severe(String.valueOf(Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")));
-			getLogger().severe("WooMinecraft doesn't support offLine mode");
-			Bukkit.getPluginManager().disablePlugin(this);
+		//check bungeecord/velocity mode/offline mode
+		try {
+			getLogger().info(Bukkit.getServer().getName());
+			//check if the server is spigot/bukkit
+			if (Bukkit.getServer().getName().equals("CraftBukkit"))
+				if (!Bukkit.getOnlineMode() && !Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")) {
+					getLogger().severe("BungeeCord: "+Bukkit.spigot().getConfig().getBoolean("settings.bungeecord"));
+					getLogger().severe("Online-Mode:"+Bukkit.getOnlineMode());
+					getLogger().severe("WooMinecraft doesn't support offLine mode");
+					getLogger().severe("If you have a bungeecord server, please set Bungeecord to true and Online-mode to false");
+					Bukkit.getPluginManager().disablePlugin(this);
+					//check if the server is Paper
+				} else if (Bukkit.getServer().getName().equals("Paper")) {
+					// check if velocity is enabled and if its in online mode
+					if (!Bukkit.getOnlineMode() && !Bukkit.spigot().getPaperConfig().getBoolean("settings.velocity-support.enabled")) {
+						if (!Bukkit.spigot().getPaperConfig().getBoolean("settings.velocity-support.online-mode")) {
+							getLogger().severe("Velocity: " + Bukkit.spigot().getPaperConfig().getBoolean("settings.velocity-support.enabled"));
+							getLogger().severe("Velocity.onlinemode: " + Bukkit.spigot().getPaperConfig().getBoolean("settings.velocity-support.online-mode"));
+							getLogger().severe("Online-Mode:" + Bukkit.getOnlineMode());
+							getLogger().severe("WooMinecraft doesn't support offLine mode");
+							getLogger().severe("If you have a velocity server, please set velocity-support.online-mode to true");
+							Bukkit.getPluginManager().disablePlugin(this);
+						}
+						//check if bungeecord is enabled
+					} else if (!Bukkit.getOnlineMode() && !Bukkit.spigot().getSpigotConfig().getBoolean("settings.bungeecord")) {
+						getLogger().severe("BungeeCord: "+Bukkit.spigot().getSpigotConfig().getBoolean("settings.bungeecord"));
+						getLogger().severe("Online-Mode:"+Bukkit.getOnlineMode());
+						getLogger().severe("WooMinecraft doesn't support offLine mode");
+						getLogger().severe("If you have a bungeecord server, please set Bungeecord to true and Online-mode to false");
+						Bukkit.getPluginManager().disablePlugin(this);
+					}
+				}
+		} catch (Exception e) {
+			getLogger().severe(e.getMessage());
 		}
+
 
 	}
 
