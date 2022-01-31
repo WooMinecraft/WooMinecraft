@@ -91,7 +91,12 @@ public class WooCommand implements TabExecutor {
                 sender.sendMessage(msg);
             } catch (Exception e) {
                 // send feedback for the sender
-                sender.sendMessage(chatPrefix+ChatColor.RED+e.getMessage());
+                if( e.getMessage().contains( "Expected BEGIN_OBJECT but was STRING" ) ) {
+                    sender.sendMessage( chatPrefix+ChatColor.RED+"REST endpoint is not accessible, check logs." );
+                    return;
+                }
+
+                sender.sendMessage(chatPrefix+ChatColor.RED+e.getMessage() );
                 e.printStackTrace();
             }
         });
