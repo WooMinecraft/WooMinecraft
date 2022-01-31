@@ -73,69 +73,17 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 * added debug command( /woo debug ) and a ping command ( /woo ping)
 * added mojang auth to the plugin side, [jerzean](https://github.com/WooMinecraft/WooMinecraft/pull/256)
 
-## 1.3.0
+### 1.3.0
 * Added polish translation props [YouHaveTrouble](https://github.com/WooMinecraft/WooMinecraft/pull/233)
 * 1.16.x support props [jerzean](https://github.com/WooMinecraft/WooMinecraft/pull/237)
 * Cleanup various readme sections.
 
-##1.2.1
+### 1.2.1
 * Disabled legacy support, "should still work on 1.12 and below(untested)"
 * Update spigot api to 1.14.4+
 
-## 1.2.0
+### 1.2.0
 * Tested on Spigot 1.12.2
 * Cleaned up a lot of internals by simplifying a ton of requests.
 * Now building with okHTTP3 library for ease of use.
 * Move to REST API.
-
-## 1.1.2
-* Tested on Spigot 1.12.1
-* Cleaned up a lot of pointless code.
-* Privatized a lot of methods.
-* Make OrderID more visible in the sea of text.
-
-### 1.1.1
-* Fixed - [#137](https://github.com/WooMinecraft/WooMinecraft/issues/137) - Removed missing commands from help message.
-* Fixed - [#130](https://github.com/WooMinecraft/WooMinecraft/issues/130) - Commands not processing due to new white-list worlds config being commented out.
-
-### 1.1.0
-* Added - Redirect Exceptions for sending/receiving data from the server. You will now get an exception if your host is redirecting the requests in most cases.
-* Added - Debug logging specifically for HTTP requests. Just set `debug: true` in your config.
-* Added - Exception handling for sending order updates to server. Will now throw exceptions if plugin receives invalid data.
-* Added - World white-listing, props [FabioZumbi12](https://github.com/WooMinecraft/WooMinecraft/pull/117) - disabled by default
-* Added - Clarification around server key, props [spannerman79](https://github.com/WooMinecraft/WooMinecraft/pull/119)
-* Updated - HTTP Requests now use `CloseableHttpClient` and `CloseableHttpResponse` so connections will now close, not sure if they weren't before.
-* Removed - Support for MC 1.7.10
-
-### 1.0.10
-* Updated public suffix list, required by HTTP client
-
-### 1.0.9
-* Change key sent to server, fixes WooCommerce compatibility.
-
-### 1.0.8
-* Better error handling from WordPress
-* Make use of the `debug: true` flag in the config.
-* Code cleanup, removed unused libs, removed commented code.
-* Added config validation for users coming from older versions - will now throw exceptions if your config is not setup properly and will stop the check.
-* Fixed player online check, props [@FailPlayDE](https://github.com/FailPlayDE) - [#108](https://github.com/WooMinecraft/WooMinecraft/pull/108)
-* **REMOVED** Reload & Register commands - more problems than their worth.
-
-### 1.0.7
-* Prints stacktraces on JSON error to log.
-* Updated Readme.md file to reflect supported bukkit versions.
-
-### 1.0.6
-* Refactored all HTTP connections to work on a single thread
-* Cleaned up a TON of code
-* Removed internal JSON library, used maven deps instead
-* Fixed [#88](https://github.com/WooMinecraft/WooMinecraft/issues/88), [#85](https://github.com/WooMinecraft/WooMinecraft/issues/85), [#48](https://github.com/WooMinecraft/WooMinecraft/issues/48), [#60](https://github.com/WooMinecraft/WooMinecraft/issues/60)
-
-### 1.0.5
-* Added debug option for more straight forward debug options.
-
-### 1.0.4
-* Too much to detail
-
-### 1.0.0
-* First official release
