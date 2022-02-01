@@ -34,6 +34,8 @@ public final class WooMinecraft extends JavaPlugin {
 
 	private YamlConfiguration l10n;
 
+	public static final String NL = System.getProperty("line.separator");
+
 	/**
 	 * Stores the player data to prevent double checks.
 	 *
@@ -44,6 +46,17 @@ public final class WooMinecraft extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
+
+		if (
+			!Bukkit.getOnlineMode() &&
+			!Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")
+		) {
+			getLogger().severe(String.valueOf(Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")));
+			getLogger().severe("WooMinecraft doesn't support offLine mode");
+			Bukkit.getPluginManager().disablePlugin(this);
+			return;
+		}
+
 		YamlConfiguration config = (YamlConfiguration) getConfig();
 		// Save the default config.yml
 		try{
@@ -69,13 +82,6 @@ public final class WooMinecraft extends JavaPlugin {
 
 		// Log when plugin is fully enabled ( setup complete ).
 		getLogger().info( this.getLang( "log.enabled" ) );
-		//check bungeecord mode/offline mode
-		if (!Bukkit.getOnlineMode() && !Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")) {
-			getLogger().severe(String.valueOf(Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")));
-			getLogger().severe("WooMinecraft doesn't support offLine mode");
-			Bukkit.getPluginManager().disablePlugin(this);
-		}
-
 	}
 
 	@Override
@@ -128,7 +134,9 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	private URL getSiteURL() throws Exception {
 		//Enable use of non pretty permlink support / custom post url / should also help with debugging other users issues
-		return new URL( getConfig().getString( "url" ) + "/index.php?rest_route=/wmc/v1/server/" + getConfig().getString( "key" ) );
+		String baseUrl = getConfig().getString( "url" ) + "/index.php?rest_route=/wmc/v1/server/";
+		debug_log( "Checking base URL: " + baseUrl );
+		return new URL( baseUrl + getConfig().getString( "key" ) );
 	}
 
 	/**
@@ -145,9 +153,11 @@ public final class WooMinecraft extends JavaPlugin {
 
 		// Contact the server.
 		String pendingOrders = getPendingOrders();
+		debug_log( "Logging website reply" + NL + pendingOrders.substring( 0, Math.min(pendingOrders.length(), 64) ) + "..." );
 
 		// Server returned an empty response, bail here.
 		if ( pendingOrders.isEmpty() ) {
+			debug_log( "Pending orders is empty completely", 2 );
 			return false;
 		}
 
@@ -155,9 +165,6 @@ public final class WooMinecraft extends JavaPlugin {
 		Gson gson = new GsonBuilder().create();
 		WMCPojo wmcPojo = gson.fromJson( pendingOrders, WMCPojo.class );
 		List<Order> orderList = wmcPojo.getOrders();
-
-		// Log if debugging is enabled.
-		wmc_log( pendingOrders );
 
 		// Validate we can indeed process what we need to.
 		if ( wmcPojo.getData() != null ) {
@@ -176,6 +183,7 @@ public final class WooMinecraft extends JavaPlugin {
 		for ( Order order : orderList ) {
 			Player player = getServer().getPlayerExact( order.getPlayer() );
 			if ( null == player ) {
+				debug_log( "Player was null for an order", 2 );
 				continue;
 			}
 
@@ -192,18 +200,18 @@ public final class WooMinecraft extends JavaPlugin {
 			// Walk over all commands and run them at the next available tick.
 			for ( String command : order.getCommands() ) {
 				//Auth player against Mojang api
-				if (isPaidUser(player)) {
-					BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-					scheduler.scheduleSyncDelayedTask(instance, () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command), 20L);
-				} else {
+				if ( ! isPaidUser( player ) ) {
+					debug_log( "User is not a paid player " + player.getDisplayName() );
 					return false;
 				}
 
+				BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+				scheduler.scheduleSyncDelayedTask(instance, () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command), 20L);
 			}
 
-			wmc_log( "Adding item to list - " + order.getOrderId() );
+			debug_log( "Adding item to list - " + order.getOrderId() );
 			processedOrders.add( order.getOrderId() );
-			wmc_log( "Processed length is " + processedOrders.size() );
+			debug_log( "Processed length is " + processedOrders.size() );
 		}
 
 		// If it's empty, we skip it.
@@ -268,7 +276,6 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	private String getPendingOrders() throws Exception {
 		URL baseURL = getSiteURL();
-		// java was yelling about this var
 		BufferedReader in = null;
 		try {
 			try {
@@ -278,8 +285,8 @@ public final class WooMinecraft extends JavaPlugin {
 				throw new FileNotFoundException(e.toString());
 			}
 		} catch (FileNotFoundException e) {
-			String msg = e.getMessage().replace(getConfig().getString("key"), "privateKey");
-			return "";
+			String key = getConfig().getString("key");
+			return e.getMessage().replace( key == null ? "" : key, "privateKey");
 		}
 
 		StringBuilder buffer = new StringBuilder();
@@ -302,6 +309,26 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	private void wmc_log(String message) {
 		this.wmc_log( message, 1 );
+	}
+
+	/**
+	 * Logs to the debug log.
+	 * @param message The message
+	 */
+	private void debug_log( String message ) {
+		if ( isDebug() ) {
+			this.wmc_log( message, 1 );
+		}
+	}
+	/**
+	 * Logs to the debug log.
+	 * @param message The message
+	 * @param level The log leve.
+	 */
+	private void debug_log( String message, Integer level ) {
+		if ( isDebug() ) {
+			this.wmc_log( message, level );
+		}
 	}
 
 	/**
@@ -344,67 +371,65 @@ public final class WooMinecraft extends JavaPlugin {
 
 		// Check if server is in online mode.
 		if (Bukkit.getServer().getOnlineMode()) {
+			wmc_log( "Server is in online mode.", 3 );
 			return true;
 		}
 
 		if ( ! Bukkit.spigot().getConfig().getBoolean("settings.bungeecord") ) {
-			wmc_log("Server in offline Mode");
+			wmc_log( "Server in offline Mode", 3 );
 			return false;
 		}
 
 		// Check the base pattern, if it exists, return if the player is valid or not.
 		// Doing so should save on many if/else statements
-		if ( PlayersMap.contains( playerKeyBase ) ) {
+		if ( PlayersMap.toString().contains( playerKeyBase ) ) {
 			boolean valid = PlayersMap.contains( validPlayerKey );
 			if ( ! valid ) {
 				player.sendMessage( "Mojang Auth: Please Speak with a admin about your purchase" );
-				wmc_log("Offline mode not supported");
+				wmc_log("Offline mode not supported", 3);
 			}
 
 			return valid;
 		}
 
-		// TODO: Simplify this where the value can be returned and checked.
-		// Might be able to add players to the hash map on login using the onPlayerJoin event.
-		Bukkit.getScheduler().runTaskAsynchronously(WooMinecraft.instance, () -> {
-			try {
-				URL mojangUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" +  playerName);
-				InputStream inputStream = mojangUrl.openStream();
-				Scanner scanner = new Scanner(inputStream);
+		debug_log( "Player was not in the key set " + NL + PlayersMap.toString() );
 
-				//if User doesn't exist throws IOException
-				String token = scanner.next();
+		try {
+			URL mojangUrl = new URL("https://api.mojang.com/users/profiles/minecraft/" +  playerName);
+			InputStream inputStream = mojangUrl.openStream();
+			Scanner scanner = new Scanner(inputStream);
+			String apiResponse = scanner.next();
 
-				if (isDebug()) {
-					wmc_log(inputStream.toString());
-					wmc_log(token);
-					wmc_log(playerName);
-					wmc_log(playerUUID);
-				}
+			debug_log(
+				"Logging stream data:" + NL +
+				inputStream.toString() + NL +
+				apiResponse + NL +
+				playerName + NL +
+				playerUUID
+			);
 
-				if ( ! token.contains( playerName ) ) {
-					PlayersMap.add( invalidPlayerKey );
-					throw new IOException("Mojang Auth: PlayerName doesn't exist");
-				}
-
-				if ( ! token.contains( playerUUID ) ) {
-					//if Username exists but is using the offline uuid(doesn't match mojang records) throw IOException and add player to the list as cracked
-					PlayersMap.add( invalidPlayerKey );
-					throw new IOException("Mojang Auth: PlayerName doesn't match uuid for account");
-				}
-
-				PlayersMap.add( validPlayerKey );
-			} catch ( MalformedURLException urlException ) {
-				wmc_log(urlException.getMessage(), 2);
-				player.sendMessage( "Mojang API Error: Please try again later or contact an admin about your purchase." );
-			} catch ( IOException e ) {
-				wmc_log(e.getMessage(), 3);
-				player.sendMessage("Mojang Auth: Please Speak with a admin about your purchase");
-				if (isDebug()) {
-					wmc_log(PlayersMap.toString());
-				}
+			if ( ! apiResponse.contains( playerName ) ) {
+				PlayersMap.add( invalidPlayerKey );
+				throw new IOException("Mojang Auth: PlayerName doesn't exist");
 			}
-		});
+
+			if ( ! apiResponse.contains( playerUUID ) ) {
+				//if Username exists but is using the offline uuid(doesn't match mojang records) throw IOException and add player to the list as cracked
+				PlayersMap.add( invalidPlayerKey );
+				throw new IOException("Mojang Auth: PlayerName doesn't match uuid for account");
+			}
+
+			PlayersMap.add( validPlayerKey );
+			debug_log( PlayersMap.toString() );
+			return true;
+		} catch ( MalformedURLException urlException ) {
+			debug_log("Malformed URL: " + urlException.getMessage(), 3 );
+			player.sendMessage( "Mojang API Error: Please try again later or contact an admin about your purchase." );
+		} catch ( IOException e ) {
+			debug_log( "Map is " + PlayersMap.toString() );
+			debug_log( "Message when getting URL data " + e.getMessage(), 3 );
+			player.sendMessage("Mojang Auth: Please Speak with a admin about your purchase");
+		}
 
 		// Default to false, worst case they have to run this twice.
 		return false;
