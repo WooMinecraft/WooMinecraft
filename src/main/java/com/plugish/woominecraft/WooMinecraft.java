@@ -3,9 +3,9 @@
  * Author:	   Jerry Wood
  * Author URI: http://plugish.com
  * License:	   GPLv2
- *
+ * 
  * Copyright 2014 All rights Reserved
- *
+ * 
  */
 package com.plugish.woominecraft;
 
@@ -48,8 +48,8 @@ public final class WooMinecraft extends JavaPlugin {
 		instance = this;
 
 		if (
-				!Bukkit.getOnlineMode() &&
-						!Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")
+			!Bukkit.getOnlineMode() &&
+			!Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")
 		) {
 			getLogger().severe(String.valueOf(Bukkit.spigot().getConfig().getBoolean("settings.bungeecord")));
 			getLogger().severe("WooMinecraft doesn't support offLine mode");
@@ -401,11 +401,11 @@ public final class WooMinecraft extends JavaPlugin {
 			String apiResponse = scanner.next();
 
 			debug_log(
-					"Logging stream data:" + NL +
-							inputStream.toString() + NL +
-							apiResponse + NL +
-							playerName + NL +
-							playerUUID
+				"Logging stream data:" + NL +
+				inputStream.toString() + NL +
+				apiResponse + NL +
+				playerName + NL +
+				playerUUID
 			);
 
 			if ( ! apiResponse.contains( playerName ) ) {
