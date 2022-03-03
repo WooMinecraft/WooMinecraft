@@ -9,6 +9,7 @@
  */
 package com.plugish.woominecraft;
 
+import com.google.common.io.ByteSink;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.plugish.woominecraft.pojo.Order;
@@ -135,6 +136,12 @@ public final class WooMinecraft extends JavaPlugin {
 	private URL getSiteURL() throws Exception {
 		//Enable use of non pretty permlink support / custom post url / should also help with debugging other users issues
 		String baseUrl = getConfig().getString( "url" ) + "/index.php?rest_route=/wmc/v1/server/";
+		debug_log( "Checking base URL: " + baseUrl );
+		return new URL( baseUrl + getConfig().getString( "key" ) );
+	}
+	private URL getSiteURLBackup() throws Exception {
+		//some users were having issues with said custom post url support
+		String baseUrl = getConfig().getString( "url" ) + "/wp-json/wp/v2/";
 		debug_log( "Checking base URL: " + baseUrl );
 		return new URL( baseUrl + getConfig().getString( "key" ) );
 	}
@@ -276,6 +283,7 @@ public final class WooMinecraft extends JavaPlugin {
 	 */
 	private String getPendingOrders() throws Exception {
 		URL baseURL = getSiteURL();
+		URL baseURL2 = getSiteURLBackup();
 		BufferedReader in = null;
 		try {
 			try {
@@ -285,9 +293,15 @@ public final class WooMinecraft extends JavaPlugin {
 				throw new FileNotFoundException(e.toString());
 			}
 		} catch (FileNotFoundException e) {
+			try {
+				in = new BufferedReader(new InputStreamReader(baseURL2.openStream()));
+			} catch (IOException t) {
+				e.getMessage();
+			}
 			String key = getConfig().getString("key");
-			return e.getMessage().replace( key == null ? "" : key, "privateKey");
+			e.getMessage().replace( key == null ? "" : key, "privateKey");
 		}
+
 
 		StringBuilder buffer = new StringBuilder();
 

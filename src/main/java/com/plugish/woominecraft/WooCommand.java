@@ -165,9 +165,28 @@ public class WooCommand implements TabExecutor {
                 } else if (Rc >=300 && Rc <= 399) {
                     msg = chatPrefix+ChatColor.YELLOW+" Status: Ok, but possible issues, "+ Rc+" "+rs;
                 } else if ( Rc >= 400 && Rc <=599) {
-                    msg = chatPrefix+ChatColor.DARK_RED+" Status: Bad, "+ Rc+" "+rs;
+                    msg = chatPrefix+ChatColor.DARK_RED+" Status: Bad, "+ Rc+" "+rs+" Checking back up URL";
                 }
                 sender.sendMessage(msg);
+                if ( Rc >= 400 && Rc <=599) {
+                    HttpURLConnection ping2 = (HttpURLConnection) new URL(plugin.getConfig().getString("url")+"/wp-json/wp/v2/"+ plugin.getConfig().getString("key")).openConnection();
+                    ping2.setConnectTimeout(700);
+                    ping2.setReadTimeout(700);
+                    ping2.setRequestMethod("HEAD");
+                    int Rc2 = ping2.getResponseCode();
+                    String rs2 = ping2.getResponseMessage();
+                    ping2.disconnect();
+                    if (Rc2 < 199) {
+                        msg = chatPrefix+ChatColor.YELLOW+" Backup Status: Ok, but possible issues, "+ Rc2+" "+rs2;
+                    } else if (Rc2 >= 200 && Rc2 <= 299) {
+                        msg = chatPrefix+ChatColor.GREEN+" Backup Status: Good, "+ Rc2;
+                    } else if (Rc2 >=300 && Rc2 <= 399) {
+                        msg = chatPrefix+ChatColor.YELLOW+" Backup Status: Ok, but possible issues, "+ Rc2+" "+rs2;
+                    } else if ( Rc2 >= 400 && Rc2 <=599) {
+                        msg = chatPrefix+ChatColor.DARK_RED+" Backup Status: Bad, "+ Rc2+" "+rs2;
+                    }
+                    sender.sendMessage(msg);
+                }
             } catch (IOException e) {
                 WooMinecraft.instance.getLogger().severe(e.getMessage());
                 sender.sendMessage(chatPrefix +ChatColor.DARK_RED+"Server Status: Failed");
