@@ -145,6 +145,7 @@ public class WooCommand implements TabExecutor {
                     sender.sendMessage(msg);
                 } catch (IOException e) {
                     WooMinecraft.instance.getLogger().severe(e.getMessage());
+                    sender.sendMessage(chatPrefix +ChatColor.DARK_RED+"Server Status: Failed");
                 }
 
             } else {
