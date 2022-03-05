@@ -132,9 +132,18 @@ public final class WooMinecraft extends JavaPlugin {
 	 * @return URL
 	 * @throws Exception Why the URL failed.
 	 */
-	private URL getSiteURL() throws Exception {
+	public URL getSiteURL() throws Exception {
 		//Enable use of non pretty permlink support / custom post url / should also help with debugging other users issues
-		String baseUrl = getConfig().getString( "url" ) + "/index.php?rest_route=/wmc/v1/server/";
+		String Boon = this.getConfig().getString("RestUrl");
+		String CUrl = this.getConfig().getString("CustomRestUrl");
+		String baseUrl = "";
+		if (Boon.equalsIgnoreCase("true")) {
+			baseUrl = getConfig().getString("url") + "/wp-json/wmc/v1/server/";
+		} else if (Boon.equalsIgnoreCase("false")) {
+			baseUrl = getConfig().getString("url") + "/index.php?rest_route=/wmc/v1/server/";
+		} else if (Boon.equalsIgnoreCase("custom")){
+			baseUrl = getConfig().getString("url") + CUrl;
+		}
 		debug_log( "Checking base URL: " + baseUrl );
 		return new URL( baseUrl + getConfig().getString( "key" ) );
 	}
@@ -286,8 +295,9 @@ public final class WooMinecraft extends JavaPlugin {
 			}
 		} catch (FileNotFoundException e) {
 			String key = getConfig().getString("key");
-			return e.getMessage().replace( key == null ? "" : key, "privateKey");
+			e.getMessage().replace( key == null ? "" : key, "privateKey");
 		}
+
 
 		StringBuilder buffer = new StringBuilder();
 

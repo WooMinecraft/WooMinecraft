@@ -12,13 +12,21 @@ update_interval: 1500
 # subdirectory, it should point there.
 url: "http://playground.dev"
 
+# if you are having issues with orders not being processed change this to false
+# if it's still is giving you problems and know your RestApi Url set this to custom
+RestUrl: true
+# known good Rest api Urls
+# - /wp-json/wmc/v1/server/
+# - /index.php?rest_route=/wmc/v1/server/
+CustomRestUrl: ""
+
 # This must match the WordPress key in your admin panel for WooMinecraft
 # This is a key that YOU set, both needing to be identical in the admin panel
 # and in this config file
 # For security purposes, you MUST NOT leave this empty.
 key: ""
 
-# Allowed words the player need to be on to run the commands.
+# Allowed worlds the player needs to be in to run the commands.
 # Disabled by default!
 #whitelist-worlds:
 #  - world
