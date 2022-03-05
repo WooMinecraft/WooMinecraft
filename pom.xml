@@ -4,7 +4,7 @@
     <groupId>com.plugish.woominecraft</groupId>
     <artifactId>WooMinecraft</artifactId>
 
-    <version>1.4.2-${spigotVersion}</version>
+    <version>1.4.3-${spigotVersion}</version>
 
     <name>WooMinecraft</name>
     <description>A WooCommerce Minecraft Bridge</description>

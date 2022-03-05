@@ -10,6 +10,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,11 +44,9 @@ public class WooCommand implements TabExecutor {
                 sender.sendMessage(chatPrefix + plugin.getLang("general.not_authorized"));
             }
             return true;
-        } else if (args.length == 1) {
+        } else if (args.length > 1 && !args[0].equalsIgnoreCase("ping")) {
             if (args[0].equalsIgnoreCase("check")) {
                 checkSubcommand(sender);
-            } else if (args[0].equalsIgnoreCase("ping")) {
-                pingSubcommand(sender);
             } else if (args[0].equalsIgnoreCase("debug")) {
                 debugSubcommand(sender);
             } else if (args[0].equalsIgnoreCase("help")) {
@@ -56,6 +56,8 @@ public class WooCommand implements TabExecutor {
                 sender.sendMessage(chatPrefix + "Usage: /woo help");
             }
             return true;
+        } else if (args[0].equalsIgnoreCase("ping")) {
+            pingSubcommand(sender, args[1]);
         }
         sender.sendMessage(chatPrefix +"Usage: /woo help");
         return true;
@@ -109,7 +111,7 @@ public class WooCommand implements TabExecutor {
      * Pings the user's server they have set in the config.
      * @param sender Who sent the message.
      */
-    private void pingSubcommand(CommandSender sender) {
+    private void pingSubcommand(CommandSender sender, String Url) {
         if (!sender.hasPermission("woo.admin")) {
             String msg = chatPrefix + ChatColor.translateAlternateColorCodes('&', plugin.getLang("general.not_authorized"));
             sender.sendMessage(msg);
@@ -118,81 +120,90 @@ public class WooCommand implements TabExecutor {
 
         // Run check off the main thread
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            try {
-                String msg = chatPrefix+" ";
-                sender.sendMessage(chatPrefix+"Checking connection to server");
-                HttpURLConnection ping = (HttpURLConnection) new URL(plugin.getConfig().getString("url")).openConnection();
-                ping.setConnectTimeout(700);
-                ping.setReadTimeout(700);
-                ping.setRequestMethod("HEAD");
-                int Rc = ping.getResponseCode();
-                String rs = ping.getResponseMessage();
-                ping.disconnect();
-                if (Rc < 199) {
-                    msg = chatPrefix+ChatColor.YELLOW+" Status: Ok, but possible issues, "+ Rc+" "+rs;
-                } else if (Rc >= 200 && Rc <= 299) {
-                    msg = chatPrefix+ChatColor.GREEN+" Status: Good, "+ Rc;
-                } else if (Rc >=300 && Rc <= 399) {
-                    msg = chatPrefix+ChatColor.YELLOW+" Status: Ok, but possible issues, "+ Rc+" "+rs;
-                } else if ( Rc >= 400 && Rc <=599) {
-                    msg = chatPrefix+ChatColor.DARK_RED+" Status: Bad, "+ Rc+" "+rs;
-                }
-                sender.sendMessage(msg);
-            } catch (IOException e) {
-                // send feedback for the sender
-                WooMinecraft.instance.getLogger().severe(e.getMessage());
-                sender.sendMessage(chatPrefix +ChatColor.DARK_RED+"Server Status: Failed");
-                if (plugin.isDebug()) {
-                    WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("key"));
-                    WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("url"));
-                }
-            }
-            try {
-                String msg = chatPrefix+" ";
-                sender.sendMessage(chatPrefix + "Checking Rest Api Url");
-
-                HttpURLConnection ping = (HttpURLConnection) new URL(plugin.getConfig().getString("url")+"/index.php?rest_route=/wmc/v1/server/"+ plugin.getConfig().getString("key")).openConnection();
-                ping.setConnectTimeout(700);
-                ping.setReadTimeout(700);
-                ping.setRequestMethod("HEAD");
-                int Rc = ping.getResponseCode();
-                String rs = ping.getResponseMessage();
-                ping.disconnect();
-                if (Rc < 199) {
-                    msg = chatPrefix+ChatColor.YELLOW+" Status: Ok, but possible issues, "+ Rc+" "+rs;
-                } else if (Rc >= 200 && Rc <= 299) {
-                    msg = chatPrefix+ChatColor.GREEN+" Status: Good, "+ Rc;
-                } else if (Rc >=300 && Rc <= 399) {
-                    msg = chatPrefix+ChatColor.YELLOW+" Status: Ok, but possible issues, "+ Rc+" "+rs;
-                } else if ( Rc >= 400 && Rc <=599) {
-                    msg = chatPrefix+ChatColor.DARK_RED+" Status: Bad, "+ Rc+" "+rs+" Checking back up URL";
-                }
-                sender.sendMessage(msg);
-                if ( Rc >= 400 && Rc <=599) {
-                    HttpURLConnection ping2 = (HttpURLConnection) new URL(plugin.getConfig().getString("url")+"/wp-json/wp/v2/"+ plugin.getConfig().getString("key")).openConnection();
-                    ping2.setConnectTimeout(700);
-                    ping2.setReadTimeout(700);
-                    ping2.setRequestMethod("HEAD");
-                    int Rc2 = ping2.getResponseCode();
-                    String rs2 = ping2.getResponseMessage();
-                    ping2.disconnect();
-                    if (Rc2 < 199) {
-                        msg = chatPrefix+ChatColor.YELLOW+" Backup Status: Ok, but possible issues, "+ Rc2+" "+rs2;
-                    } else if (Rc2 >= 200 && Rc2 <= 299) {
-                        msg = chatPrefix+ChatColor.GREEN+" Backup Status: Good, "+ Rc2;
-                    } else if (Rc2 >=300 && Rc2 <= 399) {
-                        msg = chatPrefix+ChatColor.YELLOW+" Backup Status: Ok, but possible issues, "+ Rc2+" "+rs2;
-                    } else if ( Rc2 >= 400 && Rc2 <=599) {
-                        msg = chatPrefix+ChatColor.DARK_RED+" Backup Status: Bad, "+ Rc2+" "+rs2;
+            String msg = "";
+            // allow ability to ping any website to test outgoing connections from the mc server
+            // example /woo ping https://www.google.com/
+            if (!Url.isEmpty()) {
+                try {
+                    URL U = new URL(Url);
+                    HttpURLConnection ping = (HttpURLConnection) U.openConnection();
+                    ping.setConnectTimeout(1000);
+                    ping.setReadTimeout(1000);
+                    ping.setRequestMethod("HEAD");
+                    int Rc = ping.getResponseCode();
+                    String rs = ping.getResponseMessage();
+                    ping.disconnect();
+                    if (Rc < 199) {
+                        msg = chatPrefix+ChatColor.YELLOW+" Status: Ok, but possible issues, "+ Rc+" "+rs;
+                    } else if (Rc >= 200 && Rc <= 299) {
+                        msg = chatPrefix+ChatColor.GREEN+" Status: Good, "+ Rc;
+                    } else if (Rc >=300 && Rc <= 399) {
+                        msg = chatPrefix+ChatColor.YELLOW+" Status: Ok, but possible issues, "+ Rc+" "+rs;
+                    } else if ( Rc >= 400 && Rc <=599) {
+                        msg = chatPrefix+ChatColor.DARK_RED+" Status: Bad, "+ Rc+" "+rs;
                     }
                     sender.sendMessage(msg);
+                } catch (IOException e) {
+                    WooMinecraft.instance.getLogger().severe(e.getMessage());
                 }
-            } catch (IOException e) {
-                WooMinecraft.instance.getLogger().severe(e.getMessage());
-                sender.sendMessage(chatPrefix +ChatColor.DARK_RED+"Server Status: Failed");
-                if (plugin.isDebug()) {
-                    WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("key"));
-                    WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("url"));
+
+            } else {
+                try {
+                    sender.sendMessage(chatPrefix + "Checking connection to server");
+                    HttpURLConnection ping = (HttpURLConnection) new URL(plugin.getConfig().getString("url")).openConnection();
+                    ping.setConnectTimeout(700);
+                    ping.setReadTimeout(700);
+                    ping.setRequestMethod("HEAD");
+                    int Rc = ping.getResponseCode();
+                    String rs = ping.getResponseMessage();
+                    ping.disconnect();
+                    if (Rc < 199) {
+                        msg = chatPrefix + ChatColor.YELLOW + " Status: Ok, but possible issues, " + Rc + " " + rs;
+                    } else if (Rc >= 200 && Rc <= 299) {
+                        msg = chatPrefix + ChatColor.GREEN + " Status: Good, " + Rc;
+                    } else if (Rc >= 300 && Rc <= 399) {
+                        msg = chatPrefix + ChatColor.YELLOW + " Status: Ok, but possible issues, " + Rc + " " + rs;
+                    } else if (Rc >= 400 && Rc <= 599) {
+                        msg = chatPrefix + ChatColor.DARK_RED + " Status: Bad, " + Rc + " " + rs;
+                    }
+                    sender.sendMessage(msg);
+                } catch (IOException e) {
+                    // send feedback for the sender
+                    WooMinecraft.instance.getLogger().severe(e.getMessage());
+                    sender.sendMessage(chatPrefix + ChatColor.DARK_RED + "Server Status: Failed");
+                    if (plugin.isDebug()) {
+                        WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("key"));
+                        WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("url"));
+                    }
+                }
+                try {
+                    sender.sendMessage(chatPrefix + "Checking Rest Api Url");
+                    HttpURLConnection ping = (HttpURLConnection) WooMinecraft.instance.getSiteURL().openConnection();
+                    ping.setConnectTimeout(700);
+                    ping.setReadTimeout(700);
+                    ping.setRequestMethod("HEAD");
+                    int Rc = ping.getResponseCode();
+                    String rs = ping.getResponseMessage();
+                    ping.disconnect();
+                    if (Rc < 199) {
+                        msg = chatPrefix + ChatColor.YELLOW + " Status: Ok, but possible issues, " + Rc + " " + rs;
+                    } else if (Rc >= 200 && Rc <= 299) {
+                        msg = chatPrefix + ChatColor.GREEN + " Status: Good, " + Rc;
+                    } else if (Rc >= 300 && Rc <= 399) {
+                        msg = chatPrefix + ChatColor.YELLOW + " Status: Ok, but possible issues, " + Rc + " " + rs;
+                    } else if (Rc >= 400 && Rc <= 599) {
+                        msg = chatPrefix + ChatColor.DARK_RED + " Status: Bad, " + Rc + " " + rs + " Checking back up URL";
+                    }
+                    sender.sendMessage(msg);
+                } catch (IOException e) {
+                    WooMinecraft.instance.getLogger().severe(e.getMessage());
+                    sender.sendMessage(chatPrefix + ChatColor.DARK_RED + "Server Status: Failed");
+                    if (plugin.isDebug()) {
+                        WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("key"));
+                        WooMinecraft.instance.getLogger().info(plugin.getConfig().getString("url"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });

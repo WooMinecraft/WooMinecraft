@@ -58,14 +58,18 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 
 ## Changelog
 
+## 1.4.3
+* Fixes an issue with Restapi links not working
+* updated `/woo ping` with an option to ping any site example:`/woo ping https://www.google.com/`
+
 ## 1.4.2
 * Updates the helpsite command.
 * Finishes the `/woo ping` command.
 * Closed #238 - thanks @YouHaveTrouble
 
 ## 1.4.1-pre
-* Fixes an issue with UUIDs on server-side authentication ( @jerzan )
-* Adds some additional command logic and cleans things up.  ( @jerzan )
+* Fixes an issue with UUIDs on server-side authentication ( @jerzean )
+* Adds some additional command logic and cleans things up.  ( @jerzean )
 
 ## 1.4.0-pre
 * edit RestApi Url to fix alot of user issues
