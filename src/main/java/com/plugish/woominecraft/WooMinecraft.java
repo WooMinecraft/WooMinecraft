@@ -138,7 +138,7 @@ public final class WooMinecraft extends JavaPlugin {
 		String CUrl = this.getConfig().getString("CustomRestUrl");
 		String baseUrl = "";
 		if (Boon.equalsIgnoreCase("true")) {
-			baseUrl = getConfig().getString("url") + "/wp-json/wmc/v1/server/";
+			baseUrl = getConfig().getString("url") + "/wp-json/wmc/v2/server/";
 		} else if (Boon.equalsIgnoreCase("false")) {
 			baseUrl = getConfig().getString("url") + "/index.php?rest_route=/wmc/v1/server/";
 		} else if (Boon.equalsIgnoreCase("custom")){

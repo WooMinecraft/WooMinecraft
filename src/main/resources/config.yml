@@ -16,7 +16,7 @@ url: "http://playground.dev"
 # if it's still is giving you problems and know your RestApi Url set this to custom
 RestUrl: true
 # known good Rest api Urls
-# - /wp-json/wmc/v1/server/
+# - /wp-json/wmc/v2/server/
 # - /index.php?rest_route=/wmc/v1/server/
 CustomRestUrl: ""
 

@@ -44,7 +44,7 @@ public class WooCommand implements TabExecutor {
                 sender.sendMessage(chatPrefix + plugin.getLang("general.not_authorized"));
             }
             return true;
-        } else if (args.length > 1 && !args[0].equalsIgnoreCase("ping")) {
+        } else if (args.length <= 1 && !args[0].equalsIgnoreCase("ping")) {
             if (args[0].equalsIgnoreCase("check")) {
                 checkSubcommand(sender);
             } else if (args[0].equalsIgnoreCase("debug")) {
@@ -57,9 +57,14 @@ public class WooCommand implements TabExecutor {
             }
             return true;
         } else if (args[0].equalsIgnoreCase("ping")) {
-            pingSubcommand(sender, args[1]);
+            try {
+                if (!args[1].isEmpty()) {
+                    pingSubcommand(sender, args.length, args[1]);
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                pingSubcommand(sender, args.length,"");
+            }
         }
-        sender.sendMessage(chatPrefix +"Usage: /woo help");
         return true;
     }
 
@@ -111,7 +116,7 @@ public class WooCommand implements TabExecutor {
      * Pings the user's server they have set in the config.
      * @param sender Who sent the message.
      */
-    private void pingSubcommand(CommandSender sender, String Url) {
+    private void pingSubcommand(CommandSender sender, int length, String Url) {
         if (!sender.hasPermission("woo.admin")) {
             String msg = chatPrefix + ChatColor.translateAlternateColorCodes('&', plugin.getLang("general.not_authorized"));
             sender.sendMessage(msg);
@@ -123,7 +128,7 @@ public class WooCommand implements TabExecutor {
             String msg = "";
             // allow ability to ping any website to test outgoing connections from the mc server
             // example /woo ping https://www.google.com/
-            if (!Url.isEmpty()) {
+            if (length == 2) {
                 try {
                     URL U = new URL(Url);
                     HttpURLConnection ping = (HttpURLConnection) U.openConnection();
@@ -193,7 +198,7 @@ public class WooCommand implements TabExecutor {
                     } else if (Rc >= 300 && Rc <= 399) {
                         msg = chatPrefix + ChatColor.YELLOW + " Status: Ok, but possible issues, " + Rc + " " + rs;
                     } else if (Rc >= 400 && Rc <= 599) {
-                        msg = chatPrefix + ChatColor.DARK_RED + " Status: Bad, " + Rc + " " + rs + " Checking back up URL";
+                        msg = chatPrefix + ChatColor.DARK_RED + " Status: Bad, " + Rc + " " + rs;
                     }
                     sender.sendMessage(msg);
                 } catch (IOException e) {
