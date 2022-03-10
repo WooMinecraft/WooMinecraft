@@ -12,13 +12,18 @@ update_interval: 1500
 # subdirectory, it should point there.
 url: "http://playground.dev"
 
-# if you are having issues with orders not being processed change this to false
-# if it's still is giving you problems and know your RestApi Url set this to custom
-RestUrl: true
-# known good Rest api Urls
-# - /wp-json/wmc/v2/server/
+# If you are having issues with REST, or have disabled pretty permalinks. Set this to false.
+# Doing so will use the old /index.php?rest_route=/wmc/v1/server/ base
+# Setting this to false will also allow you to set the restBasePath value if you have altered your
+# installation in any way.
+prettyPermalinks: true
+
+# If your REST API has a custom path base, input it here.
+# NOTE: This is only loaded if prettyPermalinks is set to false.
+# Known good URL bases.
+# - /wp-json/wmc/v1/server/
 # - /index.php?rest_route=/wmc/v1/server/
-CustomRestUrl: ""
+restBasePath: ""
 
 # This must match the WordPress key in your admin panel for WooMinecraft
 # This is a key that YOU set, both needing to be identical in the admin panel

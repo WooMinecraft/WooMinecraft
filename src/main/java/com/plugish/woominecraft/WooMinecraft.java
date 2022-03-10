@@ -133,17 +133,18 @@ public final class WooMinecraft extends JavaPlugin {
 	 * @throws Exception Why the URL failed.
 	 */
 	public URL getSiteURL() throws Exception {
-		//Enable use of non pretty permlink support / custom post url / should also help with debugging other users issues
-		String Boon = this.getConfig().getString("RestUrl");
-		String CUrl = this.getConfig().getString("CustomRestUrl");
-		String baseUrl = "";
-		if (Boon.equalsIgnoreCase("true")) {
+		// Switches for pretty or non-pretty permalink support for REST urls.
+		boolean usePrettyPermalinks = this.getConfig().getBoolean( "prettyPermalinks" );
+		String baseUrl = getConfig().getString("url") + "/wp-json/wmc/v2/server/";
+		if ( ! usePrettyPermalinks ) {
 			baseUrl = getConfig().getString("url") + "/wp-json/wmc/v2/server/";
-		} else if (Boon.equalsIgnoreCase("false")) {
-			baseUrl = getConfig().getString("url") + "/index.php?rest_route=/wmc/v1/server/";
-		} else if (Boon.equalsIgnoreCase("custom")){
-			baseUrl = getConfig().getString("url") + CUrl;
+
+			String customRestUrl = this.getConfig().getString( "restBasePath" );
+			if ( ! customRestUrl.isEmpty() ) {
+				baseUrl = customRestUrl;
+			}
 		}
+
 		debug_log( "Checking base URL: " + baseUrl );
 		return new URL( baseUrl + getConfig().getString( "key" ) );
 	}
