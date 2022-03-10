@@ -58,6 +58,11 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 
 ## Changelog
 
+## 1.4.3
+* Fix RestApi issues
+* Update `/woo ping`, now has a sub command/option to ping any website
+`example: /woo ping https://www.google.com/`
+
 ## 1.4.2
 * Updates the helpsite command.
 * Finishes the `/woo ping` command.
