@@ -2,7 +2,7 @@
 
 [WooMinecraft](http://woominecraft.com) is a free Minecraft Donation plugin for your server that provides a self-hosted solution where you're the boss.  By leveraging a well known eCommerce plugin on the
 WordPress side of things, we allow you to specify commands for product variations, general product commands, and resending of donations at any time.   
-![WooMinecraft Logo](https://raw.githubusercontent.com/WooMinecraft/WooMinecraft/master/src/main/resources/wmc-logo.jpg)
+![WooMinecraft Logo](https://raw.githubusercontent.com/WooMinecraft/WooMinecraft/main/src/main/resources/wmc-logo.jpg)
 
 ## Config
 Your config should look like the below section.
