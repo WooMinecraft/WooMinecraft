@@ -73,6 +73,10 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 
 ## Changelog
 
+## 1.4.4
+* Fix logic for getting pending orders.
+* Additional logging for pending orders.
+
 ## 1.4.3
 * Fix RestApi issues
 * Code cleanup
