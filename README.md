@@ -73,6 +73,10 @@ You'll need the WordPress plugin for this MC Plugin to work - you can [get it he
 
 ## Changelog
 
+## 1.4.5
+* Hotfix for [274](https://github.com/WooMinecraft/WooMinecraft/issues/274)
+* Fix pretty-permalink flag to actually use ugly permalinks for rest endpoints.
+
 ## 1.4.4
 * Fix logic for getting pending orders.
 * Additional logging for pending orders.

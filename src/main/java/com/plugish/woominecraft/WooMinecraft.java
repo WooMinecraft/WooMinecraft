@@ -135,9 +135,9 @@ public final class WooMinecraft extends JavaPlugin {
 	public URL getSiteURL() throws Exception {
 		// Switches for pretty or non-pretty permalink support for REST urls.
 		boolean usePrettyPermalinks = this.getConfig().getBoolean( "prettyPermalinks" );
-		String baseUrl = getConfig().getString("url") + "/wp-json/wmc/v2/server/";
+		String baseUrl = getConfig().getString("url") + "/wp-json/wmc/v1/server/";
 		if ( ! usePrettyPermalinks ) {
-			baseUrl = getConfig().getString("url") + "/wp-json/wmc/v2/server/";
+			baseUrl = getConfig().getString("url") + "/index.php?rest_route=/wmc/v1/server/";
 
 			String customRestUrl = this.getConfig().getString( "restBasePath" );
 			if ( ! customRestUrl.isEmpty() ) {
