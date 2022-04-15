@@ -137,7 +137,7 @@ public final class WooMinecraft extends JavaPlugin {
 		boolean usePrettyPermalinks = this.getConfig().getBoolean( "prettyPermalinks" );
 		String baseUrl = getConfig().getString("url") + "/wp-json/wmc/v1/server/";
 		if ( ! usePrettyPermalinks ) {
-			baseUrl = getConfig().getString("url") + "/wp-json/wmc/v1/server/";
+			baseUrl = getConfig().getString("url") + "/index.php?rest_route=/wmc/v1/server/";
 
 			String customRestUrl = this.getConfig().getString( "restBasePath" );
 			if ( ! customRestUrl.isEmpty() ) {
