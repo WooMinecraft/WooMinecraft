@@ -1,0 +1,27 @@
+# These messages are relayed to players in-game.  And therefore should
+# definitely be translated.
+general:
+  not_authorized: "Bunun için yetkin yok."
+  reloaded: "Eklenti yeniden başlatıldı."
+  saved_conf: "Ayar kaydedildi."
+  key: "Anahtar"
+  cpy_key: "Bu anahtarı WordPress içerisinde bulunan WooMinecraft ayarlarının içine yerleştir."
+  key_set: "Anahtarın zaten kayıtlı. Ayar dosyasını kontrol et."
+  none_avail: "Mevcut satın alım bulunmuyor. Daha sonra tekrar deneyin."
+  processed: "Tüm satın alımlar işlendi."
+  avail_commands: "Kullanılabilir komutlar"
+
+# These messages are processed in the log file, and in-turn aren't really
+# seen by players.  So it's not absolutely necessary to translate them, but
+# if you're already thinking about it, why not?
+log:
+  com_init: "Komutlar başlatıldı."
+  enabled: "Bağış sistemi etkinleştirildi."
+  disabled: "Bağış sistemi devredışı bırakıldı."
+  no_donations: "Çevrimiçi oyuncular için bağış bulunmamaktadır."
+  cannot_update: "Bağışlar güncellenemiyor."
+  don_updated: "Bağışlar güncellendi."
+  fail_dos: "Veri çıktısı verilemiyor."
+  update_failed: "Güncelleme başarısız oldu: "
+  update_successful: "Başarıyla güncellendi: "
+  update_bad_link: "Güncelleme sayfası hatalı veya link bozuk."
